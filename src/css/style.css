@@ -1,0 +1,229 @@
+:root {
+    --primary-color: #fff;
+    --secondary-color: #000;
+
+    --light-bg-color: #fff8ff;
+    --dark-bg-color: #404040;
+
+    --light-heading-color: #fff;
+    --dark-heading-color: #282828;
+
+    --light-border-color: #ccc;
+    --dark-border-color: #333;
+
+    --light-link-color: #000;
+    --dark-link-color: #fff;
+
+    --light-link-hover-color: #666;
+    --dark-link-hover-color: #999;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 18vh;
+    z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.625rem 0;
+}
+
+.logo-name {
+    display: flex;
+    align-items: center;
+}
+
+.logo-name img {
+    max-width: 3.125rem;
+    margin-left: 1.25rem;
+}
+
+.company-name {
+    font-size: 1.5rem;
+    text-decoration: none;
+    margin-left: 1.25rem;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin-right: 1.25rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    font-size: 1.125rem;
+    font-weight: bold;
+}
+
+.burger-menu {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    margin-right: 1.25rem;
+}
+
+.burger-menu img {
+    width: 100%;
+    height: 100%;
+}
+
+main {
+    margin-top: 20vh;
+    padding: 0 1.25rem;
+}
+
+#big{
+    font-size: 10.5vh;
+    font-weight: bold;
+    margin-bottom: 1.25rem;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .company-name {
+        display: none;
+    }
+
+    nav {
+        position: relative;
+        right: 0;
+        display: flex;
+    }
+
+    nav ul {
+        display: none;
+        position: absolute;
+        right: 0;
+        min-height: 100vh;
+        min-width: 8rem;
+        padding: 0.75rem 1rem;
+        margin-top: 10vh;
+        z-index: 1;
+    }
+
+    .burger-menu {
+        display: block;
+        cursor: pointer;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .company-name {
+        font-size: 1.375rem;
+    }
+
+    nav ul {
+        display: flex;
+        position: relative;
+        min-width: 10rem;
+        height: fit-content;
+        padding: 0.75rem 1rem;
+        z-index: 1;
+    }
+
+    .burger-menu {
+        display: none;
+    }
+}
+
+@media (min-width: 769px) {
+    .company-name {
+        font-size: 1.5rem;
+    }
+
+    nav ul {
+        display: flex;
+        position: relative;
+        min-width: 10rem;
+        padding: 0.75rem 1rem;
+        z-index: 1;
+    }
+
+    .burger-menu {
+        display: none;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        color: var(--primary-color);
+        background-color: var(--dark-bg-color);
+    }
+
+    header {
+        background-color: var(--dark-heading-color);
+        border-bottom: 1px solid var(--dark-border-color);
+    }
+
+    nav ul {
+        background-color: var(--dark-heading-color);
+    }
+
+    nav ul li a {
+        color: var(--primary-color);
+    }
+
+    nav ul li a:hover {
+        color: var(--dark-link-hover-color);
+    }
+
+    .logo-img {
+        filter: invert(1);
+    }
+
+    .burger-menu img {
+        filter: invert(1);
+    }
+
+    .company-name {
+        color: var(--primary-color);
+    }
+}
+
+@media (prefers-color-scheme: light),
+(prefers-color-scheme: no-preference) {
+    body {
+        color: var(--secondary-color);
+        background-color: var(--light-bg-color);
+    }
+
+    header {
+        background-color: var(--light-heading-color);
+        border-bottom: 1px solid var(--light-border-color);
+    }
+
+    nav ul {
+        background-color: var(--light-heading-color);
+    }
+
+    nav ul li a {
+        color: var(--secondary-color);
+    }
+
+    nav ul li a:hover {
+        color: var(--light-link-hover-color);
+    }
+
+    .company-name {
+        color: var(--secondary-color);
+    }
+}
