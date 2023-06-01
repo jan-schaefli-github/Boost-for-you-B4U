@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -20,12 +21,20 @@ var (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Fehler beim Laden der .env-Datei")
 	}
 
 	gin.SetMode(gin.ReleaseMode)
 
-	router := gin.New()
+	logFile, err := os.OpenFile("gin.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatal("Fehler beim Öffnen der Log-Datei:", err)
+	}
+	defer logFile.Close()
+
+	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout)
+
+	router := gin.Default()
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"
@@ -35,15 +44,12 @@ func main() {
 	clanTag = os.Getenv("CLAN_TAG")
 	encodedClanTag = url.QueryEscape(clanTag)
 
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
-
 	router.GET("/clan", getClanHandler)
 	router.GET("/members", getMembersHandler)
 	router.GET("/currentriverrace", getCurrentRiverRaceHandler)
 	router.GET("/riverracelog", getRiverRaceLogHandler)
 
-	log.Printf("Server running on port %s", port)
+	log.Printf("Server läuft auf Port %s", port)
 	log.Fatal(router.Run(":" + port))
 }
 
@@ -51,7 +57,7 @@ func getClanHandler(c *gin.Context) {
 	url := "https://api.clashroyale.com/v1/clans/" + encodedClanTag
 	response, err := makeRequest(url)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "An error occurred"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
 	defer response.Body.Close()
@@ -59,7 +65,7 @@ func getClanHandler(c *gin.Context) {
 	var data interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "An error occurred"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
 
@@ -70,7 +76,7 @@ func getMembersHandler(c *gin.Context) {
 	url := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/members"
 	response, err := makeRequest(url)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "An error occurred"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
 	defer response.Body.Close()
@@ -78,7 +84,7 @@ func getMembersHandler(c *gin.Context) {
 	var data interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "An error occurred"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
 
@@ -89,7 +95,7 @@ func getCurrentRiverRaceHandler(c *gin.Context) {
 	url := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/currentriverrace"
 	response, err := makeRequest(url)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "An error occurred"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
 	defer response.Body.Close()
@@ -97,7 +103,7 @@ func getCurrentRiverRaceHandler(c *gin.Context) {
 	var data interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "An error occurred"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
 
@@ -108,7 +114,7 @@ func getRiverRaceLogHandler(c *gin.Context) {
 	url := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/riverracelog"
 	response, err := makeRequest(url)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "An error occurred"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
 	defer response.Body.Close()
@@ -116,7 +122,7 @@ func getRiverRaceLogHandler(c *gin.Context) {
 	var data interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "An error occurred"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
 
