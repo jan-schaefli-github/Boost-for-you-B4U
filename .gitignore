@@ -1,2 +1,31 @@
-*/node_modules
-*/.env
+# Environment variables
+.env
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.prof
+*.trace
+dist/
+vendor/
+
+# IDE/Editor
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.log
+
+# Build output
+build/
