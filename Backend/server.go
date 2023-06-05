@@ -237,7 +237,7 @@ func getPerson(c *gin.Context) {
 	defer db.Close()
 
 	var person Person
-	err = db.QueryRow("SELECT * FROM person WHERE tag = '#2Y9VQVJ9'").Scan(&person.Tag, &person.WholeFame, &person.ClanStatus, &person.JoinDate, &person.FkClan)
+	err = db.QueryRow("SELECT * FROM person WHERE tag = '#2Y9VQVJ8'").Scan(&person.Tag, &person.WholeFame, &person.ClanStatus, &person.JoinDate, &person.FkClan)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
