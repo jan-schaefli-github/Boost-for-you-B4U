@@ -30,12 +30,20 @@ var (
 
 // -------------------- Start Structs -------------------- //
 
-type Person struct {
+/*type Person struct {
 	tag        string
-	wholeFame  int
+	wholeFame  string
 	clanStatus string
 	joinDate   string
 	fk_clan    string
+}*/
+
+type Person struct {
+	Tag        string `json:"tag"`
+	WholeFame  int    `json:"wholeFame"`
+	ClanStatus string `json:"clanStatus"`
+	JoinDate   string `json:"joinDate"`
+	FkClan     string `json:"fk_clan"`
 }
 
 // -------------------- End Structs -------------------- //
@@ -206,14 +214,22 @@ func getPersonHandler(c *gin.Context) {
 	defer db.Close()
 
 	var person Person
-	err = db.QueryRow("SELECT * FROM person WHERE tag = '#2Y9VQVJ9'").Scan(&person.tag, &person.wholeFame, &person.clanStatus, &person.joinDate, &person.fk_clan)
+	err = db.QueryRow("SELECT * FROM person WHERE tag = '#2Y9VQVJ9'").Scan(&person.Tag, &person.WholeFame, &person.ClanStatus, &person.JoinDate, &person.FkClan)
 	if err != nil {
 		log.Fatal(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
-	log.Println(person)
-	c.JSON(http.StatusOK, person)
+
+	personJSON, err := json.Marshal(person)
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, string(personJSON))
 }
 
 // -------------------- End Database -------------------- //
