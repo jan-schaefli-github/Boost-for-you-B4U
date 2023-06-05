@@ -30,13 +30,9 @@ var (
 
 // -------------------- Start Structs -------------------- //
 
-/*type Person struct {
-	tag        string
-	wholeFame  string
-	clanStatus string
-	joinDate   string
-	fk_clan    string
-}*/
+type Clan struct {
+	Tag string `json:"tag"`
+}
 
 type Person struct {
 	Tag        string `json:"tag"`
@@ -76,11 +72,12 @@ func main() {
 	clanTag = os.Getenv("CLAN_TAG")
 	encodedClanTag = url.QueryEscape(clanTag)
 
-	router.GET("/clan", getClanHandler)
-	router.GET("/members", getMembersHandler)
-	router.GET("/currentriverrace", getCurrentRiverRaceHandler)
-	router.GET("/riverracelog", getRiverRaceLogHandler)
-	router.GET("/person", getPersonHandler)
+	router.GET("/api/clan", getClanHandler)
+	router.GET("/api/members", getMembersHandler)
+	router.GET("/api/currentriverrace", getCurrentRiverRaceHandler)
+	router.GET("/api/riverracelog", getRiverRaceLogHandler)
+	router.GET("/database/person", getPerson)
+	router.GET("database/clan", getClan)
 
 	log.Printf("Server läuft auf Port %s", port)
 	log.Fatal(router.Run(":" + port))
@@ -204,10 +201,36 @@ func connectToDatabase() (*sql.DB, error) {
 	return db, nil
 }
 
-func getPersonHandler(c *gin.Context) {
+// Get Clan from Database
+func getClan(c *gin.Context) {
 	db, err := connectToDatabase()
 	if err != nil {
-		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		return
+	}
+	defer db.Close()
+
+	var clan Clan
+	err = db.QueryRow("SELECT * FROM clan WHERE tag = '#P9UVQCJV'").Scan(&clan.Tag)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		return
+	}
+
+	clanJSON, err := json.Marshal(clan)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, string(clanJSON))
+}
+
+// Get Person from Database
+func getPerson(c *gin.Context) {
+	db, err := connectToDatabase()
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
@@ -216,14 +239,12 @@ func getPersonHandler(c *gin.Context) {
 	var person Person
 	err = db.QueryRow("SELECT * FROM person WHERE tag = '#2Y9VQVJ9'").Scan(&person.Tag, &person.WholeFame, &person.ClanStatus, &person.JoinDate, &person.FkClan)
 	if err != nil {
-		log.Fatal(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
 
 	personJSON, err := json.Marshal(person)
 	if err != nil {
-		log.Fatal(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
