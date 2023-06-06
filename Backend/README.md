@@ -43,10 +43,19 @@ DB_NAME=<Datenbank Name>
 
 ## Build you exe
 
+#### If you're on Windows just run: build.bat
+
+#### If you're running on a linux mmachine
 First you'll have to manually add a build directory if it does not exist already.
 
 ```
+Standard (Windows)
 $ go build -o build/b4u_backend.exe server.go
+
+REM Build for Linux:
+GOOS=linux
+GOARCH=amd64
+go build -o builds/b4u_backend_linux
 ```
 
 ## Start the go application for testing
