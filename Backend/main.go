@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -45,12 +46,24 @@ func main() {
 	clanTag = os.Getenv("CLAN_TAG")
 	encodedClanTag = url.QueryEscape(clanTag)
 
+	// Start data collector
+	/*go func() {
+		for {
+			dataCollector()
+			time.Sleep(time.Minute)
+		}
+	}()*/
+
 	router.GET("/api/clan", getClanHandler)
 	router.GET("/api/members", getMembersHandler)
 	router.GET("/api/currentriverrace", getCurrentRiverRaceHandler)
 	router.GET("/api/riverracelog", getRiverRaceLogHandler)
 	router.GET("/database/person", getPerson)
 	router.GET("/database/clan", getClan)
+	router.POST("/database/person", createPerson)
+
+	// Enable CORS
+	router.Use(cors.Default())
 
 	log.Printf("Server läuft auf Port %s", port)
 	log.Fatal(router.Run(":" + port))
