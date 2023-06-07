@@ -41,7 +41,8 @@ CREATE TABLE weekly_report(
     fame	    INTEGER NOT NULL DEFAULT 0,
     missedDecks INTEGER NOT NULL DEFAULT 0,
     absenceDays INTEGER NOT NULL DEFAULT 0,
-    fk_person   VARCHAR(100) NOT NULL,
+    date	    DATE DEFAULT (CURRENT_DATE),
+--    fk_person   VARCHAR(100) NOT NULL,
 
     PRIMARY KEY(id),
     FOREIGN KEY(fk_person) REFERENCES person(tag) ON DELETE CASCADE

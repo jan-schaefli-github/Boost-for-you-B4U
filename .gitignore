@@ -27,6 +27,7 @@ vendor/
 *.tmp
 *.log
 
-# Build output
+# Build system
 build/
+logs/
 Tests/

@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/url"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -21,21 +23,32 @@ var (
 )
 
 func main() {
+
+	// Create logs directory if it doesn't exist
+	if _, err := os.Stat("logs"); os.IsNotExist(err) {
+		os.Mkdir("logs", 0755)
+	}
+
+	// Load environment variables
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Fehler beim Laden der .env-Datei")
+		logMessage("Environment", "Error while loading environment variables: "+err.Error())
 	}
 
+	// Set Gin to production mode
 	gin.SetMode(gin.ReleaseMode)
 
-	logFile, err := os.OpenFile("gin.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	// Create gin log file
+	logFileGin, err := os.OpenFile(filepath.Join("logs", "gin.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatal("Fehler beim Öffnen der Log-Datei:", err)
+		logMessage("Gin", "Error while creating gin log file: "+err.Error())
 	}
-	defer logFile.Close()
+	defer logFileGin.Close()
 
-	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout)
+	// Log to file and console
+	gin.DefaultWriter = io.MultiWriter(logFileGin, os.Stdout)
 
+	// Create router
 	router := gin.Default()
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -47,7 +60,7 @@ func main() {
 	clanTag = os.Getenv("CLAN_TAG")
 	encodedClanTag = url.QueryEscape(clanTag)
 
-	// Start data collector
+	// Start routine
 	go func() {
 		for {
 			dataCollector()
@@ -55,17 +68,34 @@ func main() {
 		}
 	}()
 
+	// Routes
 	router.GET("/api/clan", getClanHandler)
 	router.GET("/api/members", getMembersHandler)
 	router.GET("/api/currentriverrace", getCurrentRiverRaceHandler)
 	router.GET("/api/riverracelog", getRiverRaceLogHandler)
 	router.GET("/database/person", getPerson)
 	router.GET("/database/clan", getClan)
-	router.POST("/database/person", createPersonManuell)
 
 	// Enable CORS
 	router.Use(cors.Default())
 
+	// Start server
 	log.Printf("Server läuft auf Port %s", port)
 	log.Fatal(router.Run(":" + port))
+}
+
+// Log message to file
+func logMessage(logType string, message string) {
+
+	// Open log file in append mode
+	logFile, err := os.OpenFile(filepath.Join("logs", "logfile.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Println("Error while creating log file: " + err.Error())
+	}
+	defer logFile.Close()
+
+	// Log to file
+	logger := log.New(logFile, "", log.Ldate|log.Ltime)
+	logString := fmt.Sprintf("[%s] %s", logType, message)
+	logger.Println(logString)
 }

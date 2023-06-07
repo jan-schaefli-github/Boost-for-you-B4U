@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/url"
 	"os"
 	"strings"
@@ -11,93 +10,104 @@ import (
 
 // Routine to collect data from the API
 func dataCollector() {
+
 	loopedPlayers := []string{}
 
 	url := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/currentriverrace"
 	response, err := makeRequest(url)
 	if err != nil {
-		log.Fatal("Fehler beim Abrufen der aktuellen Riverrace-Informationen:", err)
+		logMessage("Routine", "Error while making request: "+err.Error())
+		return
 	}
 	defer response.Body.Close()
 
 	var data map[string]interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
-		log.Fatal("Fehler beim Dekodieren der API-Antwort:", err)
+		logMessage("Routine", "Error while decoding response: "+err.Error())
+		return
 	}
 
 	clan, ok := data["clan"].(map[string]interface{})
 	if !ok {
-		log.Fatal("Fehler beim Extrahieren des Clan-Datenobjekts aus der API-Antwort.")
+		logMessage("Routine", "Error while extracting clan data from response.")
+		return
 	}
 
 	participants, ok := clan["participants"].([]interface{})
 	if !ok {
-		log.Fatal("Fehler beim Extrahieren der Teilnehmerliste aus der Clan-Datenstruktur.")
+		logMessage("Routine", "Error while extracting participants from clan data.")
+		return
 	}
 
+	// Check if there are any participants
 	if len(participants) == 0 {
-		log.Fatal("Die Teilnehmerliste ist leer.")
+		logMessage("Routine", "No participants found.")
+		return
 	}
+
 	for _, participant := range participants {
 		participantData, ok := participant.(map[string]interface{})
 		if !ok {
-			log.Fatal("Fehler beim Extrahieren des Teilnehmer-Datenobjekts aus der Teilnehmerliste.")
+			logMessage("Routine", "Error while extracting participant data from participants.")
+			return
 		}
 
 		tag, ok := participantData["tag"].(string)
 		if !ok {
-			log.Fatal("Fehler beim Extrahieren des Clan-Tags aus dem Teilnehmer-Datenobjekt.")
+			logMessage("Routine", "Error while extracting tag from participant data.")
+			return
 		}
 
 		fame, ok := participantData["fame"].(float64)
 		if !ok {
-			log.Fatal("Fehler beim Extrahieren des Ruhms aus dem Teilnehmer-Datenobjekt.")
+			logMessage("Routine", "Error while extracting fame from participant data.")
+			return
 		}
 
 		decksUsedToday, ok := participantData["decksUsedToday"].(float64)
 		if !ok {
-			log.Fatal("Fehler beim Extrahieren der Anzahl der heute verwendeten Decks aus dem Teilnehmer-Datenobjekt.")
+			logMessage("Routine", "Error while extracting decksUsedToday from participant data.")
+			return
 		}
 
-		if !personExists(tag) {
+		if !checkPerson(tag) {
 			clanTag := getClanTag(tag)
 			if clanTag == "" {
-				log.Println("ClanTag ist leer:" + tag)
-
+				logMessage("Routine", "Clan tag is empty: "+tag)
 			} else {
 				createPerson(tag, clanTag)
 			}
 		} else {
 			clanTag := getClanTag(tag)
 			if clanTag == "" {
-				log.Println("ClanTag ist leer:" + tag)
+				logMessage("Routine", "Clan tag is empty: "+tag)
 			} else {
 				loopedPlayers = append(loopedPlayers, tag)
+				err = saveParticipantData(tag, fame, decksUsedToday)
+				if err != nil {
+					logMessage("Routine", "Error while saving participant data: "+err.Error())
+				}
 			}
-		}
-
-		err = saveParticipantData(tag, fame, decksUsedToday)
-		if err != nil {
-			log.Fatal("Fehler beim Speichern der Teilnehmerdaten:", err)
 		}
 	}
 	updatePersonStatus(loopedPlayers)
 }
 
 func getClanTag(playerTag string) string {
+
 	encodedPlayerTag := url.QueryEscape(playerTag)
 	url := "https://api.clashroyale.com/v1/players/" + encodedPlayerTag
 	response, err := makeRequest(url)
 	if err != nil {
-		log.Fatal("Fehler beim Abrufen der aktuellen Riverrace-Informationen:", err)
+		logMessage("Routine", "Error while making request: "+err.Error())
 	}
 	defer response.Body.Close()
 
 	var data map[string]interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
-		log.Fatal("Fehler beim Dekodieren der API-Antwort:", err)
+		logMessage("Routine", "Error while decoding response: "+err.Error())
 	}
 
 	clan, ok := data["clan"].(map[string]interface{})
@@ -107,19 +117,21 @@ func getClanTag(playerTag string) string {
 	}
 
 	if !ok {
-		log.Println(data)
-		log.Fatal("Fehler beim Extrahieren des Clan-Datenobjekts aus der API-Antwort.")
+		logMessage("Routine", "Error while extracting clan data from response.")
+		return ""
 	}
 
 	tag, ok := clan["tag"].(string)
 	if !ok {
-		log.Fatal("Fehler beim Extrahieren des Clan-Tags aus dem Clan-Datenobjekt.")
+		logMessage("Routine", "Error while extracting tag from clan data.")
+		return ""
 	}
 
 	return tag
 }
 
 func saveParticipantData(tag string, fame, decksUsedToday float64) error {
+
 	filePath := "database.txt"
 
 	// Open the file in append mode and create it if it doesn't exist
@@ -142,10 +154,11 @@ func saveParticipantData(tag string, fame, decksUsedToday float64) error {
 }
 
 // Routine to update the status of the persons
-func updatePersonStatus(loopedPlayers []string) error {
+func updatePersonStatus(loopedPlayers []string) {
 	db, err := connectToDatabase()
 	if err != nil {
-		return err
+		logMessage("Routine", "Error while connecting to database: "+err.Error())
+		return
 	}
 	defer db.Close()
 
@@ -160,7 +173,8 @@ func updatePersonStatus(loopedPlayers []string) error {
 	// Prepare the query statement
 	stmt, err := db.Prepare(query)
 	if err != nil {
-		return err
+		logMessage("Routine", "Error while preparing query: "+err.Error())
+		return
 	}
 	defer stmt.Close()
 
@@ -173,8 +187,9 @@ func updatePersonStatus(loopedPlayers []string) error {
 	// Execute the query with the loopedPlayers values
 	_, err = stmt.Exec(args...)
 	if err != nil {
-		return err
+		logMessage("Routine", "Error while executing query: "+err.Error())
+		return
 	}
 
-	return nil
+	return
 }
