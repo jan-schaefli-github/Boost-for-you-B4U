@@ -94,7 +94,7 @@ func getPerson(c *gin.Context) {
 //--------------------------------------------- Create ---------------------------------------------
 
 // Create Person in Database
-func createPerson(c *gin.Context) {
+func createPersonManuell(c *gin.Context) {
 	log.Println("Received request to create a person")
 	// Set CORS headers
 	c.Header("Access-Control-Allow-Origin", "*")
@@ -115,7 +115,6 @@ func createPerson(c *gin.Context) {
 	defer db.Close()
 
 	// Parse request body
-	// Parse request body
 	var person Person
 	if err := c.ShouldBindJSON(&person); err != nil {
 		log.Println("Error while parsing JSON:", err)
@@ -126,7 +125,7 @@ func createPerson(c *gin.Context) {
 	log.Printf("Received person data: %+v", person)
 
 	// Insert person into the database
-	stmt, err := db.Prepare("INSERT INTO person (tag, wholeFame, clanStatus, joinDate, fk_clan) VALUES (?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO person (tag, wholeFame, clanStatus, fk_clan) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
@@ -135,7 +134,7 @@ func createPerson(c *gin.Context) {
 
 	log.Println(person)
 	log.Println("person")
-	result, err := stmt.Exec(person.Tag, person.WholeFame, person.ClanStatus, person.JoinDate, person.FkClan)
+	result, err := stmt.Exec(person.Tag, person.WholeFame, person.ClanStatus, person.FkClan)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
@@ -148,6 +147,38 @@ func createPerson(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("%d Person(en) erstellt", rowsAffected)})
+}
+
+// Create Person in Database
+func createPerson(tag string, fk_clan string) {
+	db, err := connectToDatabase()
+	if err != nil {
+		log.Println("Error while connecting to database:", err)
+		return
+	}
+	defer db.Close()
+
+	// Insert person into the database
+	stmt, err := db.Prepare("INSERT INTO person (tag, fk_clan) VALUES (?, ?)")
+	if err != nil {
+		log.Println("Error while preparing statement:", err)
+		return
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(tag, fk_clan)
+	if err != nil {
+		log.Println("Error while executing statement:", err)
+		return
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		log.Println("Error while fetching rows affected:", err)
+		return
+	}
+
+	log.Printf("%d Person(en) erstellt", rowsAffected)
 }
 
 //--------------------------------------------- Update ---------------------------------------------
@@ -232,4 +263,21 @@ func deletePerson(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("%d Person(en) gelöscht", rowsAffected)})
+}
+
+func personExists(tag string) bool {
+	db, err := connectToDatabase()
+	if err != nil {
+		log.Println("Error while connecting to database:", err)
+		return false
+	}
+	defer db.Close()
+
+	var person Person
+	err = db.QueryRow("SELECT * FROM person WHERE tag = ?", tag).Scan(&person.Tag, &person.WholeFame, &person.ClanStatus, &person.JoinDate, &person.FkClan)
+	if err != nil {
+		return false
+	}
+
+	return true
 }

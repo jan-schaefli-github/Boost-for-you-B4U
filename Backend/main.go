@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -47,12 +48,12 @@ func main() {
 	encodedClanTag = url.QueryEscape(clanTag)
 
 	// Start data collector
-	/*go func() {
+	go func() {
 		for {
 			dataCollector()
 			time.Sleep(time.Minute)
 		}
-	}()*/
+	}()
 
 	router.GET("/api/clan", getClanHandler)
 	router.GET("/api/members", getMembersHandler)
@@ -60,7 +61,7 @@ func main() {
 	router.GET("/api/riverracelog", getRiverRaceLogHandler)
 	router.GET("/database/person", getPerson)
 	router.GET("/database/clan", getClan)
-	router.POST("/database/person", createPerson)
+	router.POST("/database/person", createPersonManuell)
 
 	// Enable CORS
 	router.Use(cors.Default())
