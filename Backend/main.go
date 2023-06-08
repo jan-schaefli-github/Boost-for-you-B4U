@@ -46,6 +46,8 @@ func main() {
 	if err != nil {
 		logMessage("Gin", "Error while creating gin log file: "+err.Error())
 	}
+
+	// Close gin log file
 	defer func(logFileGin *os.File) {
 		err := logFileGin.Close()
 		if err != nil {
@@ -92,6 +94,8 @@ func main() {
 	log.Fatal(router.Run(":" + port))
 }
 
+// ---------------------------------------- Functions ----------------------------------------
+
 // Log message to file
 func logMessage(logType string, message string) {
 
@@ -100,6 +104,8 @@ func logMessage(logType string, message string) {
 	if err != nil {
 		log.Println("Error while creating log file: " + err.Error())
 	}
+
+	// Close log file
 	defer func(logFile *os.File) {
 		err := logFile.Close()
 		if err != nil {
