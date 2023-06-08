@@ -101,6 +101,49 @@ func getPerson(c *gin.Context) {
 	c.String(http.StatusOK, string(personJSON))
 }
 
+// Get Clan Tags from Database
+func getClanTags() []string {
+	db, err := connectToDatabase()
+	if err != nil {
+		logMessage("Database", "Error while connecting to database: "+err.Error())
+		return nil
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			logMessage("Database", "Error while closing database: "+err.Error())
+			return
+		}
+	}(db)
+
+	rows, err := db.Query("SELECT tag FROM clan")
+	if err != nil {
+		logMessage("Database", "Error while querying database: "+err.Error())
+		return nil
+	}
+	defer rows.Close()
+
+	var tags []string
+
+	for rows.Next() {
+		var tag string
+		err := rows.Scan(&tag)
+		if err != nil {
+			logMessage("Database", "Error while scanning rows: "+err.Error())
+			return nil
+		}
+		tags = append(tags, tag)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		logMessage("Database", "Error while scanning rows: "+err.Error())
+		return nil
+	}
+
+	return tags
+}
+
 //--------------------------------------------- Create ---------------------------------------------
 
 // Create Person in Database
