@@ -1,0 +1,53 @@
+:root {
+    --primary-color: #fff;
+    --secondary-color: #000;
+
+    --light-bg-color: #fff8ff;
+    --dark-bg-color: #404040;
+
+    --light-heading-color: #fff;
+    --dark-heading-color: #282828;
+
+    --light-border-color: #ccc;
+    --dark-border-color: #333;
+
+    --light-link-color: #000;
+    --dark-link-color: #fff;
+
+    --light-link-hover-color: #666;
+    --dark-link-hover-color: #999;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+main {
+    margin-top: 20vh;
+    padding: 0 1.25rem;
+}
+
+#big{
+    font-size: 7.5vh;
+    font-weight: bold;
+    margin-bottom: 1.25rem;
+}
+
+/* Responsive Design */
+@media (prefers-color-scheme: dark) {
+    body {
+        color: var(--primary-color);
+        background-color: var(--dark-bg-color);
+    }
+}
+
+@media (prefers-color-scheme: light),
+(prefers-color-scheme: no-preference) {
+    body {
+        color: var(--secondary-color);
+        background-color: var(--light-bg-color);
+    }
+}
