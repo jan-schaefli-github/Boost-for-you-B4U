@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,12 @@ func getClanHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(response.Body)
 
 	var data interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
@@ -35,7 +41,12 @@ func getMembersHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(response.Body)
 
 	var data interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
@@ -55,7 +66,12 @@ func getCurrentRiverRaceHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(response.Body)
 
 	var data interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
@@ -74,7 +90,12 @@ func getRiverRaceLogHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		return
 	}
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(response.Body)
 
 	var data interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)

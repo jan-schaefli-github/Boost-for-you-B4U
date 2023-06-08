@@ -11,7 +11,6 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
 
@@ -26,7 +25,10 @@ func main() {
 
 	// Create logs directory if it doesn't exist
 	if _, err := os.Stat("logs"); os.IsNotExist(err) {
-		os.Mkdir("logs", 0755)
+		err := os.Mkdir("logs", 0755)
+		if err != nil {
+			return
+		}
 	}
 
 	// Load environment variables
@@ -43,7 +45,12 @@ func main() {
 	if err != nil {
 		logMessage("Gin", "Error while creating gin log file: "+err.Error())
 	}
-	defer logFileGin.Close()
+	defer func(logFileGin *os.File) {
+		err := logFileGin.Close()
+		if err != nil {
+
+		}
+	}(logFileGin)
 
 	// Log to file and console
 	gin.DefaultWriter = io.MultiWriter(logFileGin, os.Stdout)
@@ -92,7 +99,12 @@ func logMessage(logType string, message string) {
 	if err != nil {
 		log.Println("Error while creating log file: " + err.Error())
 	}
-	defer logFile.Close()
+	defer func(logFile *os.File) {
+		err := logFile.Close()
+		if err != nil {
+
+		}
+	}(logFile)
 
 	// Log to file
 	logger := log.New(logFile, "", log.Ldate|log.Ltime)

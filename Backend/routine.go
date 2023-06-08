@@ -1,8 +1,10 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/url"
 	"os"
 	"strings"
@@ -11,15 +13,20 @@ import (
 // Routine to collect data from the API
 func dataCollector() {
 
-	loopedPlayers := []string{}
+	var loopedPlayers []string
 
-	url := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/currentriverrace"
-	response, err := makeRequest(url)
+	generalurl := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/currentriverrace"
+	response, err := makeRequest(generalurl)
 	if err != nil {
 		logMessage("Routine", "Error while making request: "+err.Error())
 		return
 	}
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(response.Body)
 
 	var data map[string]interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
@@ -97,12 +104,17 @@ func dataCollector() {
 func getClanTag(playerTag string) string {
 
 	encodedPlayerTag := url.QueryEscape(playerTag)
-	url := "https://api.clashroyale.com/v1/players/" + encodedPlayerTag
-	response, err := makeRequest(url)
+	generalurl := "https://api.clashroyale.com/v1/players/" + encodedPlayerTag
+	response, err := makeRequest(generalurl)
 	if err != nil {
 		logMessage("Routine", "Error while making request: "+err.Error())
 	}
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(response.Body)
 
 	var data map[string]interface{}
 	err = json.NewDecoder(response.Body).Decode(&data)
@@ -139,7 +151,12 @@ func saveParticipantData(tag string, fame, decksUsedToday float64) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+
+		}
+	}(file)
 
 	// Prepare the data string to be written to the file
 	data := fmt.Sprintf("Tag: %s, Fame: %.0f, DecksUsedToday: %.0f\n", tag, fame, decksUsedToday)
@@ -160,7 +177,12 @@ func updatePersonStatus(loopedPlayers []string) {
 		logMessage("Routine", "Error while connecting to database: "+err.Error())
 		return
 	}
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
 
 	// Generate placeholders for the IN clause based on the number of loopedPlayers
 	placeholders := strings.Repeat("?, ", len(loopedPlayers)-1) + "?"
@@ -176,7 +198,12 @@ func updatePersonStatus(loopedPlayers []string) {
 		logMessage("Routine", "Error while preparing query: "+err.Error())
 		return
 	}
-	defer stmt.Close()
+	defer func(stmt *sql.Stmt) {
+		err := stmt.Close()
+		if err != nil {
+
+		}
+	}(stmt)
 
 	// Create a slice of interface{} to hold the loopedPlayers values
 	args := make([]interface{}, len(loopedPlayers))
