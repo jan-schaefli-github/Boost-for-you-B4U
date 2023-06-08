@@ -28,6 +28,6 @@ vendor/
 *.log
 
 # Build system
-build/
+builds/
 logs/
 Tests/

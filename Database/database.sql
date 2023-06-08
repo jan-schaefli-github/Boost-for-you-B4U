@@ -47,3 +47,20 @@ CREATE TABLE weekly_report(
     PRIMARY KEY(id),
     FOREIGN KEY(fk_person) REFERENCES person(tag) ON DELETE CASCADE
 );
+
+-- -----------------------------------------------------
+-- Table daily_report
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS daily_report;
+
+CREATE TABLE daily_report(
+    id	            INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+    decksUsedToday  INTEGER NOT NULL DEFAULT 0,
+    fame	        INTEGER NOT NULL DEFAULT 0,
+    dayIndex        INTEGER NOT NULL,
+    date	        DATE DEFAULT (CURRENT_DATE),
+    fk_person       VARCHAR(100) NOT NULL,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY(fk_person) REFERENCES person(tag) ON DELETE CASCADE
+);
