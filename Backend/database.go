@@ -42,7 +42,8 @@ func getClan(c *gin.Context) {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			logMessage("Database", "Error while closing database: "+err.Error())
+			return
 		}
 	}(db)
 
@@ -76,7 +77,8 @@ func getPerson(c *gin.Context) {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			logMessage("Database", "Error while closing database: "+err.Error())
+			return
 		}
 	}(db)
 
@@ -111,7 +113,7 @@ func createPerson(tag string, fk_clan string) {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			logMessage("Database", "Error while closing database: "+err.Error())
 		}
 	}(db)
 
@@ -124,7 +126,8 @@ func createPerson(tag string, fk_clan string) {
 	defer func(stmt *sql.Stmt) {
 		err := stmt.Close()
 		if err != nil {
-
+			logMessage("Database", "Error while closing statement: "+err.Error())
+			return
 		}
 	}(stmt)
 
@@ -149,7 +152,8 @@ func checkPerson(tag string) bool {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			logMessage("Database", "Error while closing database: "+err.Error())
+			return
 		}
 	}(db)
 
