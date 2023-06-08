@@ -14,12 +14,14 @@ func getClanHandler(c *gin.Context) {
 	response, err := makeRequest(url)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logMessage("Request", "Error while making request: "+err.Error())
 		return
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			logMessage("Request", "Error while closing response body: "+err.Error())
+			return
 		}
 	}(response.Body)
 
@@ -27,6 +29,7 @@ func getClanHandler(c *gin.Context) {
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logMessage("Request", "Error while decoding response: "+err.Error())
 		return
 	}
 
@@ -39,6 +42,7 @@ func getMembersHandler(c *gin.Context) {
 	response, err := makeRequest(url)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logMessage("Request", "Error while making request: "+err.Error())
 		return
 	}
 	defer func(Body io.ReadCloser) {
@@ -52,6 +56,7 @@ func getMembersHandler(c *gin.Context) {
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logMessage("Request", "Error while decoding response: "+err.Error())
 		return
 	}
 
@@ -64,12 +69,13 @@ func getCurrentRiverRaceHandler(c *gin.Context) {
 	response, err := makeRequest(url)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logMessage("Request", "Error while making request: "+err.Error())
 		return
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			logMessage("Request", "Error while closing response body: "+err.Error())
 		}
 	}(response.Body)
 
@@ -77,6 +83,7 @@ func getCurrentRiverRaceHandler(c *gin.Context) {
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logMessage("Request", "Error while decoding response: "+err.Error())
 		return
 	}
 
@@ -88,12 +95,13 @@ func getRiverRaceLogHandler(c *gin.Context) {
 	response, err := makeRequest(url)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logMessage("Request", "Error while making request: "+err.Error())
 		return
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			logMessage("Request", "Error while closing response body: "+err.Error())
 		}
 	}(response.Body)
 
@@ -101,6 +109,7 @@ func getRiverRaceLogHandler(c *gin.Context) {
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logMessage("Request", "Error while decoding response: "+err.Error())
 		return
 	}
 

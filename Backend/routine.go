@@ -24,7 +24,8 @@ func dataCollector() {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			logMessage("Routine", "Error while closing response body: "+err.Error())
+			return
 		}
 	}(response.Body)
 
@@ -94,6 +95,7 @@ func dataCollector() {
 				err = saveParticipantData(tag, fame, decksUsedToday)
 				if err != nil {
 					logMessage("Routine", "Error while saving participant data: "+err.Error())
+					return
 				}
 			}
 		}
@@ -108,11 +110,13 @@ func getClanTag(playerTag string) string {
 	response, err := makeRequest(generalurl)
 	if err != nil {
 		logMessage("Routine", "Error while making request: "+err.Error())
+		return ""
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			logMessage("Routine", "Error while closing response body: "+err.Error())
+			return
 		}
 	}(response.Body)
 
@@ -120,6 +124,7 @@ func getClanTag(playerTag string) string {
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
 		logMessage("Routine", "Error while decoding response: "+err.Error())
+		return ""
 	}
 
 	clan, ok := data["clan"].(map[string]interface{})
@@ -154,7 +159,8 @@ func saveParticipantData(tag string, fame, decksUsedToday float64) error {
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
-
+			logMessage("Routine", "Error while closing file: "+err.Error())
+			return
 		}
 	}(file)
 
@@ -180,7 +186,8 @@ func updatePersonStatus(loopedPlayers []string) {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			logMessage("Routine", "Error while closing database: "+err.Error())
+			return
 		}
 	}(db)
 
@@ -201,7 +208,8 @@ func updatePersonStatus(loopedPlayers []string) {
 	defer func(stmt *sql.Stmt) {
 		err := stmt.Close()
 		if err != nil {
-
+			logMessage("Routine", "Error while closing statement: "+err.Error())
+			return
 		}
 	}(stmt)
 
