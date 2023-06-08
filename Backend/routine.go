@@ -3,123 +3,126 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/url"
-	"os"
 	"strings"
 )
 
 // Routine to collect data from the API
-func dataCollector() {
+func dataCollector(clanTags []string) {
 
-	var loopedPlayers []string
+	for _, clanTag := range clanTags {
 
-	// Get clan data
-	generalurl := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/currentriverrace"
-	response, err := makeRequest(generalurl)
-	if err != nil {
-		logMessage("Routine", "Error while making request: "+err.Error())
-		return
-	}
+		encodedClanTag := url.QueryEscape(clanTag)
 
-	// Close response body
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			logMessage("Routine", "Error while closing response body: "+err.Error())
-			return
-		}
-	}(response.Body)
+		warStatus, periodIndex := checkWarStatus(clanTag)
 
-	// Decode response
-	var data map[string]interface{}
-	err = json.NewDecoder(response.Body).Decode(&data)
-	if err != nil {
-		logMessage("Routine", "Error while decoding response: "+err.Error())
-		return
-	}
+		if warStatus {
 
-	// Check if there is any clan data
-	clan, ok := data["clan"].(map[string]interface{})
-	if !ok {
-		logMessage("Routine", "Error while extracting clan data from response.")
-		return
-	}
+			// Get clan members
+			members := getClanMembers(encodedClanTag)
 
-	// Check if there is any participants data
-	participants, ok := clan["participants"].([]interface{})
-	if !ok {
-		logMessage("Routine", "Error while extracting participants from clan data.")
-		return
-	}
+			updatePersonStatus(members, clanTag)
 
-	// Check if there are any participants in the clan
-	if len(participants) == 0 {
-		logMessage("Routine", "No participants found.")
-		return
-	}
-
-	// Loop through participants
-	for _, participant := range participants {
-		participantData, ok := participant.(map[string]interface{})
-		if !ok {
-			logMessage("Routine", "Error while extracting participant data from participants.")
-			return
-		}
-
-		// Extract tag from participant data
-		tag, ok := participantData["tag"].(string)
-		if !ok {
-			logMessage("Routine", "Error while extracting tag from participant data.")
-			return
-		}
-
-		// Extract fame from participant data
-		fame, ok := participantData["fame"].(float64)
-		if !ok {
-			logMessage("Routine", "Error while extracting fame from participant data.")
-			return
-		}
-
-		// Extract decksUsedToday from participant data
-		decksUsedToday, ok := participantData["decksUsedToday"].(float64)
-		if !ok {
-			logMessage("Routine", "Error while extracting decksUsedToday from participant data.")
-			return
-		}
-
-		// Check if the person is already in the database
-		if !checkPerson(tag) {
-			clanTag := getClanTag(tag)
-
-			// Check if the clan tag is empty
-			if clanTag == "" {
-				logMessage("Routine", "Clan tag is empty: "+tag)
-			} else {
-				createPerson(tag, clanTag)
-			}
-		} else {
-			clanTag := getClanTag(tag)
-
-			// Check if the clan tag is empty
-			if clanTag == "" {
-				logMessage("Routine", "Clan tag is empty: "+tag)
-			} else {
-				loopedPlayers = append(loopedPlayers, tag)
-
-				// Save participant data
-				err = saveParticipantData(tag, fame, decksUsedToday)
-				if err != nil {
-					logMessage("Routine", "Error while saving participant data: "+err.Error())
-					return
+			for _, member := range members {
+				if !checkPerson(member) {
+					createPerson(member, clanTag)
 				}
 			}
+
+			// Get clan data
+			generalurl := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/currentriverrace"
+			response, err := makeRequest(generalurl)
+			if err != nil {
+				logMessage("Routine", "Error while making request: "+err.Error())
+				return
+			}
+
+			// Close response body
+			defer func(Body io.ReadCloser) {
+				err := Body.Close()
+				if err != nil {
+					logMessage("Routine", "Error while closing response body: "+err.Error())
+					return
+				}
+			}(response.Body)
+
+			// Decode response
+			var data map[string]interface{}
+			err = json.NewDecoder(response.Body).Decode(&data)
+			if err != nil {
+				logMessage("Routine", "Error while decoding response: "+err.Error())
+				return
+			}
+
+			// Check if there is any clan data
+			clan, ok := data["clan"].(map[string]interface{})
+			if !ok {
+				logMessage("Routine", "Error while extracting clan data from response.")
+				return
+			}
+
+			// Check if there is any participants data
+			participants, ok := clan["participants"].([]interface{})
+			if !ok {
+				logMessage("Routine", "Error while extracting participants from clan data.")
+				return
+			}
+
+			// Check if there are any participants in the clan
+			if len(participants) == 0 {
+				logMessage("Routine", "No participants found.")
+				return
+			}
+
+			// Loop through participants
+			for _, participant := range participants {
+				participantData, ok := participant.(map[string]interface{})
+				if !ok {
+					logMessage("Routine", "Error while extracting participant data from participants.")
+					return
+				}
+
+				// Extract tag from participant data
+				tag, ok := participantData["tag"].(string)
+				if !ok {
+					logMessage("Routine", "Error while extracting tag from participant data.")
+					return
+				}
+
+				// Extract fame from participant data
+				fame, ok := participantData["fame"].(float64)
+				if !ok {
+					logMessage("Routine", "Error while extracting fame from participant data.")
+					return
+				}
+
+				// Extract decksUsedToday from participant data
+				decksUsedToday, ok := participantData["decksUsedToday"].(float64)
+				if !ok {
+					logMessage("Routine", "Error while extracting decksUsedToday from participant data.")
+					return
+				}
+
+				clanTag := getClanTag(tag)
+
+				// Check if the clan tag is empty
+				if clanTag == "" {
+					logMessage("Routine", "Clan tag is empty: "+tag)
+				} else {
+
+					// Save participant data
+					if checkPerson(tag) {
+						createDailyReport(decksUsedToday, fame, periodIndex, tag)
+					} else {
+						logMessage("Routine", "Person does not exist in database: "+tag)
+					}
+				}
+			}
+		} else {
+			logMessage("Routine", "War is not active for clan: "+clanTag)
 		}
 	}
-
-	// Update person status
-	updatePersonStatus(loopedPlayers)
 }
 
 // Routine to check if the person is already in the database
@@ -176,8 +179,62 @@ func getClanTag(playerTag string) string {
 	return tag
 }
 
+// Routine to check if the person is still in the clan
+func getClanMembers(encodedClanTag string) []string {
+
+	// Construct the URL for the request
+	url := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/members"
+
+	// Send the request and get the response
+	response, err := makeRequest(url)
+	if err != nil {
+		logMessage("Routine", "Error while making request: "+err.Error())
+		return nil
+	}
+	defer response.Body.Close()
+
+	// Decode the response
+	var data map[string]interface{}
+	err = json.NewDecoder(response.Body).Decode(&data)
+	if err != nil {
+		logMessage("Routine", "Error while decoding response: "+err.Error())
+		return nil
+	}
+
+	// Extract the members from the response
+	members, ok := data["items"].([]interface{})
+	if !ok {
+		logMessage("Routine", "Error while extracting members from response.")
+		return nil
+	}
+
+	var memberTags []string
+
+	// Loop through the members and extract the tags
+	for _, member := range members {
+
+		// Extract the member data
+		memberMap, ok := member.(map[string]interface{})
+		if !ok {
+			logMessage("Routine", "Error while extracting member data from members.")
+			return nil
+		}
+
+		// Extract the tag from the member data
+		tag, ok := memberMap["tag"].(string)
+		if !ok {
+			logMessage("Routine", "Error while extracting tag from member data.")
+			return nil
+		}
+
+		memberTags = append(memberTags, tag)
+	}
+
+	return memberTags
+}
+
 // Routine to update the status of the persons
-func updatePersonStatus(loopedPlayers []string) {
+func updatePersonStatus(loopedPlayers []string, clanTag string) {
 
 	// Connect to database
 	db, err := connectToDatabase()
@@ -201,7 +258,8 @@ func updatePersonStatus(loopedPlayers []string) {
 	// Create the query
 	query := "UPDATE person SET clanStatus = CASE " +
 		"WHEN tag IN (" + placeholders + ") THEN 1 " +
-		"ELSE 0 END"
+		"ELSE 0 END" +
+		" WHERE fk_clan = '" + clanTag + "'"
 
 	// Prepare the query
 	stmt, err := db.Prepare(query)
@@ -235,30 +293,46 @@ func updatePersonStatus(loopedPlayers []string) {
 	return
 }
 
-// ------------------------------ TEMPORARY ------------------------------
-// Routine to save the participant data to the database
-func saveParticipantData(tag string, fame, decksUsedToday float64) error {
+// Routine to check if the clan is in war
+func checkWarStatus(clanTag string) (bool, int) {
 
-	filePath := "database.txt"
+	// Construct the URL for the request
+	url := "https://api.clashroyale.com/v1/clans/" + url.QueryEscape(clanTag) + "/currentriverrace"
 
-	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	// Send the request and get the response
+	response, err := makeRequest(url)
 	if err != nil {
-		return err
+		logMessage("Routine", "Error while making request: "+err.Error())
+		return false, 0
 	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			logMessage("Routine", "Error while closing file: "+err.Error())
-			return
-		}
-	}(file)
+	defer response.Body.Close()
 
-	data := fmt.Sprintf("Tag: %s, Fame: %.0f, DecksUsedToday: %.0f\n", tag, fame, decksUsedToday)
-
-	_, err = file.WriteString(data)
+	// Decode the response into a map object
+	var data map[string]interface{}
+	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
-		return err
+		logMessage("Routine", "Error while decoding response: "+err.Error())
+		return false, 0
 	}
 
-	return nil
+	// Extract the war status from the response
+	periodType, ok := data["periodType"].(string)
+	if !ok {
+		logMessage("Routine", "Error while extracting periodType from response.")
+		return false, 0
+	}
+
+	periodIndex, ok := data["periodIndex"].(float64)
+	if !ok {
+		logMessage("Routine", "Error while extracting periodIndex from response.")
+		return false, 0
+	}
+
+	// Check if the clan is in war
+	warStatus := false
+	if periodType == "warDay" {
+		warStatus = true
+	}
+
+	return warStatus, int(periodIndex)
 }
