@@ -27,6 +27,7 @@ func main() {
 	if _, err := os.Stat("logs"); os.IsNotExist(err) {
 		err := os.Mkdir("logs", 0755)
 		if err != nil {
+			logMessage("Logs", "Error while creating logs directory: "+err.Error())
 			return
 		}
 	}
@@ -48,7 +49,7 @@ func main() {
 	defer func(logFileGin *os.File) {
 		err := logFileGin.Close()
 		if err != nil {
-
+			logMessage("Gin", "Error while closing gin log file: "+err.Error())
 		}
 	}(logFileGin)
 
@@ -102,7 +103,7 @@ func logMessage(logType string, message string) {
 	defer func(logFile *os.File) {
 		err := logFile.Close()
 		if err != nil {
-
+			log.Println("Error while closing log file: " + err.Error())
 		}
 	}(logFile)
 
