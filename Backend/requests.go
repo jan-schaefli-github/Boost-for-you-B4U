@@ -63,7 +63,7 @@ func getMembersHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-// Get Current Riverrace information
+// Get Current Ri verrace information
 func getCurrentRiverRaceHandler(c *gin.Context) {
 	url := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/currentriverrace"
 	response, err := makeRequest(url)
@@ -128,3 +128,54 @@ func makeRequest(url string) (*http.Response, error) {
 	client := &http.Client{}
 	return client.Do(req)
 }
+
+/*
+====================================================================================================
+
+	Part of Samuel's Code Start
+
+====================================================================================================
+*/
+func getClanMemberLeaderboardHandler(c *gin.Context) {
+	url := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/members"
+	response, err := makeRequest(url)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logMessage("Request", "Error while making request: "+err.Error())
+		return
+	}
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(response.Body)
+
+	var data map[string]interface{}
+	err = json.NewDecoder(response.Body).Decode(&data)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logMessage("Request", "Error while decoding response: "+err.Error())
+		return
+	}
+
+	// Extract the desired values
+	var result []map[string]interface{}
+	for _, member := range data["items"].([]interface{}) {
+		memberMap := member.(map[string]interface{})
+		result = append(result, map[string]interface{}{
+			"id":       memberMap["tag"],
+			"name":     memberMap["name"],
+			"role":     memberMap["role"],
+			"clanRank": memberMap["clanRank"],
+		})
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+/*
+====================================================================================================
+	Part of Samuel's Code End
+====================================================================================================
+*/

@@ -84,6 +84,7 @@ func main() {
 	router.GET("/api/riverracelog", getRiverRaceLogHandler)
 	router.GET("/database/person", getPerson)
 	router.GET("/database/clan", getClan)
+	router.GET("/api/clan/leaderboard", getClanMemberLeaderboardHandler)
 
 	// Enable CORS
 	router.Use(cors.Default())
