@@ -107,22 +107,31 @@ func dataCollector(clanTags []string) {
 				clanTag := getClanTag(tag)
 
 				// Check if the clan tag is empty
-				if clanTag == "" {
-					logMessage("Routine", "Clan tag is empty: "+tag)
-				} else {
+				if clanTag != "" {
 
 					// Save participant data
 					if checkPerson(tag) {
+
 						createDailyReport(decksUsedToday, fame, periodIndex, tag)
+						if checkNewDay(tag, periodIndex) {
+
+						}
 					} else {
-						logMessage("Routine", "Person does not exist in database: "+tag)
+
+						// logMessage("Routine", "Person does not exist in database: "+tag)
 					}
+
+				} else {
+
+					// logMessage("Routine", "Clan tag is empty: "+tag)
 				}
 			}
 		} else {
+
 			logMessage("Routine", "War is not active for clan: "+clanTag)
 		}
 	}
+	logMessage("Routine", "Data collection finished.")
 }
 
 // Routine to check if the person is already in the database
@@ -335,4 +344,8 @@ func checkWarStatus(clanTag string) (bool, int) {
 	}
 
 	return warStatus, int(periodIndex)
+}
+
+func newDay() {
+	logMessage("Routine", "New day has started.")
 }

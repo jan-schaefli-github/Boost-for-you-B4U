@@ -72,8 +72,8 @@ func main() {
 	// Start routine
 	go func() {
 		for {
-			dataCollector(getClanTags())
-			time.Sleep(time.Minute)
+			go dataCollector(getClanTags())
+			time.Sleep(time.Hour)
 		}
 	}()
 

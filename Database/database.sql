@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS clan;
 
 CREATE TABLE clan(
     tag         VARCHAR(100) NOT NULL UNIQUE,
-
+    
     PRIMARY KEY(tag)
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE weekly_report(
     missedDecks INTEGER NOT NULL DEFAULT 0,
     absenceDays INTEGER NOT NULL DEFAULT 0,
     date	    DATE DEFAULT (CURRENT_DATE),
---    fk_person   VARCHAR(100) NOT NULL,
+    fk_person   VARCHAR(100) NOT NULL,
 
     PRIMARY KEY(id),
     FOREIGN KEY(fk_person) REFERENCES person(tag) ON DELETE CASCADE

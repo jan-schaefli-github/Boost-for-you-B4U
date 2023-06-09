@@ -11,11 +11,11 @@ function darkModeLogo(): string {
     // Dark Mode / Light Mode
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         // Dark Mode
-        favicon = LLogo;
+        favicon = DLogo;
         console.log('Dark Mode');
     } else {
         // Light Mode
-        favicon = DLogo;
+        favicon = LLogo;
         console.log('Light Mode');
     }
     return favicon;

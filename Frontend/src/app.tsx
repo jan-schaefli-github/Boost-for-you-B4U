@@ -8,6 +8,8 @@ export default function App() {
             <Header />
             <Routes>
                 <Route path="/" element={<Index/>} />
+                <Route path="/about" element={<Index/>} />
+
             </Routes>
         </>
     );
