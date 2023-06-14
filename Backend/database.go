@@ -147,7 +147,7 @@ func getClanTags() []string {
 
 //--------------------------------------------- Create ---------------------------------------------
 
-// Create Person in Database
+// Create or Update Person in Database
 func createPerson(tag string, fk_clan string) {
 	db, err := connectToDatabase()
 	if err != nil {
@@ -258,38 +258,9 @@ func createDailyReport(decksUsedToday float64, fame float64, dayIndex int, fk_pe
 	}
 }
 
-func createWeeklyReport(dfame float64, fk_person string) {
-	// Connect to the database
-	db, err := connectToDatabase()
-	if err != nil {
-		logMessage("Database", "Error while connecting to database: "+err.Error())
-		return
-	}
+// Create or update weekly report in the database
+func createWeeklyReport(decksUsedThisWeek float64, fame float64, weekIndex int, fk_person string) {
 
-	// Close the database connection
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			logMessage("Database", "Error while closing database: "+err.Error())
-			return
-		}
-	}(db)
-
-	// Retrieve the data from daily_report
-	var decksUsedToday, dayIndex, missedDecks int
-	err = db.QueryRow("SELECT decksUsedToday, dayIndex FROM daily_report WHERE fk_person = ? ORDER BY id DESC LIMIT 1", fk_person).Scan(&decksUsedToday, &dayIndex)
-	if err != nil {
-		logMessage("Database", "Error while retrieving data from daily_report: "+err.Error())
-		return
-	}
-
-	// Calculate missedDecks and update fame in weekly_report
-	missedDecks = decksUsedToday + (4 - decksUsedToday)
-	_, err = db.Exec("UPDATE weekly_report SET missedDecks = missedDecks + ?, fame = GREATEST(fame, ?) WHERE fk_person = ?", missedDecks, dfame, fk_person)
-	if err != nil {
-		logMessage("Database", "Error while updating weekly_report: "+err.Error())
-		return
-	}
 }
 
 //--------------------------------------------- Check ---------------------------------------------
@@ -321,38 +292,4 @@ func checkPerson(tag string) bool {
 	}
 
 	return true
-}
-
-// Check if its a new day
-func checkNewDay(tag string, dayIndex int) bool {
-	// Connect to the database
-	db, err := connectToDatabase()
-	if err != nil {
-		logMessage("Database", "Error while connecting to database: "+err.Error())
-		return false
-	}
-
-	// Close the database connection
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			logMessage("Database", "Error while closing database: "+err.Error())
-			return
-		}
-	}(db)
-
-	// Retrieve the last entry with the specified tag from the daily_report table
-	var lastEntryDayIndex int
-	err = db.QueryRow("SELECT dayIndex FROM daily_report WHERE fk_person = ? ORDER BY id DESC LIMIT 1", tag).Scan(&lastEntryDayIndex)
-	if err != nil {
-		logMessage("Database", "Error while retrieving last entry from daily_report: "+err.Error())
-		return false
-	}
-
-	// Compare the dayIndex with the parameter
-	if lastEntryDayIndex != dayIndex {
-		return true
-	}
-
-	return false
 }
