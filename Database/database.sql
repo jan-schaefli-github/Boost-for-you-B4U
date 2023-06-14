@@ -64,3 +64,20 @@ CREATE TABLE daily_report(
     PRIMARY KEY(id),
     FOREIGN KEY(fk_person) REFERENCES person(tag) ON DELETE CASCADE
 );
+
+-- -----------------------------------------------------
+-- Table clan_weekly_report
+-- -----------------------------------------------------
+
+DROP TABLE IF EXISTS clan_weekly_report;
+
+CREATE TABLE clan_weekly_report(
+    id          INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+    fk_clan     VARCHAR(100) NOT NULL,
+    fame        INTEGER NOT NULL DEFAULT 0,
+    fame_gain   INTEGER NOT NULL DEFAULT 0,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY(fk_clan) REFERENCES clan(tag) ON DELETE CASCADE
+);
+

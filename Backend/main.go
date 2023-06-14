@@ -82,9 +82,11 @@ func main() {
 	router.GET("/api/members", getMembersHandler)
 	router.GET("/api/currentriverrace", getCurrentRiverRaceHandler)
 	router.GET("/api/riverracelog", getRiverRaceLogHandler)
+	router.GET("/api/members/leaderboard", getClanMemberLeaderboardHandler)
+	router.GET("/api/locations", getLocationsHandler)
+	router.GET("/api/clan/leaderboard", getRankingByLocationHandler)
 	router.GET("/database/person", getPerson)
 	router.GET("/database/clan", getClan)
-	router.GET("/api/clan/leaderboard", getClanMemberLeaderboardHandler)
 
 	// Enable CORS
 	router.Use(cors.Default())
