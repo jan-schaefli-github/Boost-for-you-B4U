@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"io"
+	"log"
 	"net/url"
 	"strings"
 )
@@ -15,7 +16,16 @@ func dataCollector(clanTags []string) {
 
 		encodedClanTag := url.QueryEscape(clanTag)
 
-		warStatus, periodIndex := checkWarStatus(clanTag)
+		seasonIndex, sectionIndex := checkSeasonStatus(clanTag)
+
+		warStatus, dayIndex := checkWarStatus(clanTag)
+
+		dayIdentifier := processDayIdentifier(seasonIndex, sectionIndex, dayIndex)
+
+		log.Println(dayIndex)
+		log.Println(seasonIndex)
+		log.Println(sectionIndex)
+		log.Println(dayIdentifier)
 
 		if warStatus {
 
@@ -112,10 +122,8 @@ func dataCollector(clanTags []string) {
 					// Save participant data
 					if checkPerson(tag) {
 
-						createDailyReport(decksUsedToday, fame, periodIndex, tag)
-						if checkNewDay(tag, periodIndex) {
-
-						}
+						// Create daily report
+						createDailyReport(decksUsedToday, fame, dayIndex, tag)
 					} else {
 
 						// logMessage("Routine", "Person does not exist in database: "+tag)
@@ -331,9 +339,9 @@ func checkWarStatus(clanTag string) (bool, int) {
 		return false, 0
 	}
 
-	periodIndex, ok := data["periodIndex"].(float64)
+	dayIndex, ok := data["periodIndex"].(float64)
 	if !ok {
-		logMessage("Routine", "Error while extracting periodIndex from response.")
+		logMessage("Routine", "Error while extracting dayIndex from response.")
 		return false, 0
 	}
 
@@ -343,9 +351,63 @@ func checkWarStatus(clanTag string) (bool, int) {
 		warStatus = true
 	}
 
-	return warStatus, int(periodIndex)
+	return warStatus, int(dayIndex)
 }
 
-func newDay() {
-	logMessage("Routine", "New day has started.")
+// Routine to what season the clan is in
+func checkSeasonStatus(clanTag string) (int, int) {
+
+	// Construct the URL for the request
+	url := "https://api.clashroyale.com/v1/clans/" + url.QueryEscape(clanTag) + "/riverracelog"
+
+	// Send the request and get the response
+	response, err := makeRequest(url)
+	if err != nil {
+
+		logMessage("Routine", "Error while making request: "+err.Error())
+		return 0, 0
+	}
+	defer response.Body.Close()
+
+	// Decode the response into a map object
+	var data map[string]interface{}
+	err = json.NewDecoder(response.Body).Decode(&data)
+	if err != nil {
+		logMessage("Routine", "Error while decoding response: "+err.Error())
+		return 0, 0
+	}
+
+	// Extract the "items" from the response
+	items, ok := data["items"].([]interface{})
+	if !ok || len(items) == 0 {
+
+		logMessage("Routine", "Error while extracting items from response.")
+		return 0, 0
+	}
+
+	// The first element of the "items" is a map[string]interface{}
+	firstItem, ok := items[0].(map[string]interface{})
+	if !ok {
+
+		logMessage("Routine", "Error while extracting first item from items.")
+		return 0, 0
+	}
+
+	// Extract the seasonId and sectionIndex from the first item
+	seasonID, ok := firstItem["seasonId"].(float64)
+	if !ok {
+
+		logMessage("Routine", "Error while extracting seasonId from first item.")
+		return 0, 0
+	}
+
+	// Extract the sectionIndex from the first item
+	sectionIndex, ok := firstItem["sectionIndex"].(float64)
+	if !ok {
+
+		logMessage("Routine", "Error while extracting sectionIndex from first item.")
+		return 0, 0
+	}
+
+	return int(seasonID), int(sectionIndex)
 }
