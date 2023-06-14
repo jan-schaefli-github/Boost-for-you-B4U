@@ -25,15 +25,15 @@ func main() {
 	// Create logs directory if it doesn't exist
 	if _, err := os.Stat("logs"); os.IsNotExist(err) {
 		err := os.Mkdir("logs", 0755)
-		if err != nil {
+		if err != nil { // If there was an error while creating the directory
 			logMessage("Logs", "Error while creating logs directory: "+err.Error())
 			return
 		}
 	}
 
 	// Load environment variables
-	err := godotenv.Load()
-	if err != nil {
+	err := godotenv.Load() // Load environment variables from .env file
+	if err != nil {        // If there was an error while loading the environment variables
 		logMessage("Environment", "Error while loading environment variables: "+err.Error())
 	}
 
@@ -41,8 +41,8 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 
 	// Create gin log file
-	logFileGin, err := os.OpenFile(filepath.Join("logs", "gin.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
+	logFileGin, err := os.OpenFile(filepath.Join("logs", "gin.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666) // Open gin log file in append mode
+	if err != nil {                                                                                             // If there was an error while creating the gin log file
 		logMessage("Gin", "Error while creating gin log file: "+err.Error())
 	}
 
