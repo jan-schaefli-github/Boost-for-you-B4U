@@ -1,4 +1,4 @@
-package clan
+package riverracelog
 
 import (
 	"b4u/backend/logs"
@@ -8,8 +8,8 @@ import (
 	"net/http"
 )
 
-func getClanHandler(c *gin.Context) {
-	urlForApiRequest := "https://api.clashroyale.com/v1/clans/" + encodedClanTag
+func getRiverRaceLogHandler(c *gin.Context) {
+	urlForApiRequest := "https://api.clashroyale.com/v1/clans/" + encodedClanTag + "/riverracelog"
 	response, err := makeRequest(urlForApiRequest)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
@@ -20,7 +20,6 @@ func getClanHandler(c *gin.Context) {
 		err := Body.Close()
 		if err != nil {
 			logs.logMessage("Request", "Error while closing response body: "+err.Error())
-			return
 		}
 	}(response.Body)
 
