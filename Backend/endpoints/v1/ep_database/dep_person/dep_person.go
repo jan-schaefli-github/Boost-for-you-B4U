@@ -1,4 +1,4 @@
-package dbep_clan
+package dep_person
 
 import (
 	"b4u/backend/logger"
@@ -9,8 +9,7 @@ import (
 	"net/http"
 )
 
-// Get Clan from Database
-func GetClan(c *gin.Context) {
+func GetPerson(c *gin.Context) {
 	db, err := tools.ConnectToDatabase()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
@@ -25,21 +24,21 @@ func GetClan(c *gin.Context) {
 		}
 	}(db)
 
-	var clan tools.Clan
-	err = db.QueryRow("SELECT * FROM clan WHERE tag = '#P9UVQCJV'").Scan(&clan.Tag)
+	var person tools.Person
+	err = db.QueryRow("SELECT * FROM person WHERE tag = '#2Y9VQVJ8'").Scan(&person.Tag, &person.WholeFame, &person.ClanStatus, &person.JoinDate, &person.FkClan)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		logger.LogMessage("Database", "Error while querying database: "+err.Error())
 		return
 	}
 
-	clanJSON, err := json.Marshal(clan)
+	personJSON, err := json.Marshal(person)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
-		logger.LogMessage("Database", "Error while marshalling clan: "+err.Error())
+		logger.LogMessage("Database", "Error while marshalling person: "+err.Error())
 		return
 	}
 
 	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, string(clanJSON))
+	c.String(http.StatusOK, string(personJSON))
 }

@@ -1,11 +1,11 @@
-package rt_calculations
+package crt_clan
 
 import (
 	"b4u/backend/logger"
 )
 
 func CalculateCurrentPeriod(data map[string]interface{}) (int, string, int) {
-	
+
 	// Extract the period index from the response
 	periodIndexFloat, ok := data["periodIndex"].(float64)
 	if !ok {

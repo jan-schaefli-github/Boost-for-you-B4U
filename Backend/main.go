@@ -3,8 +3,8 @@ package main
 import (
 	//Local Packages Endpoint Import
 	"b4u/backend/endpoints/v1/ep_api/aep_clan"
-	"b4u/backend/endpoints/v1/ep_database/dbep_clan"
-	"b4u/backend/endpoints/v1/ep_database/dbep_person"
+	"b4u/backend/endpoints/v1/ep_database/dep_clan"
+	"b4u/backend/endpoints/v1/ep_database/dep_person"
 	"b4u/backend/logger"
 	"b4u/backend/routine/v1/rt_main"
 	"b4u/backend/tools"
@@ -74,8 +74,8 @@ func main() {
 	router.GET("/api/clan/members/leaderboard", aep_clan.GetClanMemberLeaderboard)
 	router.GET("/api/clan/locations", aep_clan.GetLocations)
 	router.GET("/api/clan/leaderboard", aep_clan.GetClanRankingByLocation)
-	router.GET("/database/person", dbep_person.GetPerson)
-	router.GET("/database/clan", dbep_clan.GetClan)
+	router.GET("/database/person", dep_person.GetPerson)
+	router.GET("/database/clan", dep_clan.GetClan)
 
 	// Enable CORS
 	router.Use(cors.Default())
