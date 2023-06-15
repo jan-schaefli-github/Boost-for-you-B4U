@@ -76,6 +76,7 @@ func main() {
 	router.GET("/api/clan/leaderboard", aep_clan.GetClanRankingByLocation)
 	router.GET("/database/person", dep_person.GetPerson)
 	router.GET("/database/clan", dep_clan.GetClan)
+	router.GET("/database/clan/weeklyReport", dep_clan.GetClanWeeklyReport)
 
 	// Enable CORS
 	router.Use(cors.Default())

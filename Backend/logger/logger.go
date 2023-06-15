@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-// Log message to file
+// LogMessage Log message to file
 func LogMessage(logType string, message string) {
 
 	// Open log file in append mode

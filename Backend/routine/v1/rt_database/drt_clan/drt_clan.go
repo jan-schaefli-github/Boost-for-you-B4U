@@ -6,7 +6,7 @@ import (
 	"database/sql"
 )
 
-// Get Clan Tags from Database
+// GetClanTags Get Clan Tags from Database
 func GetClanTags() []string {
 	db, err := tools.ConnectToDatabase()
 	if err != nil {

@@ -13,3 +13,11 @@ type Person struct {
 	JoinDate   string `json:"joinDate"`
 	FkClan     string `json:"fk_clan"`
 }
+
+type ClanWeekReport struct {
+	Id       int `json:"id"`
+	Fame     int `json:"fame"`
+	FameGain int `json:"fame_gain"`
+}
+
+type ClanWeekReports []ClanWeekReport

@@ -3,28 +3,33 @@ package art_clan
 import (
 	"b4u/backend/logger"
 	"b4u/backend/tools"
-	"io/ioutil"
-	"net/url"
 	"encoding/json"
+	"io"
+	"net/url"
 )
 
-func GetCurrentriverrace(clanTag string) (map[string]interface{}) {
+func GetCurrentriverrace(clanTag string) map[string]interface{} {
 
 	// Construct the URL for the request
-	url := "https://api.clashroyale.com/v1/clans/" + url.QueryEscape(clanTag) + "/currentriverrace"
+	apiUrl := "https://api.clashroyale.com/v1/clans/" + url.QueryEscape(clanTag) + "/currentriverrace"
 
 	// Send the request and get the response
-	response, err := tools.MakeRequest(url)
+	response, err := tools.MakeRequest(apiUrl)
 	if err != nil {
-		logger.LogMessage("Routine", "Error while making request: " + err.Error())
+		logger.LogMessage("Routine", "Error while making request: "+err.Error())
 		return nil
 	}
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			logger.LogMessage("Routine", "Error while closing response body: "+err.Error())
+		}
+	}(response.Body)
 
 	// Read the response body
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		logger.LogMessage("Routine", "Error while reading response: " + err.Error())
+		logger.LogMessage("Routine", "Error while reading response: "+err.Error())
 		return nil
 	}
 
@@ -32,7 +37,7 @@ func GetCurrentriverrace(clanTag string) (map[string]interface{}) {
 	var data map[string]interface{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		logger.LogMessage("Routine", "Error while unmarshaling response: " + err.Error())
+		logger.LogMessage("Routine", "Error while unmarshaling response: "+err.Error())
 		return nil
 	}
 

@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-// Get Clan from Database
+// GetClan Get Clan from Database
 func GetClan(c *gin.Context) {
 	db, err := tools.ConnectToDatabase()
 	if err != nil {
