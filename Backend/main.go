@@ -1,23 +1,18 @@
 package main
 
 import (
-	"b4u/backend/logs"
+	//Local Packages Endpoint Import
+	"b4u/backend/endpoints/v1/ep_api/aep_clan"
+	"b4u/backend/endpoints/v1/ep_database/dbep_clan"
+	"b4u/backend/endpoints/v1/ep_database/dbep_person"
+	"b4u/backend/logger"
+	"b4u/backend/tools"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"io"
 	"log"
-	"net/url"
 	"os"
 	"path/filepath"
-	"time"
-)
-
-var (
-	// Request environment variables
-	accessToken    string
-	clanTag        string
-	encodedClanTag string
 )
 
 func main() {
@@ -26,31 +21,26 @@ func main() {
 	if _, err := os.Stat("logs"); os.IsNotExist(err) {
 		err := os.Mkdir("logs", 0755)
 		if err != nil { // If there was an error while creating the directory
-			logs.logMessage("Logs", "Error while creating logs directory: "+err.Error())
+			logger.LogMessage("Logs", "Error while creating logs directory: "+err.Error())
 			return
 		}
 	}
 
-	// Load environment variables
-	err := godotenv.Load() // Load environment variables from .env file
-	if err != nil {        // If there was an error while loading the environment variables
-		logs.logMessage("Environment", "Error while loading environment variables: "+err.Error())
-	}
-
+	tools.LoadDotEnv()
 	// Set Gin to production mode
 	gin.SetMode(gin.ReleaseMode)
 
 	// Create gin log file
 	logFileGin, err := os.OpenFile(filepath.Join("logs", "gin.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666) // Open gin log file in append mode
 	if err != nil {                                                                                             // If there was an error while creating the gin log file
-		logs.logMessage("Gin", "Error while creating gin log file: "+err.Error())
+		logger.LogMessage("Gin", "Error while creating gin log file: "+err.Error())
 	}
 
 	// Close gin log file
 	defer func(logFileGin *os.File) {
 		err := logFileGin.Close()
 		if err != nil {
-			logs.logMessage("Gin", "Error while closing gin log file: "+err.Error())
+			logger.LogMessage("Gin", "Error while closing gin log file: "+err.Error())
 		}
 	}(logFileGin)
 
@@ -64,31 +54,26 @@ func main() {
 		port = "3000"
 	}
 
-	// Request environment variables
-	accessToken = os.Getenv("ACCESS_TOKEN")
-	clanTag = os.Getenv("CLAN_TAG")
-	encodedClanTag = url.QueryEscape(clanTag)
-
-	// Start routine
+	/* Start routine
 	go func() {
 		for {
 			go dataCollector(getClanTags())
 			time.Sleep(time.Hour)
 		}
 	}()
+	*/
 
 	// Routes
-	/*
-		router.GET("/api/clan", getClanHandler)
-		router.GET("/api/members", getMembersHandler)
-		router.GET("/api/currentriverrace", getCurrentRiverRaceHandler)
-		router.GET("/api/riverracelog", getRiverRaceLogHandler)
-		router.GET("/api/members/leaderboard", getClanMemberLeaderboardHandler)
-		router.GET("/api/locations", getLocationsHandler)
-		router.GET("/api/clan/leaderboard", getRankingByLocationHandler)
-		router.GET("/database/person", getPerson)
-		router.GET("/database/clan", getClan)
-	*/
+
+	router.GET("/api/clan", aep_clan.GetClan)
+	router.GET("/api/clan/members", aep_clan.GetMembers)
+	router.GET("/api/clan/currentriverrace", aep_clan.GetCurrentRiverRace)
+	router.GET("/api/clan/riverracelog", aep_clan.GetRiverRaceLog)
+	router.GET("/api/clan/members/leaderboard", aep_clan.GetClanMemberLeaderboard)
+	router.GET("/api/clan/locations", aep_clan.GetLocations)
+	router.GET("/api/clan/leaderboard", aep_clan.GetClanRankingByLocation)
+	router.GET("/database/person", dbep_person.GetPerson)
+	router.GET("/database/clan", dbep_clan.GetClan)
 
 	// Enable CORS
 	router.Use(cors.Default())
