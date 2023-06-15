@@ -6,13 +6,16 @@ import (
 	"b4u/backend/endpoints/v1/ep_database/dbep_clan"
 	"b4u/backend/endpoints/v1/ep_database/dbep_person"
 	"b4u/backend/logger"
+	"b4u/backend/routine/v1/rt_main"
 	"b4u/backend/tools"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+	"time"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -54,14 +57,13 @@ func main() {
 		port = "3000"
 	}
 
-	/* Start routine
+	//Start routine
 	go func() {
 		for {
-			go dataCollector(getClanTags())
+			go rt_main.Routine()
 			time.Sleep(time.Hour)
 		}
 	}()
-	*/
 
 	// Routes
 

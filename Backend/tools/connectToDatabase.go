@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	_"github.com/go-sql-driver/mysql"
 )
 
 func ConnectToDatabase() (*sql.DB, error) {
+
 	dbUsername := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASS")
 	dbHost := os.Getenv("DB_HOST")
