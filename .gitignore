@@ -29,7 +29,7 @@ vendor/
 
 # Build system
 builds/
-Tests/
+tests/
 
 # Drawio
 *.bkp
