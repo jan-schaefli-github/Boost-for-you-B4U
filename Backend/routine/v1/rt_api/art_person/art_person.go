@@ -1,4 +1,4 @@
-package art_clan
+package art_person
 
 import (
 	"b4u/backend/logger"
@@ -8,10 +8,10 @@ import (
 	"encoding/json"
 )
 
-func GetMembers(clanTag string) (map[string]interface{}) {
+func GetPerson(personTag string) (map[string]interface{}) {
 
 	// Construct the URL for the request
-	url := "https://api.clashroyale.com/v1/clans/" + url.QueryEscape(clanTag) + "/members"
+	url := "https://api.clashroyale.com/v1/players/" + url.QueryEscape(personTag)
 
 	// Send the request and get the response
 	response, err := tools.MakeRequest(url)

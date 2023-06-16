@@ -47,7 +47,7 @@ CREATE TABLE weekly_report(
     fame	        INTEGER NOT NULL DEFAULT 0,
     missedDecks     INTEGER NOT NULL DEFAULT 0,
     absenceDays     INTEGER NOT NULL DEFAULT 0,
-    dayIdentifier   VARCHAR(100) NOT NULL,
+    weekIdentifier  VARCHAR(100) NOT NULL,
     date	        DATE DEFAULT (CURRENT_DATE),
     fk_person       VARCHAR(100) NOT NULL,
 
@@ -99,3 +99,5 @@ CREATE TABLE clan_weekly_report(
 CREATE INDEX weekly_report_id ON clan_weekly_report(id);
 
 CREATE INDEX weekly_report_fk_person ON clan_weekly_report(fk_clan);
+
+INSERT INTO clan (tag) VALUES ('#P9UVQCJV');
