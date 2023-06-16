@@ -1,25 +1,8 @@
 import {useState, useEffect} from 'react';
 import '../assets/css/header.css';
 
-// Images
-import LLogo from '../assets/img/favicon_black.ico';
-import DLogo from '../assets/img/favicon_white.ico';
+import logo from '../assets/img/favicon_black.png';
 import Hamburger from '../assets/img/hamburger.png';
-
-function darkModeLogo(): string {
-    let favicon;
-    // Dark Mode / Light Mode
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        // Dark Mode
-        favicon = DLogo;
-        console.log('Dark Mode');
-    } else {
-        // Light Mode
-        favicon = LLogo;
-        console.log('Light Mode');
-    }
-    return favicon;
-}
 
 function Header() {
     const [showLinks, setShowLinks] = useState("none");
@@ -52,20 +35,22 @@ function Header() {
     }
 
     useEffect(() => {
+
         window.addEventListener('resize', handleScreenWidthChange);
         handleScreenWidthChange();
-        // Cleanup the event listener when the component unmounts
+
         return () => {
             window.removeEventListener('resize', handleScreenWidthChange);
         };
     }, []);
+
 
     return (
         <>
             <header>
                 <div className="logo-name">
                     <a href="/">
-                        <img className="logo-img" src={darkModeLogo()} alt="Logo"/>
+                        <img className="logo-img" src={logo} alt="Logo"/>
                     </a>
                     <a href="/" className="company-name">
                         Boost for you
@@ -74,15 +59,19 @@ function Header() {
                 <nav className="menu">
                     <ul className="nav-links" style={{"display": updateShowLinks("")}}>
                         <li>
-                            <a href="#">Link 1</a>
+                            <a href="/">Home</a>
                         </li>
                         <br/>
                         <li>
-                            <a href="#">Link 2</a>
+                            <a href="/member-tracking">Member-Tracking</a>
                         </li>
                         <br/>
                         <li>
-                            <a href="#">Link 3</a>
+                            <a href="/clan-tracking">Clan-Tracking</a>
+                        </li>
+                        <br/>
+                        <li>
+                            <a href="/about">About</a>
                         </li>
                         <br/>
                     </ul>

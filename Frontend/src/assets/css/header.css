@@ -175,8 +175,7 @@ nav ul li a {
     }
 }
 
-@media (prefers-color-scheme: light),
-(prefers-color-scheme: no-preference) {
+@media (prefers-color-scheme: light) {
     header {
         background-color: var(--light-heading-color);
         border-bottom: 1px solid var(--light-border-color);
