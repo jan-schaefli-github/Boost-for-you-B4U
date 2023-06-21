@@ -20,4 +20,14 @@ type ClanWeekReport struct {
 	FameGain int `json:"fame_gain"`
 }
 
+// DailyReport is a struct for a daily report
+type DailyReport struct {
+	ID             int    `json:"id"`
+	DecksUsedToday int    `json:"decksUsedToday"`
+	Fame           int    `json:"fame"`
+	DayIdentifier  string `json:"dayIdentifier"`
+	Date           string `json:"date"`
+	FkPerson       string `json:"fkPerson"`
+}
+
 type ClanWeekReports []ClanWeekReport
