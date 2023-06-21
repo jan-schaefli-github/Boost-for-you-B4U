@@ -7,11 +7,13 @@ export default function App() {
     return (
         <>
             <Header />
+            <main>
             <Routes>
                 <Route path="/" element={<Index/>} />
                 <Route path="/about" element={<Index/>} />
                 <Route path="/clan-tracking" element={<ClanMain/>} />
             </Routes>
+            </main>
         </>
     );
 }
