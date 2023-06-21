@@ -85,15 +85,15 @@ func Routine() {
 					}
 				}
 			}
+
+			// Update status
+			members := art_clan.GetMembers(clanTag)
+			memberTags := crt_clan.CalculateMemberTags(members)
+
+			drt_person.UpdatePersonStatus(memberTags, clanTag)
 		} else {
 			logger.LogMessage("Routine", "Clan "+clanTag+" is not in war day.")
 		}
-
-		// Update status
-		members := art_clan.GetMembers(clanTag)
-		memberTags := crt_clan.CalculateMemberTags(members)
-
-		drt_person.UpdatePersonStatus(memberTags, clanTag)
 	}
 	logger.LogMessage("Routine", "Routine finished.")
 }
