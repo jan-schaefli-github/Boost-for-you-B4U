@@ -1,0 +1,71 @@
+/* Common styles for all screen sizes */
+.data-box-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;
+  margin-bottom: 20px;
+}
+
+.data-box {
+  flex: 0 0 calc(33.33% - 20px);
+  background-color: #f2f2f2;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  margin-bottom: 20px;
+}
+
+.data-box h3 {
+  margin-top: 0;
+  font-size: 24px;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.data-box p {
+  margin: 10px 0;
+  font-size: 18px;
+  color: #666;
+}
+
+/* Styles specific to mobile devices */
+@media (max-width: 767px) {
+  .data-box {
+    flex: 0 0 calc(100% - 20px);
+    margin-bottom: 15px;
+  }
+
+  .data-box h3 {
+    font-size: 20px;
+  }
+
+  .data-box p {
+    font-size: 16px;
+  }
+}
+
+/* Dark mode styles */
+/*@media (prefers-color-scheme: dark) {
+  .data-box-container {
+    background-color: #333;
+  }
+
+  .data-box {
+    background-color: #444;
+    color: #fff;
+  }
+
+  .dropdown-select select {
+    background-color: #444;
+    color: #fff;
+    border-color: #888;
+  }
+
+  .dropdown-select::after {
+    border-top: 5px solid #fff;
+  }
+}
+*/

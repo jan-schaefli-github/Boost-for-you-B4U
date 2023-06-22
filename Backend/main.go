@@ -65,8 +65,10 @@ func main() {
 		}
 	}()
 
-	// Routes
+	// Enable CORS
+	router.Use(cors.Default())
 
+	// Routes
 	router.GET("/api/clan", aep_clan.GetClan)
 	router.GET("/api/clan/members", aep_clan.GetMembers)
 	router.GET("/api/clan/currentriverrace", aep_clan.GetCurrentRiverRace)
@@ -78,9 +80,7 @@ func main() {
 	router.GET("/database/person/dailyReport", dep_person.GetDailyReport)
 	router.GET("/database/clan", dep_clan.GetClan)
 	router.GET("/database/clan/weeklyReport", dep_clan.GetClanWeeklyReport)
-
-	// Enable CORS
-	router.Use(cors.Default())
+	router.GET("/database/clan/warlog", dep_clan.GetClanWarlog)
 
 	// Start server
 	log.Printf("Server läuft auf Port %s", port)

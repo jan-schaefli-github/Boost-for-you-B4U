@@ -38,7 +38,7 @@ func Routine() {
 					return
 				}
 
-				tag, fame, decksUsedToday := crt_person.CalculateParticipantData(participantData)
+				tag, name, fame, decksUsedToday := crt_person.CalculateParticipantData(participantData)
 
 				// Calculate the day identifier
 				dayIdentifier := rt_calculations.CalculateDayIdentifier(sectionIndex, periodIndex)
@@ -58,7 +58,7 @@ func Routine() {
 					// Check if Person already exists in the database
 					if !drt_person.CheckPerson(tag) {
 
-						drt_person.CreatePerson(tag, personClanTag)
+						drt_person.CreatePerson(tag, name, personClanTag)
 					}
 
 					// Update the daily report

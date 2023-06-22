@@ -7,7 +7,8 @@ import (
 	"strings"
 )
 
-func CreatePerson(tag string, fk_clan string) {
+func CreatePerson(tag string, name string, fk_clan string) {
+	
 	// Connect to the database
 	db, err := tools.ConnectToDatabase()
 	if err != nil {
@@ -23,7 +24,7 @@ func CreatePerson(tag string, fk_clan string) {
 	}(db)
 
 	// Insert person into the database
-	stmt, err := db.Prepare("INSERT INTO person (tag, fk_clan) VALUES (?, ?)")
+	stmt, err := db.Prepare("INSERT INTO person (tag, name, fk_clan) VALUES (?, ?, ?)")
 	if err != nil {
 		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
 		return
@@ -39,7 +40,7 @@ func CreatePerson(tag string, fk_clan string) {
 	}(stmt)
 
 	// Execute the statement
-	_, err = stmt.Exec(tag, fk_clan)
+	_, err = stmt.Exec(tag, name, fk_clan)
 	if err != nil {
 		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
 		return

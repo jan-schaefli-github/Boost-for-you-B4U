@@ -14,6 +14,17 @@ type Person struct {
 	FkClan     string `json:"fk_clan"`
 }
 
+type WarData struct {
+	Tag            string `json:"tag"`
+	Name           string `json:"name"`
+	ClanStatus     string `json:"clanStatus"`
+	Fame           int    `json:"fame"`
+	MissedDecks    int    `json:"missedDecks"`
+	DecksUsedToday int    `json:"decksUsedToday"`
+	Date           string `json:"date"`
+}
+
+
 type ClanWeekReport struct {
 	Id       int `json:"id"`
 	Fame     int `json:"fame"`
@@ -29,5 +40,7 @@ type DailyReport struct {
 	Date           string `json:"date"`
 	FkPerson       string `json:"fkPerson"`
 }
+
+
 
 type ClanWeekReports []ClanWeekReport

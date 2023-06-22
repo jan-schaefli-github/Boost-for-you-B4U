@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS person;
 
 CREATE TABLE person(
     tag         VARCHAR(100) NOT NULL UNIQUE,
+    name        VARCHAR(100) NOT NULL,
     wholeFame   INTEGER NOT NULL DEFAULT 0,
 	clanStatus  BOOLEAN NOT NULL DEFAULT 1,
     joinDate    DATE DEFAULT (CURRENT_DATE),
