@@ -1,5 +1,5 @@
-import MemberTable from "./memberTable.tsx";
-import MemberBox from "./memberBox.tsx";
+import MemberTable from "./parts/memberTable.tsx";
+import MemberBox from "./parts/memberBox.tsx";
 
 function MemberMain() {
   const isMobile = window.innerWidth < 768; // Example threshold for mobile
