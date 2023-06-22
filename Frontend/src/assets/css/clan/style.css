@@ -21,3 +21,21 @@ select {
     background-size: 8px;
 
 }
+
+#clan-leaderboard-container {
+    margin-top: 3em;
+}
+
+.clan-leaderboard-title {
+    font-size: 1.5em;
+    font-weight: 300;
+    margin-bottom: 1em;
+}
+
+@media (min-width: 700px) {
+    .two-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 20px;
+    }
+}
