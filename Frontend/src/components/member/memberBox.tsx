@@ -67,18 +67,20 @@ function MemberBox() {
 
   const renderDataBoxes = () => {
     const sortedData = sortData(warData);
-
+  
     return sortedData.map((data: WarData) => (
-      <div key={data.tag} className="data-box">
-        <h3>{data.name}</h3>
-        <p>Tag: {data.tag}</p>
-        <p>Clan Status: {data.clanStatus}</p>
+      <div key={data.tag} className="data-box" data-clan-status={data.clanStatus}>
+        <h3>
+          {data.name} <br />
+          <small>{data.tag}</small>
+        </h3>
         <p>Fame: {data.fame}</p>
         <p>Missed Decks: {data.missedDecks}</p>
         <p>Decks Used Today: {data.decksUsedToday}</p>
       </div>
     ));
   };
+  
 
   return (
     <div>
