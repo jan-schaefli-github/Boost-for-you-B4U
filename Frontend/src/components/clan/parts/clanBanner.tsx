@@ -1,4 +1,4 @@
-import '../../../assets/css/clanBanner.css'
+import '../../../assets/css/clan/banner.css'
 
 function ClanBanner() {
     return (

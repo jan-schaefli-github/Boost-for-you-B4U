@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import '../../assets/css/member-box.css';
+import '../../assets/css/member/box.css';
 
 interface WarData {
   name: string;

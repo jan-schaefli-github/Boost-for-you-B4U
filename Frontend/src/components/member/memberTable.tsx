@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import '../../assets/css/member-table.css';
+import '../../assets/css/member/table.css';
 
 interface WarData {
   tag: string;
