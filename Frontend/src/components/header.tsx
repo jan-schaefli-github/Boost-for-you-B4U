@@ -27,7 +27,7 @@ function Header() {
 
     function handleScreenWidthChange() {
         const screenWidth = window.innerWidth;
-        if (screenWidth <= 480) {
+        if (screenWidth <= 712) {
             updateShowLinks("none");
         } else {
             updateShowLinks("flex");

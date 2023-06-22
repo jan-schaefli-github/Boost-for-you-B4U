@@ -60,7 +60,7 @@ nav ul li a {
 }
 
 /* Media Queries */
-@media (max-width: 480px) {
+@media (max-width: 712px) {
     .company-name {
         display: none;
     }
@@ -87,7 +87,7 @@ nav ul li a {
     }
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 712px) and (max-width: 768px) {
     .company-name {
         font-size: 1.375rem;
     }

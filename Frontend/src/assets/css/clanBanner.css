@@ -1,0 +1,128 @@
+.clan-banner {
+    position: relative;
+}
+
+.clan-banner-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url(./Clash-Royale-background.jpg) center center;
+    background-size: cover;
+    opacity: 0.5;
+
+}
+
+.primary-wrapper {
+    position: relative;
+    padding-top: 100px;
+    padding-bottom: 150px;
+    margin: 0 1em;
+}
+
+.clan-site-title {
+    color: white;
+    text-shadow: 2px 2px 4px var(--dark-heading-color);
+    letter-spacing: 2px;
+    font-size: 52px;
+    margin: 0 0 20px;
+}
+
+.clan-site-tagline {
+    color: white;
+    text-shadow: 2px 2px 4px var(--dark-heading-color);
+    letter-spacing: 1px;
+    font-size: 1.5em;
+    margin: 0 20%;
+}
+
+.clan-site-signup-tagline {
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+    font-size: 14px;
+    margin: 0 20%;
+}
+
+
+.clan-banner-signup {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+}
+
+/* CSS */
+.signup-button-banner {
+    margin-top: 20px;
+    background-color: #fff000;
+    border-radius: 12px;
+    color: #000;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px 15px;
+    text-align: center;
+    transition: 200ms;
+    width: 10em;
+    box-sizing: border-box;
+    border: 0;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.signup-button-banner:not(:disabled):hover,
+.signup-button-banner:not(:disabled):focus {
+    outline: 0;
+    background: #f4e603;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, .2), 0 3px 8px 0 rgba(0, 0, 0, .15);
+}
+
+.signup-button-banner:disabled {
+    filter: saturate(0.2) opacity(0.5);
+    -webkit-filter: saturate(0.2) opacity(0.5);
+    cursor: not-allowed;
+}
+
+@media only screen and (min-width: 562px) and (max-width: 1024px) {
+    .clan-site-title {
+        font-size: 32px;
+    }
+
+    .clan-site-tagline {
+        font-size: 0.8em;
+        margin: 0 10%;
+    }
+
+    .clan-site-signup-tagline {
+        font-size: 12px;
+        margin: 0 10%;
+    }
+}
+
+@media (max-width: 562px) {
+    .clan-site-title {
+        font-size: 28px;
+    }
+
+    .clan-site-tagline {
+        font-size: 0.7em;
+        margin: 0 10%;
+    }
+
+    .clan-site-signup-tagline {
+        font-size: 10px;
+        margin: 0 10%;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    .clan-banner-img {
+        opacity: 0.8;
+    }
+    .clan-site-signup-tagline {
+
+    }
+}

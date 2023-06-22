@@ -1,0 +1,23 @@
+select {
+    width: 10em;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding: 5px;
+    font-size: 16px;
+    color: #333;
+    outline: none;
+    margin-bottom: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='5'><polygon points='0,0 10,0 5,5'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: 90%;
+    background-position-y: 50%;
+    background-size: 8px;
+
+}
