@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../../assets/css/member-box.css';
 
 interface WarData {
-  tag: string;
   name: string;
   clanStatus: number;
   fame: number;
@@ -11,9 +10,18 @@ interface WarData {
   [key: string]: string | number;
 }
 
+const SORT_KEYS: (keyof WarData)[] = ['name', 'fame', 'missedDecks', 'decksUsedToday', 'clanStatus'];
+const SORT_LABELS: { [key in keyof WarData]: string } = {
+  name: 'Name',
+  fame: 'Fame',
+  missedDecks: 'Missed Decks',
+  decksUsedToday: 'Decks Used Today',
+  clanStatus: 'Clan Status',
+};
+
 function MemberBox() {
   const [warData, setWarData] = useState<WarData[]>([]);
-  const [sortKey, setSortKey] = useState<string>('name');
+  const [sortKeyIndex, setSortKeyIndex] = useState<number>(0);
   const [sortOrder, setSortOrder] = useState<string>('asc');
 
   useEffect(() => {
@@ -36,18 +44,19 @@ function MemberBox() {
     }
   };
 
-  const handleSortKeyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortKey(event.target.value);
+  const handleSortKeyChange = () => {
+    setSortKeyIndex(prevIndex => (prevIndex + 1) % SORT_KEYS.length);
   };
 
-  const handleSortOrderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortOrder(event.target.value);
+  const handleSortOrderChange = () => {
+    setSortOrder(prevOrder => (prevOrder === 'asc' ? 'desc' : 'asc'));
   };
 
   const sortData = (data: WarData[]) => {
     const sortedData = [...data];
 
     sortedData.sort((a, b) => {
+      const sortKey = SORT_KEYS[sortKeyIndex];
       const aValue = a[sortKey];
       const bValue = b[sortKey];
 
@@ -67,7 +76,7 @@ function MemberBox() {
 
   const renderDataBoxes = () => {
     const sortedData = sortData(warData);
-  
+
     return sortedData.map((data: WarData) => (
       <div key={data.tag} className="data-box" data-clan-status={data.clanStatus}>
         <h3>
@@ -80,30 +89,48 @@ function MemberBox() {
       </div>
     ));
   };
-  
+
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollButton = document.getElementById('scroll-button');
+      if (scrollButton) {
+        scrollButton.style.display = window.scrollY > 0 ? 'block' : 'none';
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
     <div>
       <div>
-        <label className='.dropdown-label '>
+        <label className=".dropdown-label">
           Sort By:
-          <select className='dropdown-select' value={sortKey} onChange={handleSortKeyChange}>
-            <option value="name">Name</option>
-            <option value="clanStatus">Clan Status</option>
-            <option value="fame">Fame</option>
-            <option value="missedDecks">Missed Decks</option>
-            <option value="decksUsedToday">Decks Used Today</option>
-          </select>
+          <button className="sort-key-button" onClick={handleSortKeyChange}>
+            {SORT_LABELS[SORT_KEYS[sortKeyIndex]]}
+          </button>
         </label>
         <label>
           Sort Order:
-          <select className='dropdown-select' value={sortOrder} onChange={handleSortOrderChange}>
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
+          <button className="sort-order-button" onClick={handleSortOrderChange}>
+            {sortOrder === 'asc' ? 'Ascending ▼' : 'Descending ▲'}
+          </button>
         </label>
       </div>
       <div className="data-box-container">{renderDataBoxes()}</div>
+      <button id="scroll-button" className="scroll-button" onClick={handleScrollToTop}>
+        &#9650;
+      </button>
     </div>
   );
 }

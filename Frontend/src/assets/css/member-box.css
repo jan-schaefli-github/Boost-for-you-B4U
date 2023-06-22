@@ -1,9 +1,10 @@
 .data-box-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: stretch;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 20px;
+  margin: 10px;
 }
 
 .data-box {
@@ -16,7 +17,7 @@
 }
 
 .data-box[data-clan-status='1'] {
-  background-color: #ffcccc;
+  background-color: #eeeeee;
 }
 
 .data-box h3 {
@@ -24,9 +25,8 @@
   padding: 0;
   font-size: 24px;
   color: #333;
-  text-transform: uppercase;
   letter-spacing: 2px;
-  background-color: #ffcc00;
+  background-color: #dddddd;
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
@@ -34,7 +34,7 @@
 
 .data-box h3 small {
   font-size: 14px;
-  color: var(--primary-color);
+  color: #505050;
   margin-left: 5px;
 }
 
@@ -61,16 +61,34 @@
   }
 }
 
+.scroll-button {
+  position: fixed;
+  bottom: 40px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--light-bg-color);
+  color: var(--dark-bg-color);
+  font-size: 30px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
 /* Dark mode styles */
 @media (prefers-color-scheme: dark) {
   .data-box-container {
-    background-color: #333;
+    background-color: var(--dark-bg-color);
   }
 
   .data-box {
-    background-color: #444;
-    color: var(--primary-color);
+    background-color: var(--dark-bg-color);
     box-shadow: 0 4px 8px var(--dark-border-color);
+    color: var(--primary-color);
   }
 
   .data-box[data-clan-status='1'] {
@@ -84,5 +102,14 @@
 
   .data-box h3 small {
     color: #ccc;
+  }
+
+  .data-box p {
+    color: var(--primary-color)
+  }
+
+  .scroll-button {
+    background-color: var(--dark-bg-color);
+    color: var(--light-bg-color);
   }
 }
