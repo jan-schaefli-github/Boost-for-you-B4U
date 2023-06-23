@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import '../../../assets/css/member/box.css';
 
+var role = "member"
+
 interface WarData {
   name: string;
   clanStatus: number;
@@ -78,14 +80,21 @@ function MemberBox() {
     const sortedData = sortData(warData);
 
     return sortedData.map((data: WarData) => (
-      <div key={data.tag} className="data-box" data-clan-status={data.clanStatus}>
+      <div
+        key={data.tag}
+        className="data-box"
+        data-clan-status={data.clanStatus}
+      >
         <h3>
-          {data.name} <br />
+          {data.name}
+          <i>{role}</i> <br />
           <small>{data.tag}</small>
         </h3>
-        <p>Fame: {data.fame}</p>
-        <p>Missed Decks: {data.missedDecks}</p>
-        <p>Decks Used Today: {data.decksUsedToday}</p>
+        <div className="stats-container">
+          <p><img src="./clashIcon/icon-fame.png" alt="" />{data.fame}</p>
+          <p><img src="./clashIcon/icon_decks_used_to_day.png" alt="" />{data.decksUsedToday}</p>
+          <p><img src="./clashIcon/icon_decks_missed.png" alt="" />{data.missedDecks}</p>
+        </div>
       </div>
     ));
   };
@@ -112,18 +121,16 @@ function MemberBox() {
   }, []);
 
   return (
-    <div>
-      <div>
+    <div className="container">
+      <div className='sort-nav'>
         <label className=".dropdown-label">
-          Sort By:
           <button className="sort-key-button" onClick={handleSortKeyChange}>
             {SORT_LABELS[SORT_KEYS[sortKeyIndex]]}
           </button>
         </label>
         <label>
-          Sort Order:
           <button className="sort-order-button" onClick={handleSortOrderChange}>
-            {sortOrder === 'asc' ? 'Ascending ▼' : 'Descending ▲'}
+            {sortOrder === 'asc' ? '▼' : '▲'}
           </button>
         </label>
       </div>

@@ -8,7 +8,7 @@ import (
 
 
 // Create a new daily report
-func CreateDailyReport(decksUsedToday float64, fame float64, dayIdentifier string, fk_person string) {
+func CreateDailyReport(decksUsedToday float64, fame float64, repairPoints float64, boatAttacks float64, dayIdentifier string, fk_person string) {
 
 	// Connect to the database
 	db, err := tools.ConnectToDatabase()
@@ -27,7 +27,7 @@ func CreateDailyReport(decksUsedToday float64, fame float64, dayIdentifier strin
 	}(db)
 
 	// Insert person into the database
-	stmt, err := db.Prepare("INSERT INTO daily_report (decksUsedToday, fame, dayIdentifier, fk_person) VALUES (?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO daily_report (decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, fk_person) VALUES (?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
 		return
@@ -43,7 +43,7 @@ func CreateDailyReport(decksUsedToday float64, fame float64, dayIdentifier strin
 	}(stmt)
 
 	// Execute the statement
-	_, err = stmt.Exec(decksUsedToday, fame, dayIdentifier, fk_person)
+	_, err = stmt.Exec(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, fk_person)
 	if err != nil {
 		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
 		return
@@ -52,7 +52,7 @@ func CreateDailyReport(decksUsedToday float64, fame float64, dayIdentifier strin
 }
 
 // Update a daily report
-func UpdateDailyReport(decksUsedToday float64, fame float64, dayIdentifier string, fk_person string) {
+func UpdateDailyReport(decksUsedToday float64, fame float64, repairPoints float64, boatAttacks float64, dayIdentifier string, fk_person string) {
 
 	// Connect to the database
 	db, err := tools.ConnectToDatabase()
@@ -71,7 +71,7 @@ func UpdateDailyReport(decksUsedToday float64, fame float64, dayIdentifier strin
 	}(db)
 
 	// Insert person into the database
-	stmt, err := db.Prepare("UPDATE daily_report SET decksUsedToday = ?, fame = ? WHERE dayIdentifier = ? AND fk_person = ?")
+	stmt, err := db.Prepare("UPDATE daily_report SET decksUsedToday = ?, fame = ?, repairPoints = ?, boatAttacks = ? WHERE dayIdentifier = ? AND fk_person = ?")
 	if err != nil {
 		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
 		return
@@ -86,7 +86,7 @@ func UpdateDailyReport(decksUsedToday float64, fame float64, dayIdentifier strin
 	}(stmt)
 
 	// Execute the statement
-	_, err = stmt.Exec(decksUsedToday, fame, dayIdentifier, fk_person)
+	_, err = stmt.Exec(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, fk_person)
 	if err != nil {
 		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
 		return

@@ -69,6 +69,8 @@ CREATE TABLE daily_report(
     id	            INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
     decksUsedToday  INTEGER NOT NULL DEFAULT 0,
     fame	        INTEGER NOT NULL DEFAULT 0,
+    repairPoints    INTEGER NOT NULL DEFAULT 0,
+    boatAttacks     INTEGER NOT NULL DEFAULT 0,
     dayIdentifier   VARCHAR(100) NOT NULL,
     date	        DATE DEFAULT (CURRENT_DATE),
     fk_person       VARCHAR(100) NOT NULL,

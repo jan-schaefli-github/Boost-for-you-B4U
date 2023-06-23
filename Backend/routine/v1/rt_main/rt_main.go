@@ -38,7 +38,7 @@ func Routine() {
 					return
 				}
 
-				tag, name, fame, decksUsedToday := crt_person.CalculateParticipantData(participantData)
+				tag, name, fame, repairPoints, boatAttacks,  decksUsedToday := crt_person.CalculateParticipantData(participantData)
 
 				// Calculate the day identifier
 				dayIdentifier := rt_calculations.CalculateDayIdentifier(sectionIndex, periodIndex)
@@ -64,7 +64,7 @@ func Routine() {
 					// Update the daily report
 					if lastDayIdentifier == dayIdentifier {
 
-						drt_person.UpdateDailyReport(decksUsedToday, fame, dayIdentifier, tag)
+						drt_person.UpdateDailyReport(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, tag)
 					} else {
 
 						missedDecks := lastmissedDecks + (4 - decksUsedYesterday)
@@ -81,7 +81,7 @@ func Routine() {
 
 
 						// NEW DAY STARTED
-						drt_person.CreateDailyReport(decksUsedToday, fame, dayIdentifier, tag)
+						drt_person.CreateDailyReport(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, tag)
 					}
 				}
 			}
