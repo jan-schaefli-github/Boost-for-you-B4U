@@ -26,14 +26,18 @@ func GetClanWarlog(c *gin.Context) {
 		}
 	}(db)
 
-	query := `SELECT p.tag, p.name, p.clanStatus, dr.fame, wr.missedDecks, dr.decksUsedToday, dr.date
-			  FROM weekly_report wr INNER JOIN person p ON wr.fk_person = p.tag INNER JOIN ( SELECT dr1.* FROM daily_report dr1 WHERE dr1.date = ( SELECT MAX(dr2.date) - ? FROM daily_report dr2 WHERE dr1.fk_person = dr2.fk_person) ) dr ON dr.fk_person = p.tag AND wr.weekIdentifier = LEFT(dr.dayIdentifier, 3)
-			  WHERE p.fk_clan = ?;`
+	query := `SELECT p.tag, p.name, p.clanStatus, wr.fame, wr.missedDecks, dr.decksUsedToday, repairPoints, boatAttacks, p.joinDate
+	FROM person p
+	INNER JOIN weekly_report wr ON p.tag = wr.fk_person
+	INNER JOIN daily_report dr ON p.tag = dr.fk_person
+	INNER JOIN (SELECT fk_person, MAX(id) AS max_id FROM weekly_report GROUP BY fk_person) wr_max ON wr.fk_person = wr_max.fk_person AND wr.id = wr_max.max_id
+	INNER JOIN (SELECT fk_person, MAX(id) AS max_id FROM daily_report GROUP BY fk_person) dr_max ON dr.fk_person = dr_max.fk_person AND dr.id = dr_max.max_id
+	WHERE p.fk_clan = ? AND dr.date <= ?;`
 
-	daySubtract := 0
 	fk_clan := "#P9UVQCJV"
+	date:= "2023-06-23"
 
-	rows, err := db.Query(query, daySubtract, fk_clan)
+	rows, err := db.Query(query, fk_clan, date)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		logger.LogMessage("Database", "Error while querying the database: "+err.Error())
@@ -52,7 +56,9 @@ func GetClanWarlog(c *gin.Context) {
 			&rowData.Fame,
 			&rowData.MissedDecks,
 			&rowData.DecksUsedToday,
-			&rowData.Date,
+			&rowData.RepairPoints,
+			&rowData.BoatAttacks,
+			&rowData.JoinDate,
 		)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})

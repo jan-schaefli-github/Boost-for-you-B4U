@@ -21,7 +21,9 @@ type WarData struct {
 	Fame           int    `json:"fame"`
 	MissedDecks    int    `json:"missedDecks"`
 	DecksUsedToday int    `json:"decksUsedToday"`
-	Date           string `json:"date"`
+	RepairPoints   int    `json:"repairPoints"`
+	BoatAttacks    int    `json:"boatAttacks"`
+	JoinDate       string `json:"joinDate"`
 }
 
 
