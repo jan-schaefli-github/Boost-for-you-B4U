@@ -51,6 +51,7 @@ func GetClanMemberLeaderboard(c *gin.Context) {
 					"name":     memberMap["name"],
 					"role":     memberMap["role"],
 					"clanRank": memberMap["clanRank"],
+					"trophies": memberMap["trophies"],
 				})
 			}
 		}

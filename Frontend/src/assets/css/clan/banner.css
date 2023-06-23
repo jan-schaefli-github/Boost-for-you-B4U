@@ -1,5 +1,6 @@
 .clan-banner {
     position: relative;
+    margin-top: 10vh;
 }
 
 .clan-banner-img {
@@ -120,9 +121,6 @@
 
 @media (prefers-color-scheme: light) {
     .clan-banner-img {
-        opacity: 0.8;
-    }
-    .clan-site-signup-tagline {
-
+        opacity: 0.7;
     }
 }

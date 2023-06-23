@@ -19,7 +19,40 @@ select {
     background-position-x: 90%;
     background-position-y: 50%;
     background-size: 8px;
+}
 
+.form__label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.7rem;
+    display: block;
+    width: 50%;
+    transition: all 0.3s;
+    transform: translateY(0rem);
+}
+
+.form__input {
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    font-size: 1rem;
+    margin: 0 auto;
+    padding: 0.5rem 0.5rem;
+    border-radius: 0.2rem;
+    background-color: rgb(255, 255, 255);
+    border: none;
+    width: 70%;
+    display: block;
+    border-bottom: 0.3rem solid transparent;
+    transition: all 0.3s;
+}
+
+.form__input:placeholder-shown + .form__label {
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transform: translateY(-4rem);
+    transform: translateY(-4rem);
 }
 
 #clan-leaderboard-container {
@@ -32,10 +65,28 @@ select {
     margin-bottom: 1em;
 }
 
-@media (min-width: 700px) {
+.selection-min {
+    min-height: 10em;
+}
+
+
+@media (min-width: 760px) {
     .two-columns {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        grid-gap: 20px;
+    }
+    .form__input {
+        width: 80%;
+    }
+}
+@media (min-width: 1500px) {
+    .form__input {
+        width: 50%;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    .form__input {
+        border: 1px solid #ccc;
     }
 }

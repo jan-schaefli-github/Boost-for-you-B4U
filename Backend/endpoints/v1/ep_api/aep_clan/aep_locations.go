@@ -46,7 +46,7 @@ func GetClanRankingByLocation(c *gin.Context) {
 	locationID := url.QueryEscape(c.Query("locationID"))
 
 	// Erstellen der API-Anforderungs-URL + Setzen des Limits auf 100
-	urlForApiRequest := "https://api.clashroyale.com/v1/locations/" + locationID + "/rankings/clans?limit=100"
+	urlForApiRequest := "https://api.clashroyale.com/v1/locations/" + locationID + "/rankings/clans?limit=50"
 
 	// API-Anforderung durchführen
 	response, err := tools.MakeRequest(urlForApiRequest)
