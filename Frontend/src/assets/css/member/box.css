@@ -109,6 +109,13 @@
   padding: 5px;
 }
 
+.data-box h3 img {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-left: 5px;
+}
+
 .stats-container {
   display: flex;
   padding: 20px;
@@ -133,6 +140,24 @@
   height: 80px;
 }
 
+.scroll-button {
+  position: fixed;
+  bottom: 80px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--light-bg-color);
+  color: var(--dark-bg-color);
+  font-size: 30px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
 
 /* Styles specific to mobile devices */
 @media (max-width: 767px) {
@@ -149,24 +174,6 @@
   .data-box p {
     font-size: 24px;
   }
-}
-
-.scroll-button {
-  position: fixed;
-  bottom: 40px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: var(--light-bg-color);
-  color: var(--dark-bg-color);
-  font-size: 30px;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  outline: none;
-  cursor: pointer;
 }
 
 /* Dark mode styles */

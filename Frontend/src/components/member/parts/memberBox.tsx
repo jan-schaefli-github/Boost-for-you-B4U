@@ -3,21 +3,25 @@ import '../../../assets/css/member/box.css';
 
 var role = "member"
 
+const today = new Date().toISOString().split('T')[0];
+
 interface WarData {
   name: string;
-  clanStatus: number;
   fame: number;
-  missedDecks: number;
   decksUsedToday: number;
+  missedDecks: number;
+  boatAttacks: number;
+  clanStatus: number;
   [key: string]: string | number;
 }
 
-const SORT_KEYS: (keyof WarData)[] = ['name', 'fame', 'missedDecks', 'decksUsedToday', 'clanStatus'];
+const SORT_KEYS: (keyof WarData)[] = ['name', 'fame', 'decksUsedToday', 'missedDecks','boatAttacks'  ,'clanStatus'];
 const SORT_LABELS: { [key in keyof WarData]: string } = {
   name: 'Name',
   fame: 'Fame',
-  missedDecks: 'Missed Decks',
   decksUsedToday: 'Decks Used Today',
+  missedDecks: 'Missed Decks',
+  boatAttacks: 'Boat Attacks',
   clanStatus: 'Clan Status',
 };
 
@@ -87,14 +91,19 @@ function MemberBox() {
       >
         <h3>
           {data.name}
+          {data.joinDate === today && <img src="./clashIcon/icon_new.png" alt="New Player" />}
           <i>{role}</i> <br />
           <small>{data.tag}</small>
         </h3>
         <div className="stats-container">
-          <p><img src="./clashIcon/icon-fame.png" alt="" />{data.fame}</p>
-          <p><img src="./clashIcon/icon_decks_used_to_day.png" alt="" />{data.decksUsedToday}</p>
-          <p><img src="./clashIcon/icon_decks_missed.png" alt="" />{data.missedDecks}</p>
-        </div>
+        <p><img src="./clashIcon/icon-fame.png" alt="Fame" />{data.fame}</p>
+        {data.boatAttacks !== 0 ? (
+          <p><img src="./clashIcon/icon_decks_used_to_day_boat_attack.png" alt="Decks Used Today, Made Boat Attack" />{data.decksUsedToday}</p>
+        ) : (
+          <p><img src="./clashIcon/icon_decks_used_to_day.png" alt="Decks Used Today" />{data.decksUsedToday}</p>
+        )}
+        <p><img src="./clashIcon/icon_decks_missed.png" alt="Missed Decks" />{data.missedDecks}</p>
+      </div>
       </div>
     ));
   };
@@ -130,7 +139,7 @@ function MemberBox() {
         </label>
         <label>
           <button className="sort-order-button" onClick={handleSortOrderChange}>
-            {sortOrder === 'asc' ? '▼' : '▲'}
+            {sortOrder === 'asc' ? '▲' : '▼'}
           </button>
         </label>
       </div>
