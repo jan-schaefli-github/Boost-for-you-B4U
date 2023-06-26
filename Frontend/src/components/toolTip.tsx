@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../assets/css/tooltip.css';
 
 interface TooltipProps {
@@ -8,6 +8,8 @@ interface TooltipProps {
 }
 
 function Tooltip({ text, position = 'top', children }: TooltipProps) {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   const getPositionStyles = () => {
     switch (position) {
       case 'top':
@@ -23,14 +25,38 @@ function Tooltip({ text, position = 'top', children }: TooltipProps) {
     }
   };
 
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    if (showTooltip) {
+      timeoutId = setTimeout(() => {
+        setShowTooltip(false);
+      }, 2000);
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [showTooltip]);
+
+  const handleTooltipToggle = () => {
+    setShowTooltip(!showTooltip);
+  };
+
   return (
-    <div className="hover-text">
+    <div className='tool-tip'>
+    <div className="hover-text" onClick={handleTooltipToggle}>
       {React.cloneElement(children, {
         className: `${children.props.className} tooltip-trigger`,
       })}
-      <span className="tooltip-text" style={getPositionStyles()}>
-        {text}
-      </span>
+      {showTooltip && (
+        <span className="tooltip-text" style={getPositionStyles()}>
+          {text}
+        </span>
+      )}
+    </div>
     </div>
   );
 }

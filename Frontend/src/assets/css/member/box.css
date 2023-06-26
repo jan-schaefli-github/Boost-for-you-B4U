@@ -1,23 +1,22 @@
-.container {
-  margin-top: 10vh;
+.member-box { 
+  margin: 10vh 20px 0 20px;
   background-color: var(--light-bg-color);
   text-align: left;
 }
 
-.sort-nav {
+.member-box .sort-nav {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid var(--secondary-color);
 }
 
-.dropdown-label {
+.member-box .dropdown-label {
   display: inline-block;
   margin-right: 10px;
 }
 
-.sort-key-button,
+.member-box .sort-key-button,
 .sort-order-button {
   padding: 5px;
   border: none;
@@ -33,44 +32,34 @@
   border-radius: 5px;
 }
 
-.sort-key-button {
+.member-box .sort-key-button {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
-.sort-order-button {
+.member-box .sort-order-button {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
 
 
-.sort-order-button::before {
+.member-box .sort-order-button::before {
   content: attr(data-text);
 }
 
-.sort-order-button[data-text='▼']::before {
+.member-box .sort-order-button[data-text='▼']::before {
   content: "▼";
 }
 
-.sort-order-button[data-text='▲']::before {
+.member-box .sort-order-button[data-text='▲']::before {
   content: "▲";
 }
 
-
-.icon {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  background-image: url('./clashIcon/icon_boat_battles_200830_211842.webp');
-  background-size: cover;
-  margin-left: 5px;
-}
-
-.data-box-container {
+.member-box .data-box-container {
   margin-bottom: 20px;
 }
 
-.data-box {
+.member-box .data-box {
   border-radius: 10px;
   border: 1px solid var(--secondary-color);
   box-shadow: 0 4px 8px var(--light-border-color);
@@ -78,11 +67,11 @@
   margin-bottom: 20px;
 }
 
-.data-box[data-clan-status='1'] {
+.member-box .data-box[data-clan-status='1'] {
   background-color: #eeeeee;
 }
 
-.data-box h3 {
+.member-box .data-box h3 {
   margin: 0;
   padding: 0;
   font-size: 24px;
@@ -96,12 +85,12 @@
   border-radius: 10px 10px 0 0;
 }
 
-.data-box h3 small {
+.member-box .data-box h3 small {
   font-size: 14px;
   color: #505050;
 }
 
-.data-box h3 i {
+.member-box .data-box h3 i {
   float: right;
   font-size: 14px;
   color: #505050;
@@ -109,19 +98,19 @@
   padding: 5px;
 }
 
-.data-box h3 img {
+.member-box .data-box h3 img {
   display: inline-block;
   width: 24px;
   height: 24px;
   margin-left: 5px;
 }
 
-.stats-container {
+.member-box .stats-container {
   display: flex;
   padding: 20px;
 }
 
-.data-box p {
+.member-box .data-box .tool-tip {
   flex: 1;
   margin-right: 10px;
   font-size: 24px;
@@ -129,18 +118,14 @@
   text-align: center;
 }
 
-.data-box p:last-child {
-  margin-right: 10px;
-}
-
-.data-box p img {
+.member-box .tool-tip p img {
   display: block;
   margin: 0 auto 5px;
   width: auto;
   height: 80px;
 }
 
-.scroll-button {
+.member-box .scroll-button {
   position: fixed;
   bottom: 80px;
   right: 30px;
@@ -148,6 +133,7 @@
   height: 60px;
   border-radius: 50%;
   background-color: var(--light-bg-color);
+  box-shadow: 0 4px 8px var(--dark-border-color);
   color: var(--dark-bg-color);
   font-size: 30px;
   display: none;
@@ -161,17 +147,17 @@
 
 /* Styles specific to mobile devices */
 @media (max-width: 767px) {
-  .data-box {
+  .member-box .data-box {
     flex: 0 0 calc(100% - 20px);
     margin-bottom: 15px;
   }
 
-  .data-box h3 {
+  .member-box .data-box h3 {
     font-size: 20px;
     margin-bottom: 5px;
   }
 
-  .data-box p {
+  .member-box .data-box p {
     font-size: 24px;
   }
 }
@@ -179,18 +165,18 @@
 /* Dark mode styles */
 @media (prefers-color-scheme: dark) {
 
-  .container {
+  .member-box {
     background-color: var(--dark-bg-color);
   }
 
-  .data-box {
+  .member-box .data-box {
     background-color: var(--dark-bg-color);
     box-shadow: 0 4px 8px var(--dark-border-color);
     border: 1px solid var(--primary-color);
     color: var(--primary-color);
   }
 
-  .sort-key-button,
+  .member-box .sort-key-button,
   .sort-order-button {
     background-color: #808080;
     border: 1px solid var(--primary-color);
@@ -198,29 +184,30 @@
     color: var(--primary-color);
   }
 
-  .data-box[data-clan-status='1'] {
+  .member-box .data-box[data-clan-status='1'] {
     background-color: #808080;
   }
 
-  .data-box h3 {
+  .member-box .data-box h3 {
     color: var(--prymary-color);
     background-color: #505050;
   }
 
-  .data-box h3 small {
+  .member-box .data-box h3 small {
     color: #ccc;
   }
 
-  .data-box h3 i {
+  .member-box .data-box h3 i {
     color: #ccc;
   }
 
-  .data-box p {
+  .member-box .data-box p {
     color: var(--primary-color)
   }
 
-  .scroll-button {
+  .member-box .scroll-button {
     background-color: var(--dark-bg-color);
     color: var(--light-bg-color);
+    box-shadow: 0 4px 8px var(--light-border-color);
   }
 }

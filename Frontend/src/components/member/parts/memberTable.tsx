@@ -74,13 +74,10 @@ function MemberTable() {
   };
 
   return (
-    <div className="container">
+    <div className='memberTable'>
       <table>
         <thead>
           <tr>
-            <th onClick={() => sortTable('tag')}>
-              Tag {getSortIcon('tag')}
-            </th>
             <th onClick={() => sortTable('name')}>
               Name {getSortIcon('name')}
             </th>
@@ -99,10 +96,9 @@ function MemberTable() {
           {warData.map((data, index) => (
             <tr
               key={index}
-              className={data.clanStatus === 0 ? 'gray-row' : ''}
+              className={data.clanStatus === 1 ? 'gray-row' : ''}
             >
-              <td>{data.tag}</td>
-              <td>{data.name}</td>
+              <td>{data.name}<br /> <small>{data.tag}</small></td>
               <td>{data.fame}</td>
               <td>{data.missedDecks}</td>
               <td>{data.decksUsedToday}</td>

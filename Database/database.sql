@@ -25,7 +25,10 @@ DROP TABLE IF EXISTS person;
 CREATE TABLE person(
     tag         VARCHAR(100) NOT NULL UNIQUE,
     name        VARCHAR(100) NOT NULL,
+    role        VARCHAR(100) NOT NULL DEFAULT 'member',
+    trophies    INTEGER NOT NULL DEFAULT 0,
     wholeFame   INTEGER NOT NULL DEFAULT 0,
+    clanRank    INTEGER NOT NULL DEFAULT 0,
 	clanStatus  BOOLEAN NOT NULL DEFAULT 1,
     joinDate    DATE DEFAULT (CURRENT_DATE),
     fk_clan     VARCHAR(100),

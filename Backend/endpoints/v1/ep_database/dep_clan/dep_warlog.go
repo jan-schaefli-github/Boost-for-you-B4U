@@ -26,7 +26,7 @@ func GetClanWarlog(c *gin.Context) {
 		}
 	}(db)
 
-	query := `SELECT p.tag, p.name, p.clanStatus, wr.fame, wr.missedDecks, dr.decksUsedToday, repairPoints, boatAttacks, p.joinDate
+	query := `SELECT p.tag, p.name, p.clanStatus, p.role, wr.fame, wr.missedDecks, dr.decksUsedToday, repairPoints, boatAttacks, p.joinDate
 	FROM person p
 	INNER JOIN weekly_report wr ON p.tag = wr.fk_person
 	INNER JOIN daily_report dr ON p.tag = dr.fk_person
@@ -53,6 +53,7 @@ func GetClanWarlog(c *gin.Context) {
 			&rowData.Tag,
 			&rowData.Name,
 			&rowData.ClanStatus,
+			&rowData.Role,
 			&rowData.Fame,
 			&rowData.MissedDecks,
 			&rowData.DecksUsedToday,

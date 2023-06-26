@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../../../assets/css/member/box.css';
-
-var role = "member"
+import Tooltip from '../../toolTip';
 
 const today = new Date().toISOString().split('T')[0];
 
@@ -92,17 +91,25 @@ function MemberBox() {
         <h3>
           {data.name}
           {data.joinDate === today && <img src="./clashIcon/icon_new.png" alt="New Player" />}
-          <i>{role}</i> <br />
+          <i>{data.role}</i> <br />
           <small>{data.tag}</small>
         </h3>
         <div className="stats-container">
+        <Tooltip position='top' text='Fame'>
         <p><img src="./clashIcon/icon-fame.png" alt="Fame" />{data.fame}</p>
+        </Tooltip>
         {data.boatAttacks !== 0 ? (
+           <Tooltip position='top' text='Decks Used Today, Made Boat Attack!'>
           <p><img src="./clashIcon/icon_decks_used_to_day_boat_attack.png" alt="Decks Used Today, Made Boat Attack" />{data.decksUsedToday}</p>
+          </Tooltip>
         ) : (
+          <Tooltip position='top' text='Decks Used Today'>
           <p><img src="./clashIcon/icon_decks_used_to_day.png" alt="Decks Used Today" />{data.decksUsedToday}</p>
+          </Tooltip>
         )}
+         <Tooltip position='top' text='Missed Decks'>
         <p><img src="./clashIcon/icon_decks_missed.png" alt="Missed Decks" />{data.missedDecks}</p>
+        </Tooltip>
       </div>
       </div>
     ));
@@ -130,7 +137,7 @@ function MemberBox() {
   }, []);
 
   return (
-    <div className="container">
+    <div className="member-box">
       <div className='sort-nav'>
         <label className=".dropdown-label">
           <button className="sort-key-button" onClick={handleSortKeyChange}>

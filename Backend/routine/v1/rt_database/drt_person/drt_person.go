@@ -49,6 +49,49 @@ func CreatePerson(tag string, name string, fk_clan string) {
 	logger.LogMessage("Database", "Person joined: "+tag)
 }
 
+func UpdatePerson(tag string, role string, trophies int, clanRank int) {
+	
+	// Connect to the database
+	db, err := tools.ConnectToDatabase()
+	if err != nil {
+		logger.LogMessage("Database", "Error while connecting to database: "+err.Error())
+		return
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			logger.LogMessage("Database", "Error while closing database: "+err.Error())
+			return
+		}
+	}(db)
+
+	// Update person in the database
+	stmt, err := db.Prepare("UPDATE person SET role = ?, trophies = ?, clanRank = ? WHERE tag = ?")
+	if err != nil {
+		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
+		return
+	}
+
+	// Close the statement
+	defer func(stmt *sql.Stmt) {
+		err := stmt.Close()
+		if err != nil {
+			logger.LogMessage("Database", "Error while closing statement: "+err.Error())
+			return
+		}
+	}(stmt)
+
+	// Execute the statement
+	_, err = stmt.Exec(role, trophies, clanRank, tag)
+	if err != nil {
+		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
+		return
+	}
+
+	logger.LogMessage("Database", "Person updated: "+tag)
+}
+
+	
 // Check if a person exists in the database
 func CheckPerson(tag string) bool {
 	// Connect to the database

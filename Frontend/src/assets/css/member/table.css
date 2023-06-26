@@ -1,38 +1,40 @@
-  .container {
+.memberTable {
+  margin-top: 10vh;
   margin: 20px auto;
   max-width: 800px;
   background-color: #222;
   border-radius: 10px;
   padding: 20px;
+  margin-top: 10vh;
 }
 
-table {
+.memberTable table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th,
-td {
+.memberTable th,
+.memberTable td {
   padding: 10px;
   text-align: left;
 }
 
-th {
+.memberTable th {
   color: #fff;
   font-weight: bold;
   background-color: #444;
 }
 
-th:hover {
+.memberTable th:hover {
   cursor: pointer;
 }
 
-tbody tr:nth-child(even) {
+.memberTable tbody tr:nth-child(even) {
   background-color: #333;
 }
 
-.gray-row {
-  background-color: #555 !important;
+.memberTable .gray-row {
+  background-color: black !important;
 }
 
 .fa-sort,

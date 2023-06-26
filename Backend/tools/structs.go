@@ -18,6 +18,7 @@ type WarData struct {
 	Tag            string `json:"tag"`
 	Name           string `json:"name"`
 	ClanStatus     string `json:"clanStatus"`
+	Role           string `json:"role"`
 	Fame           int    `json:"fame"`
 	MissedDecks    int    `json:"missedDecks"`
 	DecksUsedToday int    `json:"decksUsedToday"`
