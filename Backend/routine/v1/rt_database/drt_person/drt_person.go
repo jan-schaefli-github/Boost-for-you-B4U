@@ -87,8 +87,6 @@ func UpdatePerson(tag string, role string, trophies int, clanRank int) {
 		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
 		return
 	}
-
-	logger.LogMessage("Database", "Person updated: "+tag)
 }
 
 	

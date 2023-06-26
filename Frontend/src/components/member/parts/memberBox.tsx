@@ -5,6 +5,7 @@ import Tooltip from '../../toolTip';
 const today = new Date().toISOString().split('T')[0];
 
 interface WarData {
+  clanRank: number;
   name: string;
   fame: number;
   decksUsedToday: number;
@@ -14,8 +15,9 @@ interface WarData {
   [key: string]: string | number;
 }
 
-const SORT_KEYS: (keyof WarData)[] = ['name', 'fame', 'decksUsedToday', 'missedDecks','boatAttacks'  ,'clanStatus'];
+const SORT_KEYS: (keyof WarData)[] = ['clanRank', 'name', 'fame', 'decksUsedToday', 'missedDecks','boatAttacks'  ,'clanStatus'];
 const SORT_LABELS: { [key in keyof WarData]: string } = {
+  clanRank: 'Clan Rank',
   name: 'Name',
   fame: 'Fame',
   decksUsedToday: 'Decks Used Today',
@@ -89,6 +91,7 @@ function MemberBox() {
         data-clan-status={data.clanStatus}
       >
         <h3>
+          {data.clanRank}
           {data.name}
           {data.joinDate === today && <img src="./clashIcon/icon_new.png" alt="New Player" />}
           <i>{data.role}</i> <br />
