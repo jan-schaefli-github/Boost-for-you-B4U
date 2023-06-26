@@ -35,7 +35,7 @@ func GetClanWarlog(c *gin.Context) {
 	WHERE p.fk_clan = ? AND dr.date <= ?;`
 
 	fk_clan := "#P9UVQCJV"
-	date:= "2023-06-23"
+	date:= "2023-06-26"
 
 	rows, err := db.Query(query, fk_clan, date)
 	if err != nil {
