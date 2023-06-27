@@ -182,6 +182,8 @@ func getFameHistoryWithRiverLog(tag string) []interface{} {
 			}
 		}
 	}
+
+	/*------------Return Clan Name, Tag and Fame History-----------*/
 	return []interface{}{
 		map[string]interface{}{
 			"clanName":        clanName,
