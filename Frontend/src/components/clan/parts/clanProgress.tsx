@@ -1,4 +1,6 @@
 function progress() {
+
+
     return (
         <>
             <section className="clan-slide" id="part-progress">
