@@ -37,9 +37,11 @@ const SORT_LABELS: { [key in keyof WarData]: string } = {
 };
 
 function MemberBox() {
+  const [isFilterActive, setFilterActive] = useState(false);
   const [warData, setWarData] = useState<WarData[]>([]);
   const [sortKeyIndex, setSortKeyIndex] = useState<number>(0);
   const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [clanTag, setClanTag] = useState('#P9UVQCJV');
 
   useEffect(() => {
     fetchWarData();
@@ -47,11 +49,12 @@ function MemberBox() {
 
   const fetchWarData = async () => {
     try {
+      const formattedClanTag = clanTag.replace('#', '');
       const url = new URL(
-        "http://localhost:3000/database/clan/warlog/standard"
+        `http://localhost:3000/database/clan/warlog/${formattedClanTag}`
       );
       const response = await fetch(url.toString());
-
+  
       if (response.ok) {
         const data = await response.json();
         setWarData(data);
@@ -61,6 +64,11 @@ function MemberBox() {
     } catch (error) {
       console.error("Error while fetching war data:", error);
     }
+  };
+  
+
+  const handleFilterClick = () => {
+    setFilterActive(!isFilterActive);
   };
 
   const handleSortKeyChange = () => {
@@ -219,17 +227,30 @@ function MemberBox() {
   return (
     <div className="member-box">
       <div className="sort-nav">
-        <label className=".dropdown-label">
-          <button className="sort-key-button" onClick={handleSortKeyChange}>
-            {SORT_LABELS[SORT_KEYS[sortKeyIndex]]}
-          </button>
-        </label>
-        <label>
-          <button className="sort-order-button" onClick={handleSortOrderChange}>
-            {sortOrder === "asc" ? "▲" : "▼"}
-          </button>
-        </label>
+      {isFilterActive ? (
+        <input className="filter-input" placeholder='Enter clan tag ...' value={clanTag} onChange={(e) => setClanTag(e.target.value)} />
+      ) : (
+        <>
+          <label className=".dropdown-label">
+            <button className="sort-key-button" onClick={handleSortKeyChange}>
+              {SORT_LABELS[SORT_KEYS[sortKeyIndex]]}
+            </button>
+          </label>
+          <label>
+            <button className="sort-order-button" onClick={handleSortOrderChange}>
+              {sortOrder === 'asc' ? '▲' : '▼'}
+            </button>
+          </label>
+        </>
+      )}
+      <div className="filter-button" onClick={handleFilterClick}>
+        {isFilterActive ? (
+          <span className="filter-icon"><img src="./icon/filter.svg" alt="" /></span>
+        ) : (
+          <span className="search-icon"><img src="./icon/search.svg" alt="" /></span>
+        )}
       </div>
+    </div>
       <div className="data-box-container">{renderDataBoxes()}</div>
       <button
         id="scroll-button"

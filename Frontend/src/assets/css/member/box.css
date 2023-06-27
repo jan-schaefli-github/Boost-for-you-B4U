@@ -1,4 +1,4 @@
-.member-box { 
+.member-box {
   margin: 10vh 20px 0 20px;
   background-color: var(--light-bg-color);
   text-align: left;
@@ -16,8 +16,30 @@
   margin-right: 10px;
 }
 
+.member-box .filter-button {
+  font-size: 12px;
+  text-align: center;
+}
+
+.member-box .filter-icon img {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  margin-top: 4px;
+}
+
+.member-box .search-icon img {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  margin-top: 4px;
+}
+
+
+
 .member-box .sort-key-button,
-.sort-order-button {
+.sort-order-button
+{
   padding: 5px;
   border: none;
   background-color: #eeeeee;
@@ -27,7 +49,40 @@
   font-size: 14px;
   cursor: pointer;
   padding: 10px 20px;
-  min-width: 120px;
+  min-width: 100px;
+  max-width: 120px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.filter-button {
+  padding: 5px;
+  border: none;
+  background-color: #eeeeee;
+  border: 1px solid var(--secondary-color);
+  box-shadow: 0 4px 8px var(--light-border-color);
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  min-height: 37.5px;
+  padding: 4px 20px;
+  min-width: 100px;
+  max-width: 120px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.member-box .filter-input {
+  padding: 5px;
+  border: none;
+  background-color: #eeeeee;
+  border: 1px solid var(--secondary-color);
+  box-shadow: 0 4px 8px var(--light-border-color);
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 10px 31px;
+  min-width: 66%;
   margin-bottom: 10px;
   border-radius: 5px;
 }
@@ -38,21 +93,21 @@
 }
 
 .member-box .sort-order-button {
+  border-radius: 0;
+}
+
+.member-box .filter-button {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
 
+.member-box .filter-input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
 
 .member-box .sort-order-button::before {
   content: attr(data-text);
-}
-
-.member-box .sort-order-button[data-text='▼']::before {
-  content: "▼";
-}
-
-.member-box .sort-order-button[data-text='▲']::before {
-  content: "▲";
 }
 
 .member-box .data-box-container {
@@ -145,7 +200,6 @@
   cursor: pointer;
 }
 
-
 /* Styles specific to mobile devices */
 @media (max-width: 767px) {
   .member-box .data-box {
@@ -165,7 +219,6 @@
 
 /* Dark mode styles */
 @media (prefers-color-scheme: dark) {
-
   .member-box {
     background-color: var(--dark-bg-color);
   }
@@ -178,11 +231,32 @@
   }
 
   .member-box .sort-key-button,
-  .sort-order-button {
+  .sort-order-button,
+  .filter-button
+  {
     background-color: #808080;
     border: 1px solid var(--primary-color);
     box-shadow: 0 4px 8px var(--dark-border-color);
     color: var(--primary-color);
+  }
+
+  .member-box .filter-input {
+    background-color: #808080;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 4px 8px var(--dark-border-color);
+    color: var(--primary-color);
+  }
+
+  .member-box .filter-input::placeholder {
+    color: var(--primary-color);
+  }
+
+  .member-box .search-icon img {
+    filter: invert(1);
+  }
+
+  .member-box .filter-icon img {
+    filter: invert(1);
   }
 
   .member-box .data-box[data-clan-status='0'] {
@@ -190,7 +264,7 @@
   }
 
   .member-box .data-box h3 {
-    color: var(--prymary-color);
+    color: var(--primary-color);
     background-color: #505050;
   }
 
@@ -203,7 +277,7 @@
   }
 
   .member-box .data-box p {
-    color: var(--primary-color)
+    color: var(--primary-color);
   }
 
   .member-box .scroll-button {
