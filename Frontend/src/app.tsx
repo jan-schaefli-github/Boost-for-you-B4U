@@ -4,6 +4,7 @@ import Footer from './components/footer.tsx';
 import Index from './components/index.tsx'
 import ClanMain from "./components/clan/clanMain.tsx";
 import MemberMain from './components/member/memberMain.tsx';
+import NotFound from './components/notFound.tsx';
 
 export default function App() {
     return (
@@ -15,6 +16,7 @@ export default function App() {
                 <Route path="/about" element={<Index/>} />
                 <Route path="/clan-tracking" element={<ClanMain/>} />
                 <Route path="/member-tracking" element={<MemberMain/>} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
             </main>
             <Footer />
