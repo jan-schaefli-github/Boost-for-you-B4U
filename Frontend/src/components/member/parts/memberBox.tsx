@@ -45,7 +45,7 @@ function MemberBox() {
 
   useEffect(() => {
     fetchWarData();
-  }, []);
+  }, [clanTag]);
 
   const fetchWarData = async () => {
     try {
@@ -80,6 +80,9 @@ function MemberBox() {
   };
 
   const sortData = (data: WarData[]) => {
+    if (!data) {
+      return [];
+    }
     const sortedDataAboveZero = data.filter((item) => item.clanStatus >= 1);
     const sortedDataBelowZero = data.filter((item) => item.clanStatus <= 0);
 
