@@ -94,10 +94,10 @@ func Routine() {
 					// NEW DAY STARTED
 					drt_person.CreateDailyReport(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, tag)
 				}
-			}
 
-			// Update the person
-			drt_person.UpdatePerson(tag, role, trophies, clanRank)
+				// Update the person
+				drt_person.UpdatePerson(tag, role, trophies, clanRank)
+			}
 		}
 
 		// Update status
