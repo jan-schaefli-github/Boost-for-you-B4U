@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import '../../../assets/css/member/table.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 
 interface WarData {
   tag: string;
@@ -59,23 +61,44 @@ function MemberTable() {
     setSortConfig({ key, direction });
   };
 
+  const getSortIcon = (key: string) => {
+    if (sortConfig.key === key) {
+      return sortConfig.direction === 'asc' ? (
+        <FontAwesomeIcon icon={faSortUp} />
+      ) : (
+        <FontAwesomeIcon icon={faSortDown} />
+      );
+    } else {
+      return <FontAwesomeIcon icon={faSort} />;
+    }
+  };
+
   return (
-    <div className="container">
+    <div className='memberTable'>
       <table>
         <thead>
           <tr>
-            <th onClick={() => sortTable('tag')}>Tag</th>
-            <th onClick={() => sortTable('name')}>Name</th>
-            <th onClick={() => sortTable('fame')}>Fame</th>
-            <th onClick={() => sortTable('missedDecks')}>Missed Decks</th>
-            <th onClick={() => sortTable('decksUsedToday')}>Decks Used Today</th>
+            <th onClick={() => sortTable('name')}>
+              Name {getSortIcon('name')}
+            </th>
+            <th onClick={() => sortTable('fame')}>
+              Fame {getSortIcon('fame')}
+            </th>
+            <th onClick={() => sortTable('missedDecks')}>
+              Missed Decks {getSortIcon('missedDecks')}
+            </th>
+            <th onClick={() => sortTable('decksUsedToday')}>
+              Decks Used Today {getSortIcon('decksUsedToday')}
+            </th>
           </tr>
         </thead>
         <tbody>
           {warData.map((data, index) => (
-            <tr key={index} className={data.clanStatus === 0 ? 'gray-row' : ''}>
-              <td>{data.tag}</td>
-              <td>{data.name}</td>
+            <tr
+              key={index}
+              className={data.clanStatus === 1 ? 'gray-row' : ''}
+            >
+              <td>{data.name}<br /> <small>{data.tag}</small></td>
               <td>{data.fame}</td>
               <td>{data.missedDecks}</td>
               <td>{data.decksUsedToday}</td>

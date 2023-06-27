@@ -19,81 +19,91 @@ func Routine() {
 	// For each clan tag
 	for _, clanTag := range clanTags {
 
+		// Get the clan members
+		members := art_clan.GetMembers(clanTag)
+
 		// Get war information
 		currentriverrace := art_clan.GetCurrentriverrace(clanTag)
 		periodIndex, periodType, sectionIndex := crt_clan.CalculateCurrentPeriod(currentriverrace)
 
-		// If it is war day
-		if periodType == "warDay" {
+		// Get the participants
+		participants := crt_person.CalculateParticipants(currentriverrace)
 
-			// Get the participants
-			participants := crt_person.CalculateParticipants(currentriverrace)
+		// For each participant
+		for _, participant := range participants {
 
-			// For each participant
-			for _, participant := range participants {
+			participantData, ok := participant.(map[string]interface{})
+			if !ok {
+				logger.LogMessage("Routine", "Error while extracting participant from participants.")
+				return
+			}
 
-				participantData, ok := participant.(map[string]interface{})
-				if !ok {
-					logger.LogMessage("Routine", "Error while extracting participant from participants.")
-					return
+			// Calculate the participant data
+			tag, name, fame, repairPoints, boatAttacks, decksUsedToday := crt_person.CalculateParticipantData(participantData)
+
+			clanRank, role, trophies := crt_person.CalculateMember(members, tag)
+
+			// Update the person data
+			drt_person.UpdatePerson(tag, role, trophies, clanRank)
+
+			// Calculate the day identifier
+			dayIdentifier := rt_calculations.CalculateDayIdentifier(sectionIndex, periodIndex)
+			decksUsedYesterday, lastFame, lastDayIdentifier := drt_person.GetLastDailyReport(tag)
+
+			// Calculate the week identifier
+			weekIdentifier := rt_calculations.CalculateWeekIdentifier(sectionIndex)
+			lastmissedDecks, lastWeekIdentifier := drt_person.GetLastWeeklyReport(tag)
+
+			// Get the person clan tag
+			personData := art_person.GetPerson(tag)
+			personClanTag := crt_person.CalculatePersonClan(personData)
+
+			// Check if the person is in the clan
+			if clanTag == personClanTag {
+
+				// Check if Person already exists in the database
+				if !drt_person.CheckPerson(tag) {
+
+					drt_person.CreatePerson(tag, name, personClanTag)
 				}
 
-				tag, name, fame, repairPoints, boatAttacks,  decksUsedToday := crt_person.CalculateParticipantData(participantData)
+				// Update the daily report
+				if lastDayIdentifier == dayIdentifier {
 
-				// Calculate the day identifier
-				dayIdentifier := rt_calculations.CalculateDayIdentifier(sectionIndex, periodIndex)
-				decksUsedYesterday, lastFame, lastDayIdentifier := drt_person.GetLastDailyReport(tag)
+					drt_person.UpdateDailyReport(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, tag)
+				} else {
 
-				// Calculate the week identifier
-				weekIdentifier := rt_calculations.CalculateWeekIdentifier(sectionIndex)
-				lastmissedDecks, lastWeekIdentifier := drt_person.GetLastWeeklyReport(tag)
+					// If it is war day
+					if periodType == "warDay" {
 
-				// Get the person clan tag
-				personData := art_person.GetPerson(tag)
-				personClanTag := crt_person.CalculatePersonClan(personData)
-
-				// Check if the person is in the clan
-				if clanTag == personClanTag {
-
-					// Check if Person already exists in the database
-					if !drt_person.CheckPerson(tag) {
-
-						drt_person.CreatePerson(tag, name, personClanTag)
-					}
-
-					// Update the daily report
-					if lastDayIdentifier == dayIdentifier {
-
-						drt_person.UpdateDailyReport(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, tag)
-					} else {
-
+						// Calculate the missed decks
 						missedDecks := lastmissedDecks + (4 - decksUsedYesterday)
 
 						// Update the weekly report
 						drt_person.UpdateWeeklyReport(lastFame, missedDecks, weekIdentifier, tag)
-						
-						// Check if the week changed
-						if lastWeekIdentifier != weekIdentifier {
 
-							// NEW WEEK STARTED
-							drt_person.CreateWeeklyReport(weekIdentifier, tag)
-						}
-
-
-						// NEW DAY STARTED
-						drt_person.CreateDailyReport(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, tag)
+					} else {
+						// Update the weekly report
+						drt_person.UpdateWeeklyReport(0, 0, weekIdentifier, tag)
 					}
+
+					// Check if the week changed
+					if lastWeekIdentifier != weekIdentifier {
+
+						// NEW WEEK STARTED
+						drt_person.CreateWeeklyReport(weekIdentifier, tag)
+					}
+
+					// NEW DAY STARTED
+					drt_person.CreateDailyReport(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, tag)
 				}
 			}
-
-			// Update status
-			members := art_clan.GetMembers(clanTag)
-			memberTags := crt_clan.CalculateMemberTags(members)
-
-			drt_person.UpdatePersonStatus(memberTags, clanTag)
-		} else {
-			logger.LogMessage("Routine", "Clan "+clanTag+" is not in war day.")
 		}
+
+		// Update status
+		memberTags := crt_clan.CalculateMemberTags(members)
+
+		drt_person.UpdatePersonStatus(memberTags, clanTag)
 	}
 	logger.LogMessage("Routine", "Routine finished.")
 }

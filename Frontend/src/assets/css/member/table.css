@@ -1,60 +1,61 @@
-.container {
-    background-color: #ffffff;
-    color: #000000;
-    padding: 20px;
-  }
-  
-  .container.dark {
-    background-color: #222222;
-    color: #ffffff;
-  }
-  
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  
-  .mode-toggle {
-    background-color: transparent;
-    color: inherit;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    font-size: 16px;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th,
-  td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #dddddd;
-  }
-  
-  th {
-    cursor: pointer;
-  }
+.memberTable {
+  margin-top: 10vh;
+  margin: 20px auto;
+  max-width: 800px;
+  background-color: #222;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 10vh;
+}
 
-  .gray-row {
-    background-color: #ccc;
-  }
-  
-  
-  @media (prefers-color-scheme: dark) {
-    .container {
-      background-color: #222222;
-      color: #ffffff;
-    }
-  
-    .container.dark {
-      background-color: #ffffff;
-      color: #000000;
-    }
-  }
-  
+.memberTable table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.memberTable th,
+.memberTable td {
+  padding: 10px;
+  text-align: left;
+}
+
+.memberTable th {
+  color: #fff;
+  font-weight: bold;
+  background-color: #444;
+}
+
+.memberTable th:hover {
+  cursor: pointer;
+}
+
+.memberTable tbody tr:nth-child(even) {
+  background-color: #333;
+}
+
+.memberTable .gray-row {
+  background-color: black !important;
+}
+
+.fa-sort,
+.fa-sort-up,
+.fa-sort-down {
+  margin-left: 5px;
+  color: #ccc;
+  transition: transform 0.3s;
+}
+
+.fa-sort:hover,
+.fa-sort-up:hover,
+.fa-sort-down:hover {
+  transform: scale(1.2);
+  color: #fff;
+}
+
+.fa-sort-up {
+  transform: rotate(180deg);
+}
+
+.fa-sort-down {
+  transform: rotate(0deg);
+}

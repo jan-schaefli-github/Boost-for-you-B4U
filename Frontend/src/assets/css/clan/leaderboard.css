@@ -6,7 +6,7 @@
     width: 80%;
 }
 
-h1 {
+.clan-main h1 {
     text-align: center;
 }
 
@@ -15,62 +15,62 @@ h1 {
     border-collapse: collapse;
 }
 
-th,
-td {
+.clan-main th,
+.clan-main td {
     padding: 12px;
     text-align: left;
 }
 
-th {
+.clan-main th {
     background-color: var(--bg-color);
     border: thin solid var(--accent-color-1);
 }
 
-tr:nth-child(even) {
+.clan-main tr:nth-child(even) {
     background-color: var(--bg-color-2);
 }
 
-tr:hover {
+.clan-main tr:hover {
     background-color: var(--bg-color-hover);
 }
 
-td:nth-child(1) {
+.clan-main td:nth-child(1) {
     color: var(--accent-color-1);
 }
 
-td:nth-child(2) {
+.clan-maintd:nth-child(2) {
     color: var(--accent-color-2);
     font-weight: var(--highlight-color-bold);
 }
 
-td:nth-child(3) {
+.clan-main td:nth-child(3) {
     color: var(--highlight-color-2);
 }
 
 @media (prefers-color-scheme: dark) {
-    body {
+    .clan-main body {
         background-color: var(--primary-color);
         color: var(--dark-text-color);
     }
 
-    h1 {
+    .clan-main h1 {
         color: var(--dark-text-color);
     }
 
-    table {
+    .clan-main table {
         color: var(--dark-text-color);
     }
 
-    th {
+    .clan-main th {
         background-color: var(--dark-bg-color);
         color: var(--dark-text-color);
     }
 
-    tr:nth-child(even) {
+    .clan-main tr:nth-child(even) {
         background-color: var(--dark-bg-color);
     }
 
-    tr:hover {
+    .clan-main tr:hover {
         background-color: var(--dark-bg-color-hover);
     }
 }

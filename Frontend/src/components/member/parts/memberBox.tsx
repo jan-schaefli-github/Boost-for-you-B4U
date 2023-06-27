@@ -1,23 +1,28 @@
 import { useEffect, useState } from 'react';
 import '../../../assets/css/member/box.css';
+import Tooltip from '../../toolTip';
 
-var role = "member"
+const today = new Date().toISOString().split('T')[0];
 
 interface WarData {
+  clanRank: number;
   name: string;
-  clanStatus: number;
   fame: number;
-  missedDecks: number;
   decksUsedToday: number;
+  missedDecks: number;
+  boatAttacks: number;
+  clanStatus: number;
   [key: string]: string | number;
 }
 
-const SORT_KEYS: (keyof WarData)[] = ['name', 'fame', 'missedDecks', 'decksUsedToday', 'clanStatus'];
+const SORT_KEYS: (keyof WarData)[] = ['clanRank', 'name', 'fame', 'decksUsedToday', 'missedDecks','boatAttacks'  ,'clanStatus'];
 const SORT_LABELS: { [key in keyof WarData]: string } = {
+  clanRank: 'Clan Rank',
   name: 'Name',
   fame: 'Fame',
-  missedDecks: 'Missed Decks',
   decksUsedToday: 'Decks Used Today',
+  missedDecks: 'Missed Decks',
+  boatAttacks: 'Boat Attacks',
   clanStatus: 'Clan Status',
 };
 
@@ -86,15 +91,29 @@ function MemberBox() {
         data-clan-status={data.clanStatus}
       >
         <h3>
+          {data.clanRank}
           {data.name}
-          <i>{role}</i> <br />
+          {data.joinDate === today && <img src="./clashIcon/icon_new.png" alt="New Player" />}
+          <i>{data.role}</i> <br />
           <small>{data.tag}</small>
         </h3>
         <div className="stats-container">
-          <p><img src="./clashIcon/icon-fame.png" alt="" />{data.fame}</p>
-          <p><img src="./clashIcon/icon_decks_used_to_day.png" alt="" />{data.decksUsedToday}</p>
-          <p><img src="./clashIcon/icon_decks_missed.png" alt="" />{data.missedDecks}</p>
-        </div>
+        <Tooltip position='top' text='Fame'>
+        <p><img src="./clashIcon/icon-fame.png" alt="Fame" />{data.fame}</p>
+        </Tooltip>
+        {data.boatAttacks !== 0 ? (
+           <Tooltip position='top' text='Decks Used Today, Made Boat Attack!'>
+          <p><img src="./clashIcon/icon_decks_used_to_day_boat_attack.png" alt="Decks Used Today, Made Boat Attack" />{data.decksUsedToday}</p>
+          </Tooltip>
+        ) : (
+          <Tooltip position='top' text='Decks Used Today'>
+          <p><img src="./clashIcon/icon_decks_used_to_day.png" alt="Decks Used Today" />{data.decksUsedToday}</p>
+          </Tooltip>
+        )}
+         <Tooltip position='top' text='Missed Decks'>
+        <p><img src="./clashIcon/icon_decks_missed.png" alt="Missed Decks" />{data.missedDecks}</p>
+        </Tooltip>
+      </div>
       </div>
     ));
   };
@@ -121,7 +140,7 @@ function MemberBox() {
   }, []);
 
   return (
-    <div className="container">
+    <div className="member-box">
       <div className='sort-nav'>
         <label className=".dropdown-label">
           <button className="sort-key-button" onClick={handleSortKeyChange}>
@@ -130,7 +149,7 @@ function MemberBox() {
         </label>
         <label>
           <button className="sort-order-button" onClick={handleSortOrderChange}>
-            {sortOrder === 'asc' ? '▼' : '▲'}
+            {sortOrder === 'asc' ? '▲' : '▼'}
           </button>
         </label>
       </div>
