@@ -39,7 +39,6 @@ func GetClanMemberLeaderboard(c *gin.Context) {
 		logger.LogMessage("Request", "Fehler beim Dekodieren der Antwort: "+err.Error())
 		return
 	}
-	println(data)
 
 	// Gewünschte Werte extrahieren
 	var result []map[string]interface{}

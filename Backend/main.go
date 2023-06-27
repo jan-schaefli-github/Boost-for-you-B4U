@@ -73,6 +73,7 @@ func main() {
 	router.GET("/api/clan/members", aep_clan.GetMembers)
 	router.GET("/api/clan/currentriverrace", aep_clan.GetCurrentRiverRace)
 	router.GET("/api/clan/riverracelog", aep_clan.GetRiverRaceLog)
+	router.GET("/api/clan/riverracelog/linechart", aep_clan.GetRiverRaceLogChartFormatted)
 	router.GET("/api/clan/members/leaderboard", aep_clan.GetClanMemberLeaderboard)
 	router.GET("/api/clan/locations", aep_clan.GetLocations)
 	router.GET("/api/clan/leaderboard", aep_clan.GetClanRankingByLocation)

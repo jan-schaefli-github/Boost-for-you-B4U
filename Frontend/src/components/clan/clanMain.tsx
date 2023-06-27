@@ -11,9 +11,9 @@ function ClanMain() {
             <ClanBanner />
             <main className="clan-main">
                 <ClanTopOfTheBoard />
-                <CurrentTracking />
                 <Progress />
                 <Info />
+                <CurrentTracking />
             </main>
         </>
     );

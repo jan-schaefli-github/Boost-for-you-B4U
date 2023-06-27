@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import '../../../../assets/css/clan/leaderboard.css';
 import Leaderboard from "./locationLeaderboard.tsx";
+import LocationButton from './locationButton.tsx';
 
 interface Location {
     id: number;
@@ -53,19 +54,8 @@ const SelectInput: React.FC = () => {
     return (
         <>
             <div className="clan-clans-leaderboards">
-                <div className="selection-min">
-                    <p className="clan-leaderboard-title">Clans</p>
-                    <select onChange={handleSelectChange} value={selectedChoice}>
-                        {choices.map((choice, index) => {
-                            return (
-                                <option key={index} value={choice.id}>
-                                    {choice.name}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </div>
-                <Leaderboard selectedLocation={selectedLocation}  trigger={trigger} setTrigger={setTrigger}/>
+                <LocationButton choices={choices} selectedChoice={selectedChoice} handleSelectChange={handleSelectChange} />
+                <Leaderboard selectedLocation={selectedLocation} trigger={trigger} setTrigger={setTrigger} />
             </div>
         </>
     );
