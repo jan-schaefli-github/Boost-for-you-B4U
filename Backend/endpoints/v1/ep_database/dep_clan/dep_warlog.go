@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,10 +33,24 @@ func GetClanWarlog(c *gin.Context) {
 	INNER JOIN daily_report dr ON p.tag = dr.fk_person
 	INNER JOIN (SELECT fk_person, MAX(id) AS max_id FROM weekly_report GROUP BY fk_person) wr_max ON wr.fk_person = wr_max.fk_person AND wr.id = wr_max.max_id
 	INNER JOIN (SELECT fk_person, MAX(id) AS max_id FROM daily_report GROUP BY fk_person) dr_max ON dr.fk_person = dr_max.fk_person AND dr.id = dr_max.max_id
-	WHERE p.fk_clan = ? AND dr.date <= ?;`
+	WHERE p.fk_clan = ? AND dr.date >= ?;`
 
-	fk_clan := "#P9UVQCJV"
-	date:= "2023-06-26"
+	tools.LoadDotEnv()
+	
+	fk_clan := c.Param("clanID")
+	if fk_clan == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Keine Clan-ID angegeben"})
+		logger.LogMessage("Database", "No clan ID specified")
+		return
+	} else if fk_clan == "standard" {
+		fk_clan = tools.ClanTag
+	} else {
+		fk_clan = "#"+fk_clan
+	}
+
+	println(fk_clan)
+	
+	date := time.Now().Format("2006-01-02")
 
 	rows, err := db.Query(query, fk_clan, date)
 	if err != nil {

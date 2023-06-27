@@ -80,7 +80,7 @@ func main() {
 	router.GET("/database/person/dailyReport", dep_person.GetDailyReport)
 	router.GET("/database/clan", dep_clan.GetClan)
 	router.GET("/database/clan/weeklyReport", dep_clan.GetClanWeeklyReport)
-	router.GET("/database/clan/warlog", dep_clan.GetClanWarlog)
+	router.GET("/database/clan/warlog/:clanID", dep_clan.GetClanWarlog)
 
 	// Start server
 	log.Printf("Server läuft auf Port %s", port)

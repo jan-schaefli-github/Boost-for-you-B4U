@@ -15,9 +15,9 @@ interface WarData {
   [key: string]: string | number;
 }
 
-const SORT_KEYS: (keyof WarData)[] = ['clanRank', 'name', 'fame', 'decksUsedToday', 'missedDecks','boatAttacks'  ,'clanStatus'];
+const SORT_KEYS: (keyof WarData)[] = ['clanRank', 'name', 'fame', 'decksUsedToday', 'missedDecks','boatAttacks'];
 const SORT_LABELS: { [key in keyof WarData]: string } = {
-  clanRank: 'Clan Rank',
+  clanRank: 'Rank',
   name: 'Name',
   fame: 'Fame',
   decksUsedToday: 'Decks Used Today',
@@ -37,7 +37,7 @@ function MemberBox() {
 
   const fetchWarData = async () => {
     try {
-      const url = new URL('http://localhost:3000/database/clan/warlog');
+      const url = new URL('http://localhost:3000/database/clan/warlog/standard');
       const response = await fetch(url.toString());
 
       if (response.ok) {
@@ -60,9 +60,10 @@ function MemberBox() {
   };
 
   const sortData = (data: WarData[]) => {
-    const sortedData = [...data];
+    const sortedDataAboveZero = data.filter(item => item.clanStatus >= 1);
+    const sortedDataBelowZero = data.filter(item => item.clanStatus <= 0);
 
-    sortedData.sort((a, b) => {
+    sortedDataAboveZero.sort((a, b) => {
       const sortKey = SORT_KEYS[sortKeyIndex];
       const aValue = a[sortKey];
       const bValue = b[sortKey];
@@ -78,7 +79,23 @@ function MemberBox() {
       return 0;
     });
 
-    return sortedData;
+    sortedDataBelowZero.sort((a, b) => {
+      const sortKey = SORT_KEYS[sortKeyIndex];
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+
+      if (sortOrder === 'asc') {
+        if (aValue < bValue) return -1;
+        if (aValue > bValue) return 1;
+      } else if (sortOrder === 'desc') {
+        if (aValue > bValue) return -1;
+        if (aValue < bValue) return 1;
+      }
+
+      return 0;
+    });
+
+    return [...sortedDataAboveZero, ...sortedDataBelowZero];
   };
 
   const renderDataBoxes = () => {
@@ -91,29 +108,28 @@ function MemberBox() {
         data-clan-status={data.clanStatus}
       >
         <h3>
-          {data.clanRank}
           {data.name}
           {data.joinDate === today && <img src="./clashIcon/icon_new.png" alt="New Player" />}
-          <i>{data.role}</i> <br />
+          <i>{data.role !== "" ? data.role : "--"}</i> <br />
           <small>{data.tag}</small>
         </h3>
         <div className="stats-container">
-        <Tooltip position='top' text='Fame'>
-        <p><img src="./clashIcon/icon-fame.png" alt="Fame" />{data.fame}</p>
-        </Tooltip>
-        {data.boatAttacks !== 0 ? (
-           <Tooltip position='top' text='Decks Used Today, Made Boat Attack!'>
-          <p><img src="./clashIcon/icon_decks_used_to_day_boat_attack.png" alt="Decks Used Today, Made Boat Attack" />{data.decksUsedToday}</p>
+          <Tooltip position={{ top: '-45px', left: '-10px' }} text='Fame'>
+            <p><img src="./clashIcon/icon-fame.png" alt="Fame" />{data.fame}</p>
           </Tooltip>
-        ) : (
-          <Tooltip position='top' text='Decks Used Today'>
-          <p><img src="./clashIcon/icon_decks_used_to_day.png" alt="Decks Used Today" />{data.decksUsedToday}</p>
+          {data.boatAttacks !== 0 ? (
+            <Tooltip position={{ top: '-45px', left: '-10px' }} text='Decks Used Today, Made Boat Attack!'>
+              <p><img src="./clashIcon/icon_decks_used_to_day_boat_attack.png" alt="Decks Used Today, Made Boat Attack" />{data.decksUsedToday}</p>
+            </Tooltip>
+          ) : (
+            <Tooltip position={{ top: '-45px', left: '-10px' }} text='Decks Used Today'>
+              <p><img src="./clashIcon/icon_decks_used_to_day.png" alt="Decks Used Today" />{data.decksUsedToday}</p>
+            </Tooltip>
+          )}
+          <Tooltip position={{ top: '-45px', left: '-10px' }} text='Missed Decks'>
+            <p><img src="./clashIcon/icon_decks_missed.png" alt="Missed Decks" />{data.missedDecks}</p>
           </Tooltip>
-        )}
-         <Tooltip position='top' text='Missed Decks'>
-        <p><img src="./clashIcon/icon_decks_missed.png" alt="Missed Decks" />{data.missedDecks}</p>
-        </Tooltip>
-      </div>
+        </div>
       </div>
     ));
   };

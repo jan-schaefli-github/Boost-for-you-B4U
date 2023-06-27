@@ -65,10 +65,11 @@
   box-shadow: 0 4px 8px var(--light-border-color);
   transition: transform 0.3s ease-in-out;
   margin-bottom: 20px;
+  background-color: #ffffff;
 }
 
-.member-box .data-box[data-clan-status='1'] {
-  background-color: #eeeeee;
+.member-box .data-box[data-clan-status='0'] {
+  background-color: #efefef;
 }
 
 .member-box .data-box h3 {
@@ -76,7 +77,7 @@
   padding: 0;
   font-size: 24px;
   color: #333;
-  background-color: #dddddd;
+  background-color: var(--light-heading-color);
   padding: 10px;
   margin-bottom: 10px;
   white-space: nowrap;
@@ -170,7 +171,7 @@
   }
 
   .member-box .data-box {
-    background-color: var(--dark-bg-color);
+    background-color: #808080;
     box-shadow: 0 4px 8px var(--dark-border-color);
     border: 1px solid var(--primary-color);
     color: var(--primary-color);
@@ -184,8 +185,8 @@
     color: var(--primary-color);
   }
 
-  .member-box .data-box[data-clan-status='1'] {
-    background-color: #808080;
+  .member-box .data-box[data-clan-status='0'] {
+    background-color: var(--dark-bg-color);
   }
 
   .member-box .data-box h3 {

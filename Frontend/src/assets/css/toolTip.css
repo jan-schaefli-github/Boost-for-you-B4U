@@ -1,12 +1,3 @@
-.tool-tip {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
 .tooltip-text {
   opacity: 0;
   position: absolute;
@@ -20,79 +11,78 @@
   text-align: center;
   white-space: nowrap;
   transition: opacity 0.2s ease-in-out;
-  z-index: 1;
 }
-  
-  .tooltip-text::before {
-    content: "▼";
-    text-shadow: 0 0 1px var(--dark-border-color);
-    color: var(--light-bg-color);
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    top: 32px;
-    z-index: -2;
-  }
-  
-.hover-text:hover .tooltip-text {
+
+.tooltip-text::before {
+  content: "▼";
+  text-shadow: 0 0 1px var(--dark-border-color);
+  color: var(--light-bg-color);
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 32px;
+  z-index: -2;
+}
+
+.tool-tip:hover .tooltip-text {
   opacity: 1;
 }
-  
-  .tooltip-text.top {
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  
-  .tooltip-text.top::before {
-    bottom: -5px;
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
-  }
-  
-  .tooltip-text.bottom {
-    top: 35px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  
-  .tooltip-text.bottom::before {
-    top: -5px;
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
-  }
-  
-  .tooltip-text.left {
-    top: -8px;
-    right: calc(100% + 10px);
-  }
-  
-  .tooltip-text.left::before {
-    top: 50%;
-    right: -5px;
-    transform: translateY(-50%) rotate(45deg);
-  }
-  
-  .tooltip-text.right {
-    top: -8px;
-    left: calc(100% + 10px);
-  }
-  
-  .tooltip-text.right::before {
-    top: 50%;
-    left: -5px;
-    transform: translateY(-50%) rotate(45deg);
+
+.tooltip-text.top {
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-text.top::before {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.tooltip-text.bottom {
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-text.bottom::before {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.tooltip-text.left {
+  top: -8px;
+  right: calc(100% + 10px);
+}
+
+.tooltip-text.left::before {
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.tooltip-text.right {
+  top: -8px;
+  left: calc(100% + 10px);
+}
+
+.tooltip-text.right::before {
+  top: 50%;
+  left: -5px;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip-text {
+    background-color: var(--dark-bg-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 1px var(--light-border-color);
   }
 
-  @media (prefers-color-scheme: dark) {
-    .tooltip-text {
-      background-color: var(--dark-bg-color);
-      color: var(--primary-color);
-      box-shadow: 0 0 1px var(--light-border-color);
-    }
-    
-    .tooltip-text::before {
-      color: var(--dark-bg-color);
-      text-shadow: 0 0 1px var(--light-border-color);
-    }
+  .tooltip-text::before {
+    color: var(--dark-bg-color);
+    text-shadow: 0 0 1px var(--light-border-color);
   }
+}
