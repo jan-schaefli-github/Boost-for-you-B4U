@@ -43,9 +43,6 @@ func Routine() {
 
 			clanRank, role, trophies := crt_person.CalculateMember(members, tag)
 
-			// Update the person data
-			drt_person.UpdatePerson(tag, role, trophies, clanRank)
-
 			// Calculate the day identifier
 			dayIdentifier := rt_calculations.CalculateDayIdentifier(sectionIndex, periodIndex)
 			decksUsedYesterday, lastFame, lastDayIdentifier := drt_person.GetLastDailyReport(tag)
@@ -98,6 +95,9 @@ func Routine() {
 					drt_person.CreateDailyReport(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, tag)
 				}
 			}
+
+			// Update the person
+			drt_person.UpdatePerson(tag, role, trophies, clanRank)
 		}
 
 		// Update status

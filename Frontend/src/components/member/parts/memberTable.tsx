@@ -68,33 +68,43 @@ function MemberTable() {
 
   const sortTable = (key: string) => {
     let direction = 'asc';
-
+  
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc';
     }
-
+  
     const sortedDataAboveZero = [...warData].filter(item => item.clanStatus > 0);
     const sortedDataBelowZero = [...warData].filter(item => item.clanStatus <= 0);
-
+  
     sortedDataAboveZero.sort((a, b) => {
-      if (a[key] < b[key]) return -1;
-      if (a[key] > b[key]) return 1;
-      return 0;
+      if (key === 'role') {
+        const roleOrder = ['leader', 'coLeader', 'elder', 'member'];
+        return roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role);
+      } else {
+        if (a[key] < b[key]) return -1;
+        if (a[key] > b[key]) return 1;
+        return 0;
+      }
     });
-
+  
     sortedDataBelowZero.sort((a, b) => {
-      if (a[key] < b[key]) return -1;
-      if (a[key] > b[key]) return 1;
-      return 0;
+      if (key === 'role') {
+        const roleOrder = ['leader', 'coLeader', 'elder', 'member'];
+        return roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role);
+      } else {
+        if (a[key] < b[key]) return -1;
+        if (a[key] > b[key]) return 1;
+        return 0;
+      }
     });
-
+  
     if (direction === 'desc') {
       sortedDataAboveZero.reverse();
       sortedDataBelowZero.reverse();
     }
-
+  
     const sortedData = [...sortedDataAboveZero, ...sortedDataBelowZero];
-
+  
     setWarData(sortedData);
     setSortConfig({ key, direction });
   };
