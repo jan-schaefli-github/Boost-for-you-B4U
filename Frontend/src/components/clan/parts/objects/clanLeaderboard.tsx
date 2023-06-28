@@ -1,60 +1,22 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import '../../../../assets/css/clan/leaderboard.css';
 import Leaderboard from "./locationLeaderboard.tsx";
-import LocationButton from './locationButton.tsx';
-
-interface Location {
-    id: number;
-    name: string;
-}
-
-const url = 'http://localhost:3000/api/clan/locations';
+import LocationButton from './locationButton';
 
 const SelectInput: React.FC = () => {
-    const [selectedChoice, setSelectedChoice] = useState('');
-    const [choices, setChoices] = useState<Location[]>([]);
     const [trigger, setTrigger] = useState(true);
     const [selectedLocation, setSelectedLocation] = useState(57000000);
 
-    const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>): void | number => {
-        const selectedValue = event.target.value;
-        setSelectedChoice(selectedValue);
-        setTrigger(true);
-        // Find the selected location based on the selected ID
-        const selectedLocation = choices.find((location) => location.id === parseInt(selectedValue, 10));
-        if (selectedLocation) {
-            console.log('Selected Location ID for Leaderboard:', selectedLocation.id);
-            setSelectedLocation(selectedLocation.id);
-        } else {
-            return 0;
-        }
+    const handleLocationSelect = (locationId: number) => {
+        setSelectedLocation(locationId);
+        setTrigger(prevTrigger => !prevTrigger); // Toggle the trigger to force a reload of the Leaderboard
     };
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const locationData = data.items; // Access the 'items' array
-                if (Array.isArray(locationData) && locationData.length > 0) {
-                    setChoices(locationData.map((location: Location) => ({ id: location.id, name: location.name })));
-                } else {
-                    console.log('Array not found or empty. ' + locationData);
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchData().then(() => {
-            console.log('Fetching Location Data Done');
-        });
-    }, []);
 
     return (
         <>
             <div className="clan-clans-leaderboards">
-                <LocationButton choices={choices} selectedChoice={selectedChoice} handleSelectChange={handleSelectChange} />
+                <p className="clan-leaderboard-title">Clans</p>
+                <LocationButton onSelectLocation={handleLocationSelect} selectedLocation={selectedLocation} />
                 <Leaderboard selectedLocation={selectedLocation} trigger={trigger} setTrigger={setTrigger} />
             </div>
         </>
