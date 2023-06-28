@@ -1,7 +1,7 @@
 package main
 
 import (
-	//Local Packages Endpoint Import
+	"b4u/backend/clanRegistry"
 	"b4u/backend/endpoints/v1/ep_api/aep_clan"
 	"b4u/backend/endpoints/v1/ep_database/dep_clan"
 	"b4u/backend/endpoints/v1/ep_database/dep_person"
@@ -82,6 +82,7 @@ func main() {
 	router.GET("/database/clan", dep_clan.GetClan)
 	router.GET("/database/clan/weeklyReport", dep_clan.GetClanWeeklyReport)
 	router.GET("/database/clan/warlog/:clanID", dep_clan.GetClanWarlog)
+	router.GET("/database/clan/create", clanRegistry.CreateRegister)
 
 	// Start server
 	log.Printf("Server läuft auf Port %s", port)

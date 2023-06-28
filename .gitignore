@@ -33,3 +33,4 @@ tests/
 
 # Drawio
 *.bkp
+/Backend/clanRegistry/newRegistrys/
