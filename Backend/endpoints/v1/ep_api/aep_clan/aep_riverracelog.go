@@ -177,7 +177,7 @@ func getFameHistoryWithRiverLog(tag string) []interface{} {
 			if standing.Clan["tag"] == tag {
 				fameHistory = append(fameHistory, map[string]interface{}{
 					"week": index,
-					"fame": standing.Clan["fame"],
+					"fame": standing.Clan["clanScore"],
 				})
 			}
 		}

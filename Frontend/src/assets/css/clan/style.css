@@ -65,10 +65,6 @@
     margin-bottom: 1em;
 }
 
-.selection-min {
-    min-height: 10em;
-}
-
 
 @media (min-width: 760px) {
     .two-columns {
