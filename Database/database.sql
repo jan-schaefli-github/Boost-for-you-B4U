@@ -85,23 +85,3 @@ CREATE TABLE daily_report(
 CREATE INDEX daily_report_id ON daily_report(id);
 
 CREATE INDEX daily_report_fk_person ON daily_report(fk_person);
-
--- -----------------------------------------------------
--- Table clan_weekly_report
--- -----------------------------------------------------
-
-DROP TABLE IF EXISTS clan_weekly_report;
-
-CREATE TABLE clan_weekly_report(
-    id          INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-    fame        INTEGER NOT NULL DEFAULT 0,
-    fame_gain   INTEGER NOT NULL DEFAULT 0,
-    fk_clan     VARCHAR(100) NOT NULL,
-
-    PRIMARY KEY(id),
-    FOREIGN KEY(fk_clan) REFERENCES clan(tag) ON DELETE CASCADE
-);
-
-CREATE INDEX clan_weekly_report_id ON clan_weekly_report(id);
-
-CREATE INDEX clan_weekly_report_fk_clan ON clan_weekly_report(fk_clan);

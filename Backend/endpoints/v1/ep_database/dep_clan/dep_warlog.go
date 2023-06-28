@@ -47,10 +47,15 @@ func GetClanWarlog(c *gin.Context) {
 	} else {
 		fk_clan = "#"+fk_clan
 	}
-
-	println(fk_clan)
 	
-	date := time.Now().Format("2006-01-02")
+	// Get the current date
+	now := time.Now()
+
+	// Subtract one day from the current date
+	oneDayAgo := now.AddDate(0, 0, -1)
+
+	// Format the date as "2006-01-02"
+	date := oneDayAgo.Format("2006-01-02")
 
 	rows, err := db.Query(query, fk_clan, date)
 	if err != nil {
