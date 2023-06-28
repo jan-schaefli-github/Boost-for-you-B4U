@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import { Link } from "react-router-dom";
 import '../assets/css/header.css';
 
 import logo from '../assets/img/favicon_black.png';
@@ -59,19 +60,19 @@ function Header() {
                 <nav className="menu">
                     <ul className="nav-links" style={{"display": updateShowLinks("")}}>
                         <li>
-                            <a href="/">Home</a>
+                            <Link to={`/`}>Home</Link>
                         </li>
                         <br/>
                         <li>
-                            <a href="/member-tracking">Member-Tracking</a>
+                            <Link to={`/member-tracking`}>Member-Tracking</Link>
                         </li>
                         <br/>
                         <li>
-                            <a href="/clan-tracking">Clan-Tracking</a>
+                            <Link to={`/clan-tracking`}>Clan-Tracking</Link>
                         </li>
                         <br/>
                         <li>
-                            <a href="/about">About</a>
+                            <Link to={`/about`}>About</Link>
                         </li>
                         <br/>
                     </ul>

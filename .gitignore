@@ -1,5 +1,5 @@
 # Environment variables
-*/.env
+.env
 
 # Node.js
 node_modules/

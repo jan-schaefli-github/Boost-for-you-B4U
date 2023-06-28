@@ -1,4 +1,5 @@
 import {Routes, Route} from 'react-router-dom';
+import {BrowserRouter} from "react-router-dom";
 import Header from './components/header.tsx';
 import Footer from './components/footer.tsx';
 import Index from './components/index.tsx'
@@ -9,17 +10,19 @@ import NotFound from './components/notFound.tsx';
 export default function App() {
     return (
         <>
+        <BrowserRouter basename="/">
             <Header />
             <main>
-            <Routes>
-                <Route path="/" element={<Index/>} />
-                <Route path="/about" element={<Index/>} />
-                <Route path="/clan-tracking" element={<ClanMain/>} />
-                <Route path="/member-tracking" element={<MemberMain/>} />
-                <Route path="*" element={<NotFound />} />
-            </Routes>
+                <Routes >
+                    <Route path={`/`} element={<Index/>} />
+                    <Route path={`/about`} element={<Index/>} />
+                    <Route path={`/clan-tracking`} element={<ClanMain/>} />
+                    <Route path={`/member-tracking`} element={<MemberMain/>} />
+                    <Route path={`*`} element={<NotFound />} />
+                </Routes>
             </main>
             <Footer />
+            </BrowserRouter>
         </>
     );
 }
