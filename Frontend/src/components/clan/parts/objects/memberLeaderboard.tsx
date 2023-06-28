@@ -15,8 +15,8 @@ const SelectInput: React.FC = () => {
     return (
         <div className="clan-clans-leaderboards">
             <p className="clan-leaderboard-title">Clan Member Leaderboard</p>
-            <InputComponent onSearch={handleSearch} errorMessage={errorMessage}/>
-            <LeaderboardComponent selectedTag={selectedChoice}/>
+            <InputComponent onSearch={handleSearch} errorMessage={errorMessage} selectedChoice={selectedChoice}/>
+            <LeaderboardComponent selectedChoice={selectedChoice}/>
         </div>
     );
 };

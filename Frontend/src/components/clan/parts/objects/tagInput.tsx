@@ -22,7 +22,6 @@ const TagInput: React.FC<TagInputProps> = ({ selectedChoice, errorMessage, onSea
 
     return (
         <div className="selection-min">
-            <p className="clan-leaderboard-title">Clan Member Leaderboard</p>
             <form>
                 <input
                     onChange={handleSelectChange}
