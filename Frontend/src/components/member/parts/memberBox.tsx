@@ -50,8 +50,10 @@ function MemberBox() {
   const fetchWarData = async () => {
     try {
       const formattedClanTag = clanTag.replace('#', '');
+      console.log(process.env.REACT_APP_BASE_URL);
+      console.log('hihihiha');
       const url = new URL(
-        `http://localhost:3000/database/clan/warlog/${formattedClanTag}`
+        `${process.env.REACT_APP_BASE_URL}/database/clan/warlog/${formattedClanTag}`
       );
       const response = await fetch(url.toString());
   
