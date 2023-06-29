@@ -1,14 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {Line} from 'react-chartjs-2';
+import React, { useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
 import { Chart, Title, Legend, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js';
 
-Chart.register(Title,
-    Legend,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement);
-
+Chart.register(Title, Legend, CategoryScale, LinearScale, PointElement, LineElement);
 
 interface LineChartProps {
     selectedLocation: number;
@@ -20,10 +14,13 @@ interface LocationDataItem {
     clanFameHistory: { fame: number; week: number }[];
 }
 
-const LineChart: React.FC<LineChartProps> = ({selectedLocation, selectedChoice}) => {
+const LineChart: React.FC<LineChartProps> = ({ selectedLocation, selectedChoice }) => {
     const encodedSelectedChoice = encodeURIComponent(selectedChoice);
     const url = `http://localhost:3000/api/clan/riverracelog/linechart?clanTag=${encodedSelectedChoice}&locationID=${selectedLocation}`;
-    const [userData, setUserData] = useState<any>(null);
+    const [userData, setUserData] = useState<{
+        labels: number[];
+        datasets: { label: string; data: number[]; fill: boolean; borderColor: string; borderWidth: number; }[];
+    }>({ labels: [], datasets: [] });
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -36,15 +33,12 @@ const LineChart: React.FC<LineChartProps> = ({selectedLocation, selectedChoice})
                 }
                 const data = await response.json();
                 const locationData: LocationDataItem[][] = data.linechartRiverRaceLog;
-                const arrayList: Array<any[]> = []; // Array of arrays (datasets)
 
                 if (Array.isArray(locationData) && locationData.length > 0) {
                     const weeks = locationData[0][0].clanFameHistory.map((historyItem) => historyItem.week).reverse(); // Reverse the weeks array
                     const datasets = locationData.map((item) => {
                         const clanName = item[0].clanName;
                         const values = item[0].clanFameHistory.map((historyItem) => historyItem.fame);
-                        console.log('clanName:', clanName);
-                        console.log('values:', values);
                         return {
                             label: clanName,
                             data: values,
@@ -53,8 +47,6 @@ const LineChart: React.FC<LineChartProps> = ({selectedLocation, selectedChoice})
                             borderWidth: 3,
                         };
                     });
-
-                    arrayList.push(datasets); // Append datasets array to arrayList
 
                     setUserData({
                         labels: weeks,
@@ -73,7 +65,7 @@ const LineChart: React.FC<LineChartProps> = ({selectedLocation, selectedChoice})
         fetchUserData().then(() => {
             console.log('Fetching LineChart Data Done');
         });
-    }, [selectedLocation, selectedChoice]);
+    }, [selectedLocation, selectedChoice, url]);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -82,7 +74,6 @@ const LineChart: React.FC<LineChartProps> = ({selectedLocation, selectedChoice})
     if (userData === null) {
         return <div>No data available</div>;
     }
-    console.log('userData:', userData);
     return (
         <div style={{ marginLeft: 'auto', marginRight: 'auto', width: '80vw' }}>
             <Line
@@ -123,7 +114,6 @@ const LineChart: React.FC<LineChartProps> = ({selectedLocation, selectedChoice})
                 }}
             />
         </div>
-
     );
 
     // Helper function to generate random colors
@@ -135,7 +125,6 @@ const LineChart: React.FC<LineChartProps> = ({selectedLocation, selectedChoice})
         }
         return color;
     }
-
 };
 
 export default LineChart;
