@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS clan;
 
 CREATE TABLE clan(
     tag         VARCHAR(100) NOT NULL UNIQUE,
+    joinDate    DATE DEFAULT (CURRENT_DATE),
     
     PRIMARY KEY(tag)
 );
