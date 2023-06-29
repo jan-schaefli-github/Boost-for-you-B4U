@@ -11,19 +11,28 @@ import SignUp from './components/clan/parts/clanSignUp.tsx'
 export default function App() {
     return (
         <>
-        <BrowserRouter basename="/">
-            <Header />
-            <main>
-                <Routes >
-                    <Route path={`/`} element={<Index/>} />
-                    <Route path={`/about`} element={<Index/>} />
-                    <Route path={`/clan-tracking`} element={<ClanMain/>} />
-                    <Route path={`/signup`} element={<SignUp/>} />
-                    <Route path={`/member-tracking`} element={<MemberMain/>} />
-                    <Route path={`*`} element={<NotFound />} />
-                </Routes>
-            </main>
-            <Footer />
+            <BrowserRouter basename="/">
+                {/* HEADER element is seen on all the pages on the Website, because it's it outside the routing */}
+                <Header/>
+                <main>
+                    {/* ROUTING */}
+                    <Routes>
+                        {/* INDEX on / */}
+                        <Route path={`/`} element={<Index/>}/>
+                        {/* ABOUT on /about */}
+                        <Route path={`/about`} element={<Index/>}/>
+                        {/* CLAN-TRACKING on /clan-tracking */}
+                        <Route path={`/clan-tracking`} element={<ClanMain/>}/>
+                        {/* SIGNUP on /signup */}
+                        <Route path={`/signup`} element={<SignUp/>}/>
+                        {/* MEMBER-TRACKING on /member-tracking */}
+                        <Route path={`/member-tracking`} element={<MemberMain/>}/>
+                        {/* NOT FOUND on All other addresses*/}
+                        <Route path={`*`} element={<NotFound/>}/>
+                    </Routes>
+                </main>
+                {/* FOOTER element is seen on all the pages on the Website, because it's it outside the routing */}
+                <Footer/>
             </BrowserRouter>
         </>
     );

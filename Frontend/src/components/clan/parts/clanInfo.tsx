@@ -1,4 +1,5 @@
 function info() {
+    //TODO: Make a short INFO about tracking and put cool image on the right side for astetics.
     return (
         <>
             <section className="clan-slide" id="part-progress">
