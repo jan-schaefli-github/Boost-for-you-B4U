@@ -27,7 +27,7 @@ func GetClanWarlog(c *gin.Context) {
 		}
 	}(db)
 
-	query := `SELECT p.tag, p.name, p.clanStatus, p.role, p.trophies, clanRank, wr.fame, wr.missedDecks, dr.decksUsedToday, repairPoints, boatAttacks, p.joinDate
+	query := `SELECT p.tag, p.name, p.clanStatus, p.role, p.trophies, p.clanRank, dr.fame, wr.missedDecks, dr.decksUsedToday, dr.repairPoints, dr.boatAttacks, p.joinDate
 	FROM person p
 	INNER JOIN weekly_report wr ON p.tag = wr.fk_person
 	INNER JOIN daily_report dr ON p.tag = dr.fk_person
