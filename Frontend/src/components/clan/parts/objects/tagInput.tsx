@@ -21,7 +21,7 @@ const TagInput: React.FC<TagInputProps> = ({ selectedChoice, errorMessage, onSea
     };
 
     return (
-        <div className="selection-min">
+        <div className="selection-container">
             <form>
                 <input
                     onChange={handleSelectChange}
@@ -31,7 +31,6 @@ const TagInput: React.FC<TagInputProps> = ({ selectedChoice, errorMessage, onSea
                     placeholder="Please provide a Clan Tag (#XXXXXXX)"
                     className="form__input"
                     id="clanTag"
-                    value={inputValue}
                 />
                 <label htmlFor="clanTag" className="form__label">
                     Full Name

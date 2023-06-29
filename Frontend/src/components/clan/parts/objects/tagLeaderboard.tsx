@@ -48,7 +48,7 @@ const LeaderboardComponent: React.FC<LeaderboardComponentProps> = ({ selectedCho
         fetchData().then(() => {
             console.log('Fetching Leaderboard Data Done');
         });
-    }, [selectedChoice]);
+        }, [selectedChoice]);
 
     return (
         <div className="leaderboard">

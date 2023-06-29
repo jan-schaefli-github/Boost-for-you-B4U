@@ -72,7 +72,7 @@
         grid-template-columns: 1fr 1fr;
     }
     .form__input {
-        width: 80%;
+        max-width: 20em;
     }
 }
 @media (min-width: 1500px) {

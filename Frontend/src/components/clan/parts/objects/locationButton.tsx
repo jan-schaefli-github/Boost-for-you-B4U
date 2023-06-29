@@ -46,12 +46,12 @@ const LocationButton: React.FC<LocationButtonProps> = ({ onSelectLocation, selec
         };
 
         fetchData().then(() => {
-            console.log('Fetching Location Data Done');
+            console.log('Fetching locationButton Data Done');
         });
     }, [selectedLocation]); // Reload the component when selectedLocation changes
 
     return (
-        <div className="selection-min">
+        <div className="selection-container">
             <select onChange={handleSelectChange} value={selectedChoice}>
                 {choices.map((choice, index) => {
                     return (

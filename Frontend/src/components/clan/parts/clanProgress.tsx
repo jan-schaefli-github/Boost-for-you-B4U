@@ -6,7 +6,7 @@ import LineChart from "./objects/lineChart.tsx";
 function Progress() {
     const [selectedLocation, setSelectedLocation] = useState<number>(57000000);
     const [errorMessage, setErrorMessage] = useState<string>('');
-    const [selectedChoice, setSelectedChoice] = useState<string>('#P9UVQCJV');
+    const [selectedChoice, setSelectedChoice] = useState<string>('');
 
     const handleLocationSelect = (selectedLocation: number) => {
         setSelectedLocation(selectedLocation);
