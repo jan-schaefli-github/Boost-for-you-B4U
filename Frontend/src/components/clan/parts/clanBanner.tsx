@@ -4,7 +4,7 @@ function ClanBanner() {
     return (
         <>
             <div className="clan-banner">
-                <div className="clan-banner-img"></div>
+                <div className="clan-banner-img"><img src="../Clash-Royale-background.jpg" alt="" /></div>
                 <section className="primary-wrapper">
                     <h1 className="clan-site-title">HELLO, WELCOME TO THE CLANS SURVEILLANCE BY B4U</h1>
                     <h3 className="clan-site-tagline">Track ANY CLAN BY SIGN UP LIVE AND SIMPLE</h3>

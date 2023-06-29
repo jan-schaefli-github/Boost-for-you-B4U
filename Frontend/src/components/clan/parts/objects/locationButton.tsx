@@ -32,7 +32,11 @@ const LocationButton: React.FC<LocationButtonProps> = ({ onSelectLocation, selec
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(url);
+                const response = await fetch(url.toString(), {
+                    headers: {
+                      'Access-Control-Allow-Origin': '*'
+                    }
+                  });
                 const data = await response.json();
                 const locationData = data.items; // Access the 'items' array
                 if (Array.isArray(locationData) && locationData.length > 0) {

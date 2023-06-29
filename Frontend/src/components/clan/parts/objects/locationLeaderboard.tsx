@@ -27,7 +27,11 @@ const SelectInput: React.FC<SelectInputProps> = ({
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(url);
+                const response = await fetch(url.toString(), {
+                    headers: {
+                      'Access-Control-Allow-Origin': '*'
+                    }
+                  });
                 const data = await response.json();
                 const placementData = data.items; // Access the 'items' array
                 if (Array.isArray(placementData) && placementData.length > 0) {
