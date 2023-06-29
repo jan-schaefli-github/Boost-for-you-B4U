@@ -28,7 +28,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
                                                  }) => {
     // Prop for leaderboard Data
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(leaderboardData);
-    const url = 'http://localhost:3000/api/clan/leaderboard?locationID=' + selectedLocation;
+    const url = `${import.meta.env.VITE_BASE_URL}/api/clan/leaderboard?locationID=` + selectedLocation;
 
     const fetchData = async () => {
         try {

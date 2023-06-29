@@ -66,7 +66,11 @@ func main() {
 	}()
 
 	// Enable CORS
-	router.Use(cors.Default())
+	config := cors.DefaultConfig()
+	allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
+	config.AllowOrigins = []string{allowedOrigin}
+
+	router.Use(cors.New(config))
 
 	// Routes
 	router.GET("/api/clan", aep_clan.GetClan)

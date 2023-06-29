@@ -1,6 +1,9 @@
 # Environment variables
 .env
 
+# Htaccess
+.htaccess
+
 # Node.js
 node_modules/
 npm-debug.log

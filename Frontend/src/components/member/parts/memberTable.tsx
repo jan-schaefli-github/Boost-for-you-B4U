@@ -36,7 +36,7 @@ function MemberTable() {
   const fetchWarData = async () => {
     try {
       const formattedClanTag = clanTag.replace('#', '');
-      const url = new URL(`http://localhost:3000/database/clan/warlog/${formattedClanTag}`);
+      const url = new URL(`${import.meta.env.VITE_BASE_URL}/database/clan/warlog/${formattedClanTag}`);
       const response = await fetch(url.toString());
 
       if (response.ok) {

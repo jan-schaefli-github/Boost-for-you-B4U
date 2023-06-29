@@ -17,7 +17,7 @@ const LeaderboardComponent: React.FC<LeaderboardComponentProps> = ({ selectedCho
 
     useEffect(() => {
         const fetchData = async () => {
-            const url = 'http://localhost:3000/api/clan/members/leaderboard?clanID=' + encodeURIComponent(selectedChoice);
+            const url = `${import.meta.env.VITE_BASE_URL}/api/clan/members/leaderboard?clanID=` + encodeURIComponent(selectedChoice);
 
             try {
                 const response = await fetch(url);

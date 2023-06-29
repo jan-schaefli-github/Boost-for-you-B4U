@@ -22,7 +22,7 @@ interface LocationDataItem {
 
 const LineChart: React.FC<LineChartProps> = ({selectedLocation, selectedChoice}) => {
     const encodedSelectedChoice = encodeURIComponent(selectedChoice);
-    const url = `http://localhost:3000/api/clan/riverracelog/linechart?clanTag=${encodedSelectedChoice}&locationID=${selectedLocation}`;
+    const url = `${import.meta.env.VITE_BASE_URL}/api/clan/riverracelog/linechart?clanTag=${encodedSelectedChoice}&locationID=${selectedLocation}`;
     const [userData, setUserData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 

@@ -50,12 +50,15 @@ function MemberBox() {
   const fetchWarData = async () => {
     try {
       const formattedClanTag = clanTag.replace('#', '');
-      console.log(process.env.REACT_APP_BASE_URL);
-      console.log('hihihiha');
       const url = new URL(
-        `${process.env.REACT_APP_BASE_URL}/database/clan/warlog/${formattedClanTag}`
+        `${import.meta.env.VITE_BASE_URL}/database/clan/warlog/${formattedClanTag}`
       );
-      const response = await fetch(url.toString());
+      const response = await fetch(url.toString(), {
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
+      
   
       if (response.ok) {
         const data = await response.json();

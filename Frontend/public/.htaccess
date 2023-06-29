@@ -3,8 +3,11 @@ ErrorDocument 404 /index.html
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+
+    RewriteRule ^/?api/(.*)$ http://192.168.0.102:3000/$1 [L,P]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-l
     RewriteRule /index.html [L]
+
 </IfModule>

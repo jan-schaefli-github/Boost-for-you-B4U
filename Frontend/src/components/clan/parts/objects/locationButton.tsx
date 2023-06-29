@@ -5,7 +5,7 @@ interface Location {
     name: string;
 }
 
-const url = 'http://localhost:3000/api/clan/locations';
+const url = `${import.meta.env.VITE_BASE_URL}/api/clan/locations`;
 
 interface LocationButtonProps {
     onSelectLocation: (locationId: number) => void;
