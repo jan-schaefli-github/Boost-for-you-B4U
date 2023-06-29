@@ -56,7 +56,6 @@ func main() {
 	if port == "" {
 		port = "3000"
 	}
-
 	//Start routine
 	go func() {
 		for {
@@ -87,6 +86,7 @@ func main() {
 	router.GET("/database/clan/weeklyReport", dep_clan.GetClanWeeklyReport)
 	router.GET("/database/clan/warlog/:clanID", dep_clan.GetClanWarlog)
 	router.GET("/database/clan/create", clanRegistry.CreateRegister)
+	router.GET("/database/clan/read", clanRegistry.WriteTagsToDatabase)
 
 	// Start server
 	log.Printf("Server läuft auf Port %s", port)
