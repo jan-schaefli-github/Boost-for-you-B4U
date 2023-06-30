@@ -34,7 +34,10 @@ function Header() {
   }
 
   function handleLinkClick() {
-    toggleMenu(); // Collapse the menu after a link is clicked
+    const screenWidth = window.innerWidth;
+    if (screenWidth <= 712) {
+      toggleMenu(); // Collapse the menu on mobile devices
+    }
   }
 
   useEffect(() => {

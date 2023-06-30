@@ -71,7 +71,7 @@ func Routine() {
 				} else {
 
 					// If it is war day
-					if periodType == "warDay" {
+					if periodType != "training" {
 
 						// Calculate the missed decks
 						missedDecks := lastmissedDecks + (4 - decksUsedYesterday)
