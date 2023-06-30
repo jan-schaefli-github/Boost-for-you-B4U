@@ -1,18 +1,23 @@
+import  { useEffect, useState } from "react";
 import MemberTable from "./parts/memberTable.tsx";
 import MemberBox from "./parts/memberBox.tsx";
-import { useEffect, useState } from "react";
 
 function MemberMain() {
   const [isMobileVar, setIsMobileVar] = useState(false);
 
   function isMobile() {
     let isMobileVar = window.innerWidth < 768;
-    setIsMobileVar(isMobileVar)
+    setIsMobileVar(isMobileVar);
   }
 
   useEffect(() => {
-    window.addEventListener('load', isMobile);
+    isMobile(); // Initial check when the component mounts
+
     window.addEventListener('resize', isMobile);
+
+    return () => {
+      window.removeEventListener('resize', isMobile);
+    };
   }, []);
 
   return (
