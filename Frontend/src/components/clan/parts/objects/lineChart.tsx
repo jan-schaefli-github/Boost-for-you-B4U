@@ -27,11 +27,7 @@ const LineChart: React.FC<LineChartProps> = ({ selectedLocation, selectedChoice 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await fetch(url.toString(), {
-                    headers: {
-                        'Access-Control-Allow-Origin': '*'
-                    }
-                });
+                const response = await fetch(url.toString());
                 if (!response.ok) {
                     console.error('Network response was not ok');
                     return;

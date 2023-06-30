@@ -53,11 +53,7 @@ function MemberBox() {
       const url = new URL(
         `${import.meta.env.VITE_BASE_URL}/database/clan/warlog/${formattedClanTag}`
       );
-      const response = await fetch(url.toString(), {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      });
+      const response = await fetch(url.toString());
       
   
       if (response.ok) {

@@ -20,11 +20,7 @@ const LeaderboardComponent: React.FC<LeaderboardComponentProps> = ({ selectedCho
             const url = `${import.meta.env.VITE_BASE_URL}/api/clan/members/leaderboard?clanID=` + encodeURIComponent(selectedChoice);
 
             try {
-                const response = await fetch(url.toString(), {
-                    headers: {
-                      'Access-Control-Allow-Origin': '*'
-                    }
-                  });
+                const response = await fetch(url.toString());
                 const placementData = await response.json(); // Access the 'items' array
                 if (Array.isArray(placementData) && placementData.length > 0) {
                     const leaderboardEntries: LeaderboardEntry[] = placementData.map((item: LeaderboardEntry) => {
