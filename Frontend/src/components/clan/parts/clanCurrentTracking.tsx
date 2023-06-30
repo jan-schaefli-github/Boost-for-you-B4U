@@ -7,7 +7,7 @@ interface Clan {
 }
 
 function CurrentTracking() {
-    const [trackedClans, setTrackedClans] = useState<ClanWithNames[]>([]);
+    const [trackedClans, setTrackedClans] = useState<Clan[]>([]);
 
     // This useEffect hook will be called only once on component load
     useEffect(() => {
@@ -33,7 +33,6 @@ function CurrentTracking() {
                 {trackedClans.map((clan) => (
                     <div className="clan-card" key={clan.tag}>
                         <p>{clan.tag}</p>
-                        <p>{clan.name}</p>
                     </div>
                 ))}
             </div>
