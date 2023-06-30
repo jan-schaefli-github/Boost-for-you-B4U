@@ -1,0 +1,79 @@
+:root {
+    --bg-color: #f2f2f2; /* Default background color - light mode */
+    --text-color: #333333; /* Default text color - light mode */
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #333333; /* Dark mode background color */
+        --text-color: #f2f2f2; /* Dark mode text color */
+    }
+}
+
+.info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3em;
+    background-color: var(--bg-color);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.info-content {
+    max-width: 100%;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.info-image {
+    margin-top: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.info-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+#part-info-title {
+    font-size: 3em;
+    top: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.part-info-text {
+    font-size: 1.5em;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .info-container {
+        flex-direction: row;
+    }
+
+    .info-content {
+        flex: 1;
+        padding: 20px;
+    }
+
+    .info-image {
+        flex: 1;
+        margin-top: 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    #part-info-title {
+        font-size: 45px;
+    }
+
+    .part-info-text {
+        font-size: 30px;
+        text-align: left;
+    }
+}

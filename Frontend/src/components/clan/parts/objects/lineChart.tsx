@@ -22,15 +22,16 @@ const LineChart: React.FC<LineChartProps> = ({ selectedLocation, selectedChoice 
         datasets: { label: string; data: number[]; fill: boolean; borderColor: string; borderWidth: number; }[];
     }>({ labels: [], datasets: [] });
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [darkMode, setDarkMode] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const response = await fetch(url.toString(), {
                     headers: {
-                      'Access-Control-Allow-Origin': '*'
+                        'Access-Control-Allow-Origin': '*'
                     }
-                  });
+                });
                 if (!response.ok) {
                     console.error('Network response was not ok');
                     return;
@@ -71,6 +72,19 @@ const LineChart: React.FC<LineChartProps> = ({ selectedLocation, selectedChoice 
         });
     }, [selectedLocation, selectedChoice, url]);
 
+    useEffect(() => {
+        // Detect browser preference for dark mode
+        const matchMediaDark = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleDarkModeChange = (event: MediaQueryListEvent) => {
+            setDarkMode(event.matches);
+        };
+        matchMediaDark.addEventListener('change', handleDarkModeChange);
+        setDarkMode(matchMediaDark.matches);
+        return () => {
+            matchMediaDark.removeEventListener('change', handleDarkModeChange);
+        };
+    }, []);
+
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -78,46 +92,100 @@ const LineChart: React.FC<LineChartProps> = ({ selectedLocation, selectedChoice 
     if (userData === null) {
         return <div>No data available</div>;
     }
-    //TODO: Dark and Light mode support + Responsive
     return (
-        <div style={{ marginLeft: 'auto', marginRight: 'auto', width: '80vw' }}>
-            <Line
-                data={userData}
-                options={{
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
+        <div className="lineChart">
+            {darkMode ? (
+                <Line
+                    data={userData}
+                    options={{
+                        maintainAspectRatio: false, // Disable maintaining aspect ratio
+                        hover: {
+                            mode: 'index', // Enable hover mode for displaying intersecting items
+                            intersect: true, // Enable hover interaction only when the cursor intersects the item
                         },
-                        title: {
-                            display: true,
-                            text: 'Comparison of Score over a 10 Week Time',
+                        interaction: {
+                            mode: 'index', // Display intersecting items for all data points
                         },
-                    },
-                    scales: {
-                        x: {
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                   labels: { color: 'white'},
+                            },
                             title: {
                                 display: true,
-                                text: 'Week',
+                                text: 'Comparison of Score over a 10 Week Time',
+                                color: 'white',
+                                font: {size: 20}
                             },
                         },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Fame',
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Week',
+                                    color: 'white',
+                                },
+                                grid: {color: 'white'},
                             },
-                            suggestedMin: 0,
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Fame',
+                                    color: 'white',
+                                },
+                                grid: {color: 'white'},
+                                suggestedMin: 0,
+                                ticks: {
+                                    color: 'white', // Set the color of the indicator numbers on the y-axis
+                                },
+                            },
                         },
-                    },
-                    interaction: {
-                        mode: 'index', // Display intersecting items for all data points
-                    },
-                    hover: {
-                        mode: 'index', // Enable hover mode for displaying intersecting items
-                        intersect: true, // Enable hover interaction only when the cursor intersects the item
-                    },
-                }}
-            />
+                    }}
+                />
+            ) : (
+                <>
+                    <Line
+                        data={userData}
+                        options={{
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Comparison of Score over a 10 Week Time',
+                                    font: {size: 20}
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Week',
+                                    },
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Fame',
+                                    },
+                                    suggestedMin: 0,
+                                },
+                            },
+                            interaction: {
+                                mode: 'index', // Display intersecting items for all data points
+                            },
+                            hover: {
+                                mode: 'index', // Enable hover mode for displaying intersecting items
+                                intersect: true, // Enable hover interaction only when the cursor intersects the item
+                            },
+                        }}
+                    />
+                </>
+            )
+            }
         </div>
     );
 

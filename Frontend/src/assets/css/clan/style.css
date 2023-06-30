@@ -65,8 +65,16 @@
     margin-bottom: 1em;
 }
 
+.lineChart {
+    min-height: 40vh;
+    margin: 0 1.2em;
+}
+
 
 @media (min-width: 760px) {
+    .lineChart {
+        min-height: 30vw;
+    }
     .two-columns {
         display: grid;
         grid-template-columns: 1fr 1fr;
