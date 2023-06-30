@@ -1,12 +1,10 @@
 :root {
     --bg-color: #f2f2f2; /* Default background color - light mode */
-    --text-color: #333333; /* Default text color - light mode */
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
         --bg-color: #333333; /* Dark mode background color */
-        --text-color: #f2f2f2; /* Dark mode text color */
     }
 }
 
@@ -24,7 +22,6 @@
 .info-content {
     max-width: 100%;
     text-align: center;
-    color: var(--text-color);
 }
 
 .info-image {
