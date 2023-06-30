@@ -1,11 +1,14 @@
 package clanRegistry
 
 import (
+	"b4u/backend/logger"
 	"b4u/backend/tools"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/yaml.v3"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -32,10 +35,16 @@ func CreateRegister(c *gin.Context) {
 		return
 	}
 
+	//Clan Validation
+	if !CheckClan(clanTag) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Clan doesn't exist"})
+		return
+	}
+
 	// Store the clanTag in the YAML file
 	err = storeClanTagInYAML(clanTag)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to store clanTag in YAML file", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to store clanTag in YAML file" + err.Error()})
 		return
 	}
 
@@ -213,4 +222,48 @@ func InsertClanTag(clanTag string, db *sql.DB) error {
 	query := "INSERT INTO clan (tag) VALUES (?)"
 	_, err := db.Exec(query, clanTag)
 	return err
+}
+
+// CheckClan CheckIfValidClanTag Check if the clanTag is valid
+
+func CheckClan(tag string) bool {
+	println(tag)
+	urlForApiRequest := "https://api.clashroyale.com/v1/clans/" + url.QueryEscape(tag)
+	response, err := tools.MakeRequest(urlForApiRequest)
+	if err != nil {
+		logger.LogMessage("Request", "Error while making request: "+err.Error())
+		return false
+	}
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			logger.LogMessage("Request", "Error while closing response body: "+err.Error())
+			return
+		}
+	}(response.Body)
+
+	println(response.Body)
+
+	var data map[string]interface{}
+	err = json.NewDecoder(response.Body).Decode(&data)
+	if err != nil {
+		logger.LogMessage("Request", "Error while decoding response: "+err.Error())
+		return false
+	}
+
+	reason, ok := data["reason"].(string)
+	fmt.Println(reason)
+
+	if !ok {
+		println("hihihiha")
+		// Reason field is not present or not a string
+		return true
+	}
+
+	if reason == "notFound" {
+		// Handle not found case
+		return false
+	}
+
+	return false
 }

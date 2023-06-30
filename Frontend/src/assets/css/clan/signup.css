@@ -1,6 +1,6 @@
 #part-signup {
     position: relative;
-    margin-top: 10vh;
+    margin-top: 15vh;
 }
 
 .form-group {
@@ -15,7 +15,7 @@ label {
 input[type="text"] {
     width: 50%;
     min-width: 200px;
-    padding: 0.5rem;
+    padding: 0.6rem;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
@@ -39,3 +39,11 @@ input[type="text"] {
     background-color: #0056b3;
 }
 
+.success-message {
+    color: green;
+    margin-top: 0.5rem;
+}
+
+.feedback {
+    margin: 40px 0;
+}

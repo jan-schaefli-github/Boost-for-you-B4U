@@ -4,6 +4,7 @@ import "../../../assets/css/clan/signup.css";
 function RegisterForm() {
     const [clanTag, setClanTag] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -21,14 +22,29 @@ function RegisterForm() {
         // You can use fetch or any other library to make the HTTP request
 
         // Example using fetch
-        fetch(`${import.meta.env.VITE_BASE_URL}/database/clan/create?clanTag=${clanTag}`)
-            .then((response) => response.json())
+        fetch(
+            `${import.meta.env.VITE_BASE_URL}/database/clan/create?clanTag=${encodeURIComponent(
+                clanTag
+            )}`
+        )
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Failed to store clanTag in YAML file");
+                }
+            })
             .then((data) => {
                 console.log(data); // Handle the response from the server
+                setSuccessMessage("Clan tag stored successfully!");
+                setErrorMessage("");
             })
-            .catch((error) => {
-                setErrorMessage("An error occurred. Please try again."); // Set error message
-                console.error(error); // Handle any errors
+            .catch((data) => {
+                const displayError = data;
+                console.log(displayError)
+                const errorMessage = `${displayError}`;
+                setErrorMessage(errorMessage); // Set error message
+                setSuccessMessage("");
             });
     };
 
@@ -49,7 +65,14 @@ function RegisterForm() {
                             required
                         />
                     </div>
-                    <div className="error-message">{errorMessage}</div>
+                    <div className="feedback">
+                        {successMessage && (
+                            <div className="success-message">{successMessage}</div>
+                        )}
+                        {errorMessage && (
+                            <div className="error-message">{errorMessage}</div>
+                        )}
+                    </div>
                     <button className="submit-button" type="submit">
                         Submit
                     </button>
