@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart, Title, Legend, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js';
+import React, {useEffect, useState} from 'react';
+import {Line} from 'react-chartjs-2';
+import {CategoryScale, Chart, Legend, LinearScale, LineElement, PointElement, Title} from 'chart.js';
 
 Chart.register(Title, Legend, CategoryScale, LinearScale, PointElement, LineElement);
 
@@ -20,7 +20,7 @@ const LineChart: React.FC<LineChartProps> = ({ selectedLocation, selectedChoice 
     const [userData, setUserData] = useState<{
         labels: number[];
         datasets: { label: string; data: number[]; fill: boolean; borderColor: string; borderWidth: number; }[];
-    }>({ labels: [], datasets: [] });
+    }>({labels: [], datasets: []});
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [darkMode, setDarkMode] = useState<boolean>(false);
 
@@ -44,7 +44,7 @@ const LineChart: React.FC<LineChartProps> = ({ selectedLocation, selectedChoice 
                             label: clanName,
                             data: values,
                             fill: false,
-                            borderColor: getRandomColor(),
+                            borderColor: getRandomColor(darkMode),
                             borderWidth: 3,
                         };
                     });
@@ -66,7 +66,7 @@ const LineChart: React.FC<LineChartProps> = ({ selectedLocation, selectedChoice 
         fetchUserData().then(() => {
             console.log('Fetching LineChart Data Done');
         });
-    }, [selectedLocation, selectedChoice, url]);
+    }, [selectedLocation, selectedChoice, url, darkMode]);
 
     useEffect(() => {
         // Detect browser preference for dark mode
@@ -88,110 +88,83 @@ const LineChart: React.FC<LineChartProps> = ({ selectedLocation, selectedChoice 
     if (userData === null) {
         return <div>No data available</div>;
     }
+
     return (
         <div className="lineChart">
-            {darkMode ? (
-                <Line
-                    data={userData}
-                    options={{
-                        maintainAspectRatio: false, // Disable maintaining aspect ratio
-                        hover: {
-                            mode: 'index', // Enable hover mode for displaying intersecting items
-                            intersect: true, // Enable hover interaction only when the cursor intersects the item
+            <Line
+                data={userData}
+                options={{
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {color: darkMode ? 'white' : 'black'},
                         },
-                        interaction: {
-                            mode: 'index', // Display intersecting items for all data points
+                        title: {
+                            display: true,
+                            text: 'Comparison of Score over a 10 Week Time',
+                            color: darkMode ? 'white' : 'black',
+                            font: {size: 20},
                         },
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                                   labels: { color: 'white'},
-                            },
+                    },
+                    scales: {
+                        x: {
                             title: {
                                 display: true,
-                                text: 'Comparison of Score over a 10 Week Time',
-                                color: 'white',
-                                font: {size: 20}
+                                text: 'Week',
+                                color: darkMode ? 'white' : 'black',
+                            },
+                            grid: {color: darkMode ? 'white' : 'black'},
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Fame',
+                                color: darkMode ? 'white' : 'black',
+                            },
+                            grid: {color: darkMode ? 'white' : 'black'},
+                            suggestedMin: 0,
+                            ticks: {
+                                color: darkMode ? 'white' : 'black',
                             },
                         },
-                        responsive: true,
-                        scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Week',
-                                    color: 'white',
-                                },
-                                grid: {color: 'white'},
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Fame',
-                                    color: 'white',
-                                },
-                                grid: {color: 'white'},
-                                suggestedMin: 0,
-                                ticks: {
-                                    color: 'white', // Set the color of the indicator numbers on the y-axis
-                                },
-                            },
-                        },
-                    }}
-                />
-            ) : (
-                <>
-                    <Line
-                        data={userData}
-                        options={{
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Comparison of Score over a 10 Week Time',
-                                    font: {size: 20}
-                                },
-                            },
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Week',
-                                    },
-                                },
-                                y: {
-                                    title: {
-                                        display: true,
-                                        text: 'Fame',
-                                    },
-                                    suggestedMin: 0,
-                                },
-                            },
-                            interaction: {
-                                mode: 'index', // Display intersecting items for all data points
-                            },
-                            hover: {
-                                mode: 'index', // Enable hover mode for displaying intersecting items
-                                intersect: true, // Enable hover interaction only when the cursor intersects the item
-                            },
-                        }}
-                    />
-                </>
-            )
-            }
+                    },
+                    interaction: {
+                        mode: 'index',
+                    },
+                    hover: {
+                        mode: 'index',
+                        intersect: true,
+                    },
+                }}
+            />
         </div>
     );
 
-    // Helper function to generate random colors
-    function getRandomColor() {
-        const letters = '89ABCDEF'; // Remove 0-7 to increase brightness
+    // Helper function to generate random colors with controlled brightness
+    function getRandomColor(darkMode: boolean) {
+        const letters = '0123456789ABCDEF';
         let color = '#';
+
         for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * letters.length)];
+            const index = Math.floor(Math.random() * 16);
+            const letter = letters[index];
+            color += letter;
         }
+
+        // Adjust brightness for light mode
+        if (!darkMode) {
+            const brightnessOffset = 30; // Increase this value to make the colors lighter
+            return color
+                .replace(/^#(\w{2})(\w{2})(\w{2})$/, (_, r, g, b) => {
+                    const adjustedR = Math.min(parseInt(r, 16) + brightnessOffset, 255);
+                    const adjustedG = Math.min(parseInt(g, 16) + brightnessOffset, 255);
+                    const adjustedB = Math.min(parseInt(b, 16) + brightnessOffset, 255);
+                    return `#${adjustedR.toString(16)}${adjustedG.toString(16)}${adjustedB.toString(16)}`;
+                });
+        }
+
         return color;
     }
 };
