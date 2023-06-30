@@ -4,42 +4,61 @@ import (
 	"b4u/backend/logger"
 	"b4u/backend/tools"
 	"database/sql"
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-// GetClan Get Clan from Database
-func GetClan(c *gin.Context) {
+// GetClans returns all clans from the database as JSON response
+func GetClans(c *gin.Context) {
 	db, err := tools.ConnectToDatabase()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
-		logger.LogMessage("Database", "Error while connecting to database: "+err.Error())
+		logger.LogMessage("Database", "Error while connecting to the database: "+err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while connecting to the database"})
 		return
 	}
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-			logger.LogMessage("Database", "Error while closing database: "+err.Error())
+			logger.LogMessage("Database", "Error while closing the database: "+err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while closing the database"})
 			return
 		}
 	}(db)
 
-	var clan tools.Clan
-	err = db.QueryRow("SELECT * FROM clan WHERE tag = '#P9UVQCJV'").Scan(&clan.Tag)
+	rows, err := db.Query("SELECT * FROM clan")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
-		logger.LogMessage("Database", "Error while querying database: "+err.Error())
+		logger.LogMessage("Database", "Error while querying the database: "+err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while querying the database"})
+		return
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			logger.LogMessage("Database", "Error while closing the rows: "+err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while closing the rows"})
+			return
+		}
+	}(rows)
+
+	var clans []tools.Clan
+
+	for rows.Next() {
+		var clan tools.Clan
+		err := rows.Scan(&clan.Tag)
+		if err != nil {
+			logger.LogMessage("Database", "Error while scanning the rows: "+err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while scanning the rows"})
+			return
+		}
+		clans = append(clans, clan)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		logger.LogMessage("Database", "Error while scanning the rows: "+err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while scanning the rows"})
 		return
 	}
 
-	clanJSON, err := json.Marshal(clan)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
-		logger.LogMessage("Database", "Error while marshalling clan: "+err.Error())
-		return
-	}
-
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, string(clanJSON))
+	c.JSON(http.StatusOK, clans)
 }
