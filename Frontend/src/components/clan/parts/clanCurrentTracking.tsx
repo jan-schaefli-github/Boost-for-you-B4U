@@ -1,4 +1,5 @@
 function currentTracking() {
+    //TODO: GRID FOR TRACKED CLANS
     return (
         <>
             <section className="clan-slide" id="part-tracking">

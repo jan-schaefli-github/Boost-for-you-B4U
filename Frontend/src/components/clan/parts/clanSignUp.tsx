@@ -1,4 +1,5 @@
 function progress() {
+    //TODO: BUILD LOGIN and CLAN-TAG FORM for the signup
     return (
         <>
             <section className="clan-slide" id="part-signup">

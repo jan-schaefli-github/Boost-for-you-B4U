@@ -78,6 +78,7 @@ const LineChart: React.FC<LineChartProps> = ({ selectedLocation, selectedChoice 
     if (userData === null) {
         return <div>No data available</div>;
     }
+    //TODO: Dark and Light mode support + Responsive
     return (
         <div style={{ marginLeft: 'auto', marginRight: 'auto', width: '80vw' }}>
             <Line
