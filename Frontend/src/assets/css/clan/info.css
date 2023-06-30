@@ -40,6 +40,7 @@
     font-size: 3em;
     top: 0;
     font-family: 'Roboto', sans-serif;
+    margin-bottom: 1.5em;
 }
 
 .part-info-text {
@@ -47,7 +48,7 @@
     text-align: center;
 }
 
-@media (min-width: 768px) {
+@media (min-width:  850px) {
     .info-container {
         flex-direction: row;
     }

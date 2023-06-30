@@ -17,8 +17,6 @@ function Progress() {
         setErrorMessage('');
     };
 
-    console.log(selectedChoice);
-
     return (
         <>
             <section className="clan-slide" id="part-progress">

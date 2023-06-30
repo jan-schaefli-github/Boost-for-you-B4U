@@ -1,0 +1,61 @@
+/* CSS for currentTracking component */
+.clan-slide {
+    /* Add your desired styles for the clan-slide section */
+}
+
+:root {
+    --background-color: #f2f2f2;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #333;
+    }
+}
+
+.clan-tracking-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.clan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-gap: 20px; /* Adjust the spacing between cards */
+    margin-top: 20px;
+    margin-right: 30px;
+    margin-left: 30px;
+    justify-items: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    height: 100%; /* Ensure the grid takes up the full height of its container */
+}
+
+.clan-card {
+    background-color: var(--background-color);
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+    width: 100%; /* Set the width to 100% */
+    max-width: 300px;
+    height: 200px; /* Adjust the desired height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.clan-card p {
+    margin: 0;
+}
+
+/* Add any additional CSS rules as needed */
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+    .clan-grid {
+        grid-template-columns: 1fr; /* Set to a single column */
+        justify-items: center;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}
