@@ -145,37 +145,37 @@ function MemberTable() {
               Role {getSortIcon('role')}
             </th>
             <th onClick={() => sortTable('trophies')}>
-              <Tooltip position={{ top: '-45px', left: '-50%' }} text='Trophies '>
+              <Tooltip position={{ top: '-45px', left: '-150%' }} text='Trophies '>
                 <img src="./clashIcon/icon_trophy.png" alt="Trophies " />
               </Tooltip>
               {getSortIcon('trophies')}
             </th>
             <th onClick={() => sortTable('fame')}>
-              <Tooltip position={{ top: '-45px', left: '-50%' }} text='Fame'>
+              <Tooltip position={{ top: '-45px', left: '-190%' }} text='Fame'>
                 <img src="./clashIcon/icon-fame.png" alt="Fame" />
               </Tooltip>
               {getSortIcon('fame')}
             </th>
             <th onClick={() => sortTable('missedDecks')}>
-              <Tooltip position={{ top: '-45px', left: '-50%' }} text='Missed Decks'>
+              <Tooltip position={{ top: '-45px', left: '-150%' }} text='Missed Decks'>
                 <img src="./clashIcon/icon_decks_missed.png" alt="Missed Decks" />
               </Tooltip>
               {getSortIcon('missedDecks')}
             </th>
             <th onClick={() => sortTable('decksUsedToday')}>
-              <Tooltip position={{ top: '-45px', left: '-50%' }} text='Decks Used Today'>
+              <Tooltip position={{ top: '-45px', left: '-150%' }} text='Decks Used Today'>
                 <img src="./clashIcon/icon_decks_used_to_day.png" alt="Decks Used Today" />
               </Tooltip>
               {getSortIcon('decksUsedToday')}
             </th>
             <th onClick={() => sortTable('boatAttacks')}>
-              <Tooltip position={{ top: '-45px', left: '-50%' }} text='Boat Attacks'>
+              <Tooltip position={{ top: '-45px', left: '-150%' }} text='Boat Attacks'>
                 <img src="./clashIcon/icon_boat_attack.png" alt="Boat Attacks" />
               </Tooltip>
               {getSortIcon('boatAttacks')}
             </th>
             <th onClick={() => sortTable('repairPoints')}>
-              <Tooltip position={{ top: '-45px', left: '-50%' }} text='Repair Points'>
+              <Tooltip position={{ top: '-45px', left: '-190%' }} text='Repair Points'>
                 <img src="./clashIcon/icon_repair_hammer.png" alt="Repair Points " />
               </Tooltip>
               {getSortIcon('repairPoints')}
