@@ -175,7 +175,7 @@
   }
 
   .memberTable tbody tr[data-clan-status='0'] {
-    background-color: #404040;
+    background-color: #505050;
   }
   
   .memberTable tbody tr[data-clan-status='0']:nth-child(even) {

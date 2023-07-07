@@ -4,8 +4,8 @@ import (
 	"fmt"
 )
 
-func CalculateWeekIdentifier(sectionIndex int) string {
-	identifier := fmt.Sprintf("%03d", sectionIndex)
+func CalculateWeekIdentifier(seasonId int, sectionIndex int) string {
+	identifier := fmt.Sprintf("%03d%03d", seasonId, sectionIndex)
 
 	return identifier
 }

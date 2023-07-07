@@ -8,7 +8,7 @@ import (
 
 
 // Create a new daily report
-func CreateDailyReport(decksUsedToday float64, fame float64, repairPoints float64, boatAttacks float64, dayIdentifier string, fk_person string) {
+func CreateDailyReport(fameToday int, decksUsedToday int, missedDecksToday, repairPointsToday int, boatAttacksToday int, dayIdentifier string, fk_person string) {
 
 	// Connect to the database
 	db, err := tools.ConnectToDatabase()
@@ -27,7 +27,7 @@ func CreateDailyReport(decksUsedToday float64, fame float64, repairPoints float6
 	}(db)
 
 	// Insert person into the database
-	stmt, err := db.Prepare("INSERT INTO daily_report (decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, fk_person) VALUES (?, ?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO daily_report (fameToday, decksUsedToday, missedDecksToday, repairPointsToday, boatAttacksToday, dayIdentifier, fk_person) VALUES (?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
 		return
@@ -43,7 +43,7 @@ func CreateDailyReport(decksUsedToday float64, fame float64, repairPoints float6
 	}(stmt)
 
 	// Execute the statement
-	_, err = stmt.Exec(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, fk_person)
+	_, err = stmt.Exec(fameToday, decksUsedToday, missedDecksToday, repairPointsToday, boatAttacksToday, dayIdentifier, fk_person)
 	if err != nil {
 		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
 		return
@@ -52,7 +52,7 @@ func CreateDailyReport(decksUsedToday float64, fame float64, repairPoints float6
 }
 
 // Update a daily report
-func UpdateDailyReport(decksUsedToday float64, fame float64, repairPoints float64, boatAttacks float64, dayIdentifier string, fk_person string) {
+func UpdateDailyReport(fameToday int, decksUsedToday int, missedDecksToday int, repairPointsToday int, boatAttacksToday int, dayIdentifier string, fk_person string) {
 
 	// Connect to the database
 	db, err := tools.ConnectToDatabase()
@@ -71,7 +71,7 @@ func UpdateDailyReport(decksUsedToday float64, fame float64, repairPoints float6
 	}(db)
 
 	// Insert person into the database
-	stmt, err := db.Prepare("UPDATE daily_report SET decksUsedToday = ?, fame = ?, repairPoints = ?, boatAttacks = ? WHERE dayIdentifier = ? AND fk_person = ?")
+	stmt, err := db.Prepare("UPDATE daily_report SET fameToday = ?, decksUsedToday = ?, missedDecksToday = ?, repairPointsToday = ?, boatAttacksToday = ? WHERE dayIdentifier = ? AND fk_person = ?")
 	if err != nil {
 		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
 		return
@@ -86,7 +86,7 @@ func UpdateDailyReport(decksUsedToday float64, fame float64, repairPoints float6
 	}(stmt)
 
 	// Execute the statement
-	_, err = stmt.Exec(decksUsedToday, fame, repairPoints, boatAttacks, dayIdentifier, fk_person)
+	_, err = stmt.Exec(fameToday, decksUsedToday, missedDecksToday, repairPointsToday, boatAttacksToday, dayIdentifier, fk_person)
 	if err != nil {
 		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
 		return
@@ -95,12 +95,12 @@ func UpdateDailyReport(decksUsedToday float64, fame float64, repairPoints float6
 
 
 // Get the last daily report for a person
-func GetLastDailyReport(fk_person string) (decksUsedYesterday int, lastFame int, lastDayIdentifier string) {
+func GetLastDailyReport(fk_person string, dayIdentifier string) (int, int, int, int, int) {
 	// Connect to the database
 	db, err := tools.ConnectToDatabase()
 	if err != nil {
 		logger.LogMessage("Database", "Error while connecting to database: "+err.Error())
-		return 0, 0, ""
+		return 0, 0, 0, 0, 0
 	}
 
 	// Close the database connection
@@ -113,10 +113,10 @@ func GetLastDailyReport(fk_person string) (decksUsedYesterday int, lastFame int,
 	}()
 
 	// Prepare the statement
-	stmt, err := db.Prepare("SELECT decksUsedToday, fame, dayIdentifier FROM daily_report WHERE fk_person = ? ORDER BY date DESC, id DESC LIMIT 1;")
+	stmt, err := db.Prepare("SELECT fameToday, decksUsedToday, missedDecksToday, repairPointsToday, boatAttacksToday FROM daily_report WHERE fk_person = ? AND dayIdentifier != ? ORDER BY date DESC, id DESC LIMIT 1;")
 	if err != nil {
 		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
-		return 0, 0, ""
+		return 0, 0, 0, 0, 0
 	}
 
 	defer func() {
@@ -128,31 +128,83 @@ func GetLastDailyReport(fk_person string) (decksUsedYesterday int, lastFame int,
 	}()
 
 	// Execute the statement and retrieve the last daily report fields
-	var decksUsedYesterdayNullable sql.NullInt64
-	var lastFameNullable sql.NullInt64
-	var lastDayIdentifierNullable sql.NullString
-	err = stmt.QueryRow(fk_person).Scan(&decksUsedYesterdayNullable, &lastFameNullable, &lastDayIdentifierNullable)
+	var fameTodayNullable sql.NullInt64
+	var decksUsedTodayNullable sql.NullInt64
+	var missedDecksTodayNullable sql.NullInt64
+	var repairPointsTodayNullable sql.NullInt64
+	var boatAttacksTodayNullable sql.NullInt64
+	err = stmt.QueryRow(fk_person, dayIdentifier).Scan(&fameTodayNullable, &decksUsedTodayNullable, &missedDecksTodayNullable, &repairPointsTodayNullable, &boatAttacksTodayNullable)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// No daily_report found for fk_person
-			return 0, 0, ""
+			return 0, 0, 0, 0, 0
 		}
 		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
-		return 0, 0, ""
+		return 0, 0, 0, 0, 0
 	}
 
-	if decksUsedYesterdayNullable.Valid {
-		decksUsedYesterday = int(decksUsedYesterdayNullable.Int64)
-	}
+		fameYesterday := int(fameTodayNullable.Int64)
 
-	if lastFameNullable.Valid {
-		lastFame = int(lastFameNullable.Int64)
-	}
+		decksUsedYesterday := int(decksUsedTodayNullable.Int64)
 
-	if lastDayIdentifierNullable.Valid {
-		lastDayIdentifier = lastDayIdentifierNullable.String
-	}
+		missedDecksYesterday := int(missedDecksTodayNullable.Int64)
 
-	return decksUsedYesterday, lastFame, lastDayIdentifier
+		repairPointsYesterday := int(repairPointsTodayNullable.Int64)
+
+		boatAttacksYesterday := int(boatAttacksTodayNullable.Int64)
+
+	return fameYesterday, decksUsedYesterday, missedDecksYesterday, repairPointsYesterday, boatAttacksYesterday
+
 }
 
+
+// Get the last daily report for a person
+func GetLastDayIdentifier(fk_person string) (string) {
+	// Connect to the database
+	db, err := tools.ConnectToDatabase()
+	if err != nil {
+		logger.LogMessage("Database", "Error while connecting to database: "+err.Error())
+		return ""
+	}
+
+	// Close the database connection
+	defer func() {
+		err := db.Close()
+		if err != nil {
+			logger.LogMessage("Database", "Error while closing database: "+err.Error())
+			return
+		}
+	}()
+
+	// Prepare the statement
+	stmt, err := db.Prepare("SELECT dayIdentifier FROM daily_report WHERE fk_person = ? ORDER BY date DESC, id DESC LIMIT 1;")
+	if err != nil {
+		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
+		return ""
+	}
+
+	defer func() {
+		err := stmt.Close()
+		if err != nil {
+			logger.LogMessage("Database", "Error while closing statement: "+err.Error())
+			return
+		}
+	}()
+
+	// Execute the statement and retrieve the last daily report fields
+	var dayIdentifierNullable sql.NullString
+	err = stmt.QueryRow(fk_person).Scan(&dayIdentifierNullable)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// No daily_report found for fk_person
+			return ""
+		}
+		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
+		return ""
+	}
+
+		lastDayIdentifier := dayIdentifierNullable.String
+
+	return lastDayIdentifier
+
+}

@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func CreatePerson(tag string, name string, fk_clan string) {
+func CreatePerson(tag string, name string, role string, trophies int, clanRank int, fk_clan string) {
 	
 	// Connect to the database
 	db, err := tools.ConnectToDatabase()
@@ -23,8 +23,8 @@ func CreatePerson(tag string, name string, fk_clan string) {
 		}
 	}(db)
 
-	// Insert person into the database
-	stmt, err := db.Prepare("INSERT INTO person (tag, name, fk_clan) VALUES (?, ?, ?)")
+	// Create person in the database
+	stmt, err := db.Prepare("INSERT INTO person(tag, name, role, trophies, clanRank, fk_clan) VALUES(?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
 		return
@@ -40,7 +40,7 @@ func CreatePerson(tag string, name string, fk_clan string) {
 	}(stmt)
 
 	// Execute the statement
-	_, err = stmt.Exec(tag, name, fk_clan)
+	_, err = stmt.Exec(tag, name, role, trophies, clanRank, fk_clan)
 	if err != nil {
 		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
 		return
@@ -49,7 +49,7 @@ func CreatePerson(tag string, name string, fk_clan string) {
 	logger.LogMessage("Database", "Person joined: "+tag)
 }
 
-func UpdatePerson(tag string, role string, trophies int, clanRank int) {
+func UpdatePerson(tag string, name string, role string, trophies int, clanRank int, wholeFame int, wholeDecksUsed int, wholeMissedDecks int, wholeRepairPoints int, wholeBoatAttacks int) {
 	
 	// Connect to the database
 	db, err := tools.ConnectToDatabase()
@@ -66,7 +66,7 @@ func UpdatePerson(tag string, role string, trophies int, clanRank int) {
 	}(db)
 
 	// Update person in the database
-	stmt, err := db.Prepare("UPDATE person SET role = ?, trophies = ?, clanRank = ? WHERE tag = ?")
+	stmt, err := db.Prepare("UPDATE person SET name = ?, role = ?, trophies = ?, clanRank = ?, wholeFame = ?, wholeDecksUsed = ?, wholeMissedDecks = ?, wholeRepairPoints = ?, wholeBoatAttacks = ? WHERE tag = ?")
 	if err != nil {
 		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
 		return
@@ -82,11 +82,44 @@ func UpdatePerson(tag string, role string, trophies int, clanRank int) {
 	}(stmt)
 
 	// Execute the statement
-	_, err = stmt.Exec(role, trophies, clanRank, tag)
+	_, err = stmt.Exec(name, role, trophies, clanRank, wholeFame, wholeDecksUsed, wholeMissedDecks, wholeRepairPoints, wholeBoatAttacks, tag)
 	if err != nil {
 		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
 		return
 	}
+
+	//logger.LogMessage("Database", "Person updated: "+tag)
+}
+
+func GetPerson(tag string) (int, int, int, int, int) {
+
+	// Connect to the database
+	db, err := tools.ConnectToDatabase()
+	if err != nil {
+		logger.LogMessage("Database", "Error while connecting to database: "+err.Error())
+		return 0, 0, 0, 0, 0
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			logger.LogMessage("Database", "Error while closing database: "+err.Error())
+			return
+		}
+	}(db)
+
+	// Get person from the database
+	var wholeFame int
+	var wholeDecksUsed int
+	var wholeMissedDecks int
+	var wholeRepairPoints int
+	var wholeBoatAttacks int
+	err = db.QueryRow("SELECT wholeFame, wholeDecksUsed, wholeMissedDecks, wholeRepairPoints, wholeBoatAttacks FROM person WHERE tag = ?", tag).Scan(&wholeFame, &wholeDecksUsed, &wholeMissedDecks, &wholeRepairPoints, &wholeBoatAttacks)
+	if err != nil {
+		logger.LogMessage("Database", "Error while getting person: "+err.Error())
+		return 0, 0, 0, 0, 0
+	}
+
+	return wholeFame, wholeDecksUsed, wholeMissedDecks, wholeRepairPoints, wholeBoatAttacks
 }
 
 	
@@ -180,3 +213,4 @@ func UpdatePersonStatus(members []string, clanTag string) {
 
 	return
 }
+

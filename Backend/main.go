@@ -8,7 +8,6 @@ import (
 	"b4u/backend/logger"
 	"b4u/backend/routine/v1/rt_main"
 	"b4u/backend/tools"
-	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -47,8 +46,8 @@ func main() {
 		}
 	}(logFileGin)
 
-	// Log to file and console
-	gin.DefaultWriter = io.MultiWriter(logFileGin, os.Stdout)
+	// Log only to file
+	gin.DefaultWriter = logFileGin
 
 	// Create router
 	router := gin.Default()
@@ -83,8 +82,9 @@ func main() {
 	router.GET("/database/person", dep_person.GetPerson)
 	router.GET("/database/person/dailyReport", dep_person.GetDailyReport)
 	router.GET("/database/clan", dep_clan.GetClans)
-	router.GET("/database/clan/weeklyReport", dep_clan.GetClanWeeklyReport)
-	router.GET("/database/clan/warlog/:clanID", dep_clan.GetClanWarlog)
+	router.GET("/database/clan/day-log/:clanID/:offset", dep_clan.GetClanDayLog)
+	router.GET("/database/clan/week-log/:clanID/:offset", dep_clan.GetClanWeekLog)
+	router.GET("/database/clan/whole-log/:clanID/:offset", dep_clan.GetClanWholeLog)
 	router.GET("/database/clan/create", clanRegistry.CreateRegister)
 	router.GET("/database/clan/read", clanRegistry.WriteTagsToDatabase)
 

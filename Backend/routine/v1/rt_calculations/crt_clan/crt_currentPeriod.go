@@ -31,3 +31,23 @@ func CalculateCurrentPeriod(data map[string]interface{}) (int, string, int) {
 
 	return periodIndex, periodType, sectionIndex
 }
+
+func CalculateCurrentPeriodSeason(data map[string]interface{}, sectionIndex int) (int) {
+	
+	// Extract the items array from the response
+	items, ok := data["items"].([]interface{})
+	if !ok {
+		return 0
+	}
+
+	seasonId, ok := items[0].(map[string]interface{})["seasonId"].(float64)
+	if !ok {
+		return 0
+	}
+
+	if sectionIndex == 0 {
+		seasonId = seasonId + 1
+	}
+
+	return int(seasonId)
+}

@@ -4,8 +4,8 @@ import (
 	"fmt"
 )
 
-func CalculateDayIdentifier(sectionIndex int, periodIndex int) string {
-	identifier := fmt.Sprintf("%03d%03d", sectionIndex, periodIndex)
+func CalculateDayIdentifier(seasonId int, sectionIndex int, periodIndex int) string {
+	identifier := fmt.Sprintf("%03d%03d%03d", seasonId, sectionIndex, periodIndex)
 
 	return identifier
 }

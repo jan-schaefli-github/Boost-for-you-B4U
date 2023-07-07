@@ -14,19 +14,19 @@ type Person struct {
 	FkClan     string `json:"fk_clan"`
 }
 
-type WarData struct {
-	Tag            string `json:"tag"`
-	Name           string `json:"name"`
-	ClanStatus     string `json:"clanStatus"`
-	Role           string `json:"role"`
-	Trophies       int    `json:"trophies"`
-	ClanRank       int    `json:"clanRank"`
-	Fame           int    `json:"fame"`
-	MissedDecks    int    `json:"missedDecks"`
-	DecksUsedToday int    `json:"decksUsedToday"`
-	RepairPoints   int    `json:"repairPoints"`
-	BoatAttacks    int    `json:"boatAttacks"`
-	JoinDate       string `json:"joinDate"`
+type WarLog struct {
+	Tag             string `json:"tag"`
+	Name			string `json:"name"`
+	JoinDate        string `json:"joinDate"`
+	ClanStatus      int `json:"clanStatus"`
+	Role            string `json:"role"`
+	Trophies        int `json:"trophies"`
+	ClanRank        int `json:"clanRank"`
+	Fame            int `json:"fame"`
+	DecksUsed       int `json:"decksUsed"`
+	MissedDecks     int `json:"missedDecks"`
+	RepairPoints    int `json:"repairPoints"`
+	BoatAttacks     int `json:"boatAttacks"`
 }
 
 

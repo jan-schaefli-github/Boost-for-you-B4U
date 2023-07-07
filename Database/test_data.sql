@@ -1,9 +1,9 @@
 INSERT INTO clan (tag) VALUES ('#P9UVQCJV');
 INSERT INTO clan (tag) VALUES ('#QPPQ2LQP');
 
-INSERT INTO person (tag, name, wholeFame, clanStatus, fk_clan) VALUES ('#2Y9VQVJ8', 'THE DISCONECTOR', 0, 1, '#P9UVQCJV');
 
-SELECT person.tag, person.name, person.clanStatus, weekly_report.fame, weekly_report.missedDecks, daily_report.decksUsedToday, person.fk_clan, daily_report.date
-FROM weekly_report
-INNER JOIN person ON weekly_report.fk_person = person.tag
-INNER JOIN daily_report ON daily_report.fk_person = person.tag;
+
+SELECT p.tag, p.name, p.joinDate, p.clanStatus, p.role, p.trophies, p.clanRank, dr.fameToday, dr.decksUsedToday, dr.missedDecksToday, dr.repairPointsToday, dr.boatAttacksToday, dr.dayIdentifier
+FROM person p
+INNER JOIN daily_report dr ON p.tag = dr.fk_person
+WHERE p.fk_clan = '#P9UVQCJV'

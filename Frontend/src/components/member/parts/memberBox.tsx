@@ -9,7 +9,7 @@ interface WarData {
   name: string;
   role: string;
   fame: number;
-  decksUsedToday: number;
+  decksUsed: number;
   missedDecks: number;
   boatAttacks: number;
   clanStatus: number;
@@ -21,7 +21,7 @@ const SORT_KEYS: (keyof WarData)[] = [
   "name",
   "role",
   "fame",
-  "decksUsedToday",
+  "decksUsed",
   "missedDecks",
   "boatAttacks",
 ];
@@ -30,46 +30,81 @@ const SORT_LABELS: { [key in keyof WarData]: string } = {
   name: "Name",
   role: "Role",
   fame: "Fame",
-  decksUsedToday: "Decks Used Today",
+  decksUsed: "Decks Used",
   missedDecks: "Missed Decks",
   boatAttacks: "Boat Attacks",
   clanStatus: "Clan Status",
 };
 
+const fetchUrls = [
+  `day-log`,
+  `week-log`,
+  `whole-log`,
+];
+
+const fetchUrlLabels = [
+  "Day Log",
+  "Week Log",
+  "Whole Log",
+];
+
 function MemberBox() {
-  const [isFilterActive, setFilterActive] = useState(false);
+  const [filterStage, setFilterStage] = useState(0);
   const [warData, setWarData] = useState<WarData[]>([]);
   const [sortKeyIndex, setSortKeyIndex] = useState<number>(0);
   const [sortOrder, setSortOrder] = useState<string>("asc");
-  const [clanTag, setClanTag] = useState('#P9UVQCJV');
+  const [fetchUrlIndex, setFetchUrlIndex] = useState(0);
+  const [clanTag, setClanTag] = useState("#P9UVQCJV");
+  const [offset, setOffset] = useState(0);
+  const [message, setMessage] = useState("Loading...");
 
   useEffect(() => {
     fetchWarData();
-  }, [clanTag]);
+  }, [clanTag, fetchUrlIndex, offset]);
 
   const fetchWarData = async () => {
+
+    setMessage("Loading...");
+
     try {
-      const formattedClanTag = clanTag.replace('#', '');
+      const formattedClanTag = clanTag.replace("#", "");
       const url = new URL(
-        `${import.meta.env.VITE_BASE_URL}/database/clan/warlog/${formattedClanTag}`
+        `${import.meta.env.VITE_BASE_URL}/database/clan/${fetchUrls[fetchUrlIndex]}/${formattedClanTag}/${offset}`
       );
       const response = await fetch(url.toString());
-      
-  
+
       if (response.ok) {
         const data = await response.json();
-        setWarData(data);
+
+        // If the data has an error, set the message and clear the data
+        if (data.error) {
+  
+          if (data.error === "notFound") {
+            setMessage("Data not found");
+            setWarData([]);
+          } else {
+            console.error("Failed to fetch war data:", data.error);
+            setMessage("Error while fetching war data");
+            setWarData([]);
+          }
+        } else {
+          setMessage("");
+          setWarData(data);
+        }
       } else {
-        console.error("Failed to fetch war data");
+        console.error("Failed to fetch war data:", response.status);
+        setMessage("Error while fetching war data");
+        setWarData([]);
       }
     } catch (error) {
       console.error("Error while fetching war data:", error);
+      setMessage("Error while fetching war data");
+      setWarData([]);
     }
   };
-  
 
   const handleFilterClick = () => {
-    setFilterActive(!isFilterActive);
+    setFilterStage((prevStage) => (prevStage + 1) % 3);
   };
 
   const handleSortKeyChange = () => {
@@ -78,6 +113,22 @@ function MemberBox() {
 
   const handleSortOrderChange = () => {
     setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+  };
+
+  const handleFetchClick = () => {
+    setOffset(0);
+    setFetchUrlIndex((prevIndex) => (prevIndex + 1) % fetchUrls.length);
+  };
+
+  const handleRemoveOffset = () => {
+    setOffset(offset - 1);
+    if (offset <= 0) {
+      setOffset(0);
+    }
+  };
+
+  const handleAddOffset = () => {
+    setOffset(offset + 1);
   };
 
   const sortData = (data: WarData[]) => {
@@ -96,7 +147,7 @@ function MemberBox() {
           } else if (sortOrder === "desc") {
             return roleOrder.indexOf(b.role) - roleOrder.indexOf(a.role);
           }
-        }        
+        }
       } else {
         const sortKey = SORT_KEYS[sortKeyIndex];
         const aValue = a[sortKey];
@@ -125,7 +176,7 @@ function MemberBox() {
         const sortKey = SORT_KEYS[sortKeyIndex];
         const aValue = a[sortKey];
         const bValue = b[sortKey];
-    
+
         if (sortOrder === "asc") {
           if (aValue < bValue) return -1;
           if (aValue > bValue) return 1;
@@ -134,10 +185,9 @@ function MemberBox() {
           if (aValue < bValue) return 1;
         }
       }
-    
+
       return 0;
     });
-    
 
     return [...sortedDataAboveZero, ...sortedDataBelowZero];
   };
@@ -154,9 +204,9 @@ function MemberBox() {
         <h3>
           {data.name}
           {data.joinDate === today && (
-            <img src="./clashIcon/icon_new.png" alt="New Player" />
+            <img src="./clashIcon/icon-new.png" alt="New Player" />
           )}
-          <i>{data.role !== "" ? data.role : "--"}</i> <br />
+          <i>{data.role != "" ? data.role : "--"}</i> <br />
           <small>{data.tag}</small>
         </h3>
         <div className="stats-container">
@@ -166,42 +216,42 @@ function MemberBox() {
               {data.fame}
             </p>
           </Tooltip>
-          {data.boatAttacks !== 0 ? (
             <Tooltip
               position={{ top: "-45px", left: "-10px" }}
-              text="Decks Used Today, Made Boat Attack!"
+              text="Decks Used"
             >
               <p>
                 <img
-                  src="./clashIcon/icon_decks_used_to_day_boat_attack.png"
-                  alt="Decks Used Today, Made Boat Attack"
+                  src="./clashIcon/icon-decks-used-to-day.png"
+                  alt="Decks Used"
                 />
-                {data.decksUsedToday}
+                {data.decksUsed}
               </p>
             </Tooltip>
-          ) : (
-            <Tooltip
-              position={{ top: "-45px", left: "-10px" }}
-              text="Decks Used Today"
-            >
-              <p>
-                <img
-                  src="./clashIcon/icon_decks_used_to_day.png"
-                  alt="Decks Used Today"
-                />
-                {data.decksUsedToday}
-              </p>
-            </Tooltip>
-          )}
+            {data.boatAttacks === 0 ? (
           <Tooltip
             position={{ top: "-45px", left: "-10px" }}
             text="Missed Decks"
           >
             <p>
-              <img src="./clashIcon/icon_decks_missed.png" alt="Missed Decks" />
+              <img src="./clashIcon/icon-decks-missed.png" alt="Missed Decks" />
               {data.missedDecks}
             </p>
           </Tooltip>
+          ) : (
+            <Tooltip
+              position={{ top: "-45px", left: "-10px" }}
+              text="Missed Decks"
+            >
+              <p>
+                <img
+                  src="./clashIcon/icon-decks-missed-boat-attack.png"
+                  alt="Missed Decks"
+                />
+                {data.decksUsed}
+              </p>
+            </Tooltip>
+          )}
         </div>
       </div>
     ));
@@ -231,30 +281,61 @@ function MemberBox() {
   return (
     <div className="member-box">
       <div className="sort-nav">
-      {isFilterActive ? (
-        <input className="filter-input" placeholder='Enter clan tag ...' value={clanTag} onChange={(e) => setClanTag(e.target.value)} />
-      ) : (
-        <>
-          <label className=".dropdown-label">
-            <button className="sort-key-button" onClick={handleSortKeyChange}>
-              {SORT_LABELS[SORT_KEYS[sortKeyIndex]]}
-            </button>
-          </label>
-          <label>
-            <button className="sort-order-button" onClick={handleSortOrderChange}>
-              {sortOrder === 'asc' ? '▲' : '▼'}
-            </button>
-          </label>
-        </>
-      )}
-      <div className="filter-button" onClick={handleFilterClick}>
-        {isFilterActive ? (
-          <span className="filter-icon"><img src="./icon/filter.svg" alt="" /></span>
+        {filterStage === 0 ? (
+          <input
+            className="filter-input"
+            placeholder="Enter clan tag ..."
+            value={clanTag}
+            onChange={(e) => setClanTag(e.target.value)}
+          />
+        ) : filterStage === 1 ? (
+          <>
+            <label>
+              <button className="backwards" onClick={handleAddOffset} offset-data={offset}>◄</button>
+            </label>
+            <label>
+              <button className="fetch-url-button" onClick={handleFetchClick}>
+                {fetchUrlLabels[fetchUrlIndex]}
+              </button>
+            </label>
+            <label>
+              <button className="forwards" onClick={handleRemoveOffset} offset-data={offset}>►</button>
+            </label>
+          </>
         ) : (
-          <span className="search-icon"><img src="./icon/search.svg" alt="" /></span>
+          <>
+            <label className=".dropdown-label">
+              <button className="sort-key-button" onClick={handleSortKeyChange}>
+                {SORT_LABELS[SORT_KEYS[sortKeyIndex]]}
+              </button>
+            </label>
+            <label>
+              <button
+                className="sort-order-button"
+                onClick={handleSortOrderChange}
+              >
+                {sortOrder === "asc" ? "▲" : "▼"}
+              </button>
+            </label>
+          </>
         )}
+        <div className="filter-button" onClick={handleFilterClick}>
+          {filterStage === 0 ? (
+            <span className="icon">
+              <img src="./icon/calendar.svg" alt="calendar" />
+            </span>
+          ) : filterStage === 1 ? (
+            <span className="icon">
+              <img src="./icon/filter.svg" alt="filter" />
+            </span>
+          ) : (
+            <span className="icon">
+              <img src="./icon/search.svg" alt="search" />
+            </span>
+          )}
+        </div>
       </div>
-    </div>
+      <div className="message">{message}</div>
       <div className="data-box-container">{renderDataBoxes()}</div>
       <button
         id="scroll-button"

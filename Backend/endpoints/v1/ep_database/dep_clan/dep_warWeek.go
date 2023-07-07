@@ -6,13 +6,12 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-// GetClanWarlog returns war data from weekly_report, person, and daily_report tables
-func GetClanWarlog(c *gin.Context) {
+// Get week log returns war data from person and weekly_report tables
+func GetClanWeekLog(c *gin.Context) {
 	db, err := tools.ConnectToDatabase()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
@@ -27,13 +26,18 @@ func GetClanWarlog(c *gin.Context) {
 		}
 	}(db)
 
-	query := `SELECT p.tag, p.name, p.clanStatus, p.role, p.trophies, p.clanRank, dr.fame, wr.missedDecks, dr.decksUsedToday, dr.repairPoints, dr.boatAttacks, p.joinDate
-	FROM person p
-	INNER JOIN weekly_report wr ON p.tag = wr.fk_person
-	INNER JOIN daily_report dr ON p.tag = dr.fk_person
-	INNER JOIN (SELECT fk_person, MAX(id) AS max_id FROM weekly_report GROUP BY fk_person) wr_max ON wr.fk_person = wr_max.fk_person AND wr.id = wr_max.max_id
-	INNER JOIN (SELECT fk_person, MAX(id) AS max_id FROM daily_report GROUP BY fk_person) dr_max ON dr.fk_person = dr_max.fk_person AND dr.id = dr_max.max_id
-	WHERE p.fk_clan = ? AND dr.date >= ?;`
+	// Execute the "SET sql_mode = ''" statement
+	_, err = db.Exec("SET sql_mode = '';")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
+		logger.LogMessage("Database", "Error while executing 'SET sql_mode = ''': "+err.Error())
+		return
+	}
+
+	query := `SELECT p.tag, p.name, p.joinDate, p.clanStatus, p.role, p.trophies, p.clanRank, wr.fameThisWeek, wr.decksUsedThisWeek, wr.missedDecksThisWeek, wr.repairPointsThisWeek, wr.boatAttacksThisWeek
+			FROM person p
+			INNER JOIN weekly_report wr ON p.tag = wr.fk_person
+			WHERE p.fk_clan = ? AND wr.weekIdentifier = (SELECT wr2.weekIdentifier FROM weekly_report wr2 INNER JOIN person p2 ON p2.tag = wr2.fk_person WHERE p2.fk_clan = ? GROUP BY wr2.weekIdentifier ORDER BY wr2.weekIdentifier DESC LIMIT ?, 1);`
 
 	tools.LoadDotEnv()
 	
@@ -49,15 +53,14 @@ func GetClanWarlog(c *gin.Context) {
 	}
 	
 	// Get the current date
-	now := time.Now()
+	offset := c.Param("offset")
 
-	// Subtract one day from the current date
-	oneDayAgo := now.AddDate(0, 0, -1)
+	if offset < "0" {
+		offset = "0"
+	}
 
-	// Format the date as "2006-01-02"
-	date := oneDayAgo.Format("2006-01-02")
 
-	rows, err := db.Query(query, fk_clan, date)
+	rows, err := db.Query(query, fk_clan, fk_clan, offset)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		logger.LogMessage("Database", "Error while querying the database: "+err.Error())
@@ -65,30 +68,35 @@ func GetClanWarlog(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var warData []tools.WarData
+	var WarLog []tools.WarLog
 
 	for rows.Next() {
-		var rowData tools.WarData
+		var rowData tools.WarLog
 		err := rows.Scan(
 			&rowData.Tag,
 			&rowData.Name,
+			&rowData.JoinDate,
 			&rowData.ClanStatus,
 			&rowData.Role,
 			&rowData.Trophies,
 			&rowData.ClanRank,
 			&rowData.Fame,
+			&rowData.DecksUsed,
 			&rowData.MissedDecks,
-			&rowData.DecksUsedToday,
 			&rowData.RepairPoints,
 			&rowData.BoatAttacks,
-			&rowData.JoinDate,
 		)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 			logger.LogMessage("Database", "Error while scanning rows: "+err.Error())
 			return
 		}
-		warData = append(warData, rowData)
+		WarLog = append(WarLog, rowData)
+	}
+	
+	if len(WarLog) == 0 {
+		c.JSON(http.StatusOK, gin.H{"error": "notFound"})
+		return
 	}
 
 	if err := rows.Err(); err != nil {
@@ -97,13 +105,14 @@ func GetClanWarlog(c *gin.Context) {
 		return
 	}
 
-	warDataJSON, err := json.Marshal(warData)
+	WarLogJSON, err := json.Marshal(WarLog)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		logger.LogMessage("Database", "Error while marshalling war data: "+err.Error())
 		return
 	}
 
+
 	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, string(warDataJSON))
+	c.String(http.StatusOK, string(WarLogJSON))
 }

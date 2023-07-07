@@ -15,7 +15,7 @@ interface WarData {
   clanStatus: number;
   fame: number;
   missedDecks: number;
-  decksUsedToday: number;
+  decksUsed: number;
   boatAttacks: number;
   repairPoints: number;
   [key: string]: string | number;
@@ -36,13 +36,13 @@ function MemberTable() {
   const fetchWarData = async () => {
     try {
       const formattedClanTag = clanTag.replace('#', '');
-      const url = new URL(`${import.meta.env.VITE_BASE_URL}/database/clan/warlog/${formattedClanTag}`);
+      const url = new URL(`${import.meta.env.VITE_BASE_URL}/database/clan/week-log/${formattedClanTag}`);
       const response = await fetch(url.toString());
 
       if (response.ok) {
         const data = await response.json();
-        const sortedDataAboveZero = [...data].filter(item => item.clanStatus > 0);
-        const sortedDataBelowZero = [...data].filter(item => item.clanStatus <= 0);
+        const sortedDataAboveZero = [...data].filter(item => item.clanStatus != 0);
+        const sortedDataBelowZero = [...data].filter(item => item.clanStatus != 1);
 
         sortedDataAboveZero.sort((a, b) => {
           if (a.clanRank < b.clanRank) return -1;
@@ -73,8 +73,8 @@ function MemberTable() {
       direction = 'desc';
     }
   
-    const sortedDataAboveZero = [...warData].filter(item => item.clanStatus > 0);
-    const sortedDataBelowZero = [...warData].filter(item => item.clanStatus <= 0);
+    const sortedDataAboveZero = [...warData].filter(item => item.clanStatus != 0);
+    const sortedDataBelowZero = [...warData].filter(item => item.clanStatus != 1);
   
     sortedDataAboveZero.sort((a, b) => {
       if (key === 'role') {
@@ -162,11 +162,11 @@ function MemberTable() {
               </Tooltip>
               {getSortIcon('missedDecks')}
             </th>
-            <th onClick={() => sortTable('decksUsedToday')}>
-              <Tooltip position={{ top: '-45px', left: '-150%' }} text='Decks Used Today'>
-                <img src="./clashIcon/icon_decks_used_to_day.png" alt="Decks Used Today" />
+            <th onClick={() => sortTable('decksUsed')}>
+              <Tooltip position={{ top: '-45px', left: '-150%' }} text='Decks Used'>
+                <img src="./clashIcon/icon_decks_used_to_day.png" alt="Decks Used" />
               </Tooltip>
-              {getSortIcon('decksUsedToday')}
+              {getSortIcon('decksUsed')}
             </th>
             <th onClick={() => sortTable('boatAttacks')}>
               <Tooltip position={{ top: '-45px', left: '-150%' }} text='Boat Attacks'>
@@ -195,7 +195,7 @@ function MemberTable() {
               <td>{data.trophies}</td>
               <td>{data.fame}</td>
               <td>{data.missedDecks}</td>
-              <td>{data.decksUsedToday}</td>
+              <td>{data.decksUsed}</td>
               <td>{data.boatAttacks}</td>
               <td>{data.repairPoints}</td>
             </tr>

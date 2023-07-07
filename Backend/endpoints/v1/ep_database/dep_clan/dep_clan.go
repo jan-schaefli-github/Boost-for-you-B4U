@@ -25,7 +25,7 @@ func GetClans(c *gin.Context) {
 		}
 	}(db)
 
-	rows, err := db.Query("SELECT * FROM clan")
+	rows, err := db.Query("SELECT tag FROM clan")
 	if err != nil {
 		logger.LogMessage("Database", "Error while querying the database: "+err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while querying the database"})
