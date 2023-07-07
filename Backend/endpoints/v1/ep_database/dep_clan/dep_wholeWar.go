@@ -59,10 +59,10 @@ func GetClanWholeLog(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var WarLog []tools.WarLog
+	var WarLogItems []tools.WarLogItems
 
 	for rows.Next() {
-		var rowData tools.WarLog
+		var rowData tools.WarLogItems
 		err := rows.Scan(
 			&rowData.Tag,
 			&rowData.Name,
@@ -82,10 +82,10 @@ func GetClanWholeLog(c *gin.Context) {
 			logger.LogMessage("Database", "Error while scanning rows: "+err.Error())
 			return
 		}
-		WarLog = append(WarLog, rowData)
+		WarLogItems = append(WarLogItems, rowData)
 	}
 	
-	if len(WarLog) == 0 {
+	if len(WarLogItems) == 0 {
 		c.JSON(http.StatusOK, gin.H{"error": "notFound"})
 		return
 	}
@@ -94,6 +94,12 @@ func GetClanWholeLog(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
 		logger.LogMessage("Database", "Error while iterating over rows: "+err.Error())
 		return
+	}
+
+
+	WarLog := tools.WarLog{
+		Items: WarLogItems,
+		MaxOffset: "0",
 	}
 
 	WarLogJSON, err := json.Marshal(WarLog)

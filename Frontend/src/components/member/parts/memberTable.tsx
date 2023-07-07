@@ -6,6 +6,8 @@ import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 
 const today = new Date().toISOString().split('T')[0];
 
+const offset = 0;
+
 interface WarData {
   clanRank: number;
   name: string;
@@ -21,6 +23,8 @@ interface WarData {
   [key: string]: string | number;
 }
 
+const fetchUrls = [`day-log`, `week-log`, `whole-log`];
+
 function MemberTable() {
   const [warData, setWarData] = useState<WarData[]>([]);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: string }>({
@@ -28,6 +32,7 @@ function MemberTable() {
     direction: 'asc',
   });
   const [clanTag, setClanTag] = useState('#P9UVQCJV');
+  const [fetchUrlIndex, setFetchUrlIndex] = useState(0);
 
   useEffect(() => {
     fetchWarData();
@@ -36,11 +41,16 @@ function MemberTable() {
   const fetchWarData = async () => {
     try {
       const formattedClanTag = clanTag.replace('#', '');
-      const url = new URL(`${import.meta.env.VITE_BASE_URL}/database/clan/week-log/${formattedClanTag}`);
+      const url = new URL(
+        `${import.meta.env.VITE_BASE_URL}/database/clan/${
+          fetchUrls[fetchUrlIndex]
+        }/${formattedClanTag}/${offset}`
+      );
       const response = await fetch(url.toString());
 
       if (response.ok) {
-        const data = await response.json();
+        const WholeData = await response.json();
+        const data = WholeData.items;
         const sortedDataAboveZero = [...data].filter(item => item.clanStatus != 0);
         const sortedDataBelowZero = [...data].filter(item => item.clanStatus != 1);
 
@@ -146,7 +156,7 @@ function MemberTable() {
             </th>
             <th onClick={() => sortTable('trophies')}>
               <Tooltip position={{ top: '-45px', left: '-150%' }} text='Trophies '>
-                <img src="./clashIcon/icon_trophy.png" alt="Trophies " />
+                <img src="./clashIcon/icon-trophy.png" alt="Trophies " />
               </Tooltip>
               {getSortIcon('trophies')}
             </th>
@@ -158,25 +168,25 @@ function MemberTable() {
             </th>
             <th onClick={() => sortTable('missedDecks')}>
               <Tooltip position={{ top: '-45px', left: '-150%' }} text='Missed Decks'>
-                <img src="./clashIcon/icon_decks_missed.png" alt="Missed Decks" />
+                <img src="./clashIcon/icon-decks-missed.png" alt="Missed Decks" />
               </Tooltip>
               {getSortIcon('missedDecks')}
             </th>
             <th onClick={() => sortTable('decksUsed')}>
               <Tooltip position={{ top: '-45px', left: '-150%' }} text='Decks Used'>
-                <img src="./clashIcon/icon_decks_used_to_day.png" alt="Decks Used" />
+                <img src="./clashIcon/icon-decks-used-to-day.png" alt="Decks Used" />
               </Tooltip>
               {getSortIcon('decksUsed')}
             </th>
             <th onClick={() => sortTable('boatAttacks')}>
               <Tooltip position={{ top: '-45px', left: '-150%' }} text='Boat Attacks'>
-                <img src="./clashIcon/icon_boat_attack.png" alt="Boat Attacks" />
+                <img src="./clashIcon/icon-boat-attack.png" alt="Boat Attacks" />
               </Tooltip>
               {getSortIcon('boatAttacks')}
             </th>
             <th onClick={() => sortTable('repairPoints')}>
               <Tooltip position={{ top: '-45px', left: '-190%' }} text='Repair Points'>
-                <img src="./clashIcon/icon_repair_hammer.png" alt="Repair Points " />
+                <img src="./clashIcon/icon-repair-hammer.png" alt="Repair Points " />
               </Tooltip>
               {getSortIcon('repairPoints')}
             </th>

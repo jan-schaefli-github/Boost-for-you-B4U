@@ -14,7 +14,7 @@ type Person struct {
 	FkClan     string `json:"fk_clan"`
 }
 
-type WarLog struct {
+type WarLogItems struct {
 	Tag             string `json:"tag"`
 	Name			string `json:"name"`
 	JoinDate        string `json:"joinDate"`
@@ -27,6 +27,11 @@ type WarLog struct {
 	MissedDecks     int `json:"missedDecks"`
 	RepairPoints    int `json:"repairPoints"`
 	BoatAttacks     int `json:"boatAttacks"`
+}
+
+type WarLog struct {
+	Items []WarLogItems `json:"items"`
+	MaxOffset string `json:"maxOffset"`
 }
 
 

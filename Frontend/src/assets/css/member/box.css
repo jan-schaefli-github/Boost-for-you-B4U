@@ -140,11 +140,6 @@
   border-radius: 5px;
 }
 
-.member-box .forwards[offset-data="0"] {
-  background-color: #cccccc;
-}
-
-
 .member-box .sort-key-button {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
@@ -168,6 +163,30 @@
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
+
+.member-box .forwards[fb-button=false] {
+  display: none;
+}
+
+.member-box .backwards[fb-button=false] {
+  display: none;
+}
+
+.member-box .fetch-url-button[fb-button=false] {
+  width: 210px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.member-box .forwards:disabled {
+  background-color: #cccccc;
+}
+
+.member-box .backwards:disabled {
+  background-color: #cccccc;
+}
+
+
 
 .member-box .forwards {
   border-radius: 0;
@@ -319,7 +338,11 @@
     color: var(--primary-color);
   }
 
-  .member-box .forwards[offset-data="0"] {
+  .member-box .forwards:disabled {
+    background-color: var(--dark-bg-color);
+  }
+
+  .member-box .backwards:disabled {
     background-color: var(--dark-bg-color);
   }
 

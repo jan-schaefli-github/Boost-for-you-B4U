@@ -4,6 +4,9 @@ import Tooltip from "../../toolTip";
 
 const today = new Date().toISOString().split("T")[0];
 
+var maxOffset = 0;
+var fbButtons = "true";
+
 interface WarData {
   clanRank: number;
   name: string;
@@ -36,17 +39,9 @@ const SORT_LABELS: { [key in keyof WarData]: string } = {
   clanStatus: "Clan Status",
 };
 
-const fetchUrls = [
-  `day-log`,
-  `week-log`,
-  `whole-log`,
-];
+const fetchUrls = [`day-log`, `week-log`, `whole-log`];
 
-const fetchUrlLabels = [
-  "Day Log",
-  "Week Log",
-  "Whole Log",
-];
+const fetchUrlLabels = ["Day Log", "Week Log", "Whole Log"];
 
 function MemberBox() {
   const [filterStage, setFilterStage] = useState(0);
@@ -63,22 +58,26 @@ function MemberBox() {
   }, [clanTag, fetchUrlIndex, offset]);
 
   const fetchWarData = async () => {
-
     setMessage("Loading...");
 
     try {
       const formattedClanTag = clanTag.replace("#", "");
       const url = new URL(
-        `${import.meta.env.VITE_BASE_URL}/database/clan/${fetchUrls[fetchUrlIndex]}/${formattedClanTag}/${offset}`
+        `${import.meta.env.VITE_BASE_URL}/database/clan/${
+          fetchUrls[fetchUrlIndex]
+        }/${formattedClanTag}/${offset}`
       );
       const response = await fetch(url.toString());
 
       if (response.ok) {
-        const data = await response.json();
+        const WholeData = await response.json();
+        const data = WholeData.items;
+        maxOffset = WholeData.maxOffset;
+
+        handleFbButtons(maxOffset.toString());
 
         // If the data has an error, set the message and clear the data
         if (data.error) {
-  
           if (data.error === "notFound") {
             setMessage("Data not found");
             setWarData([]);
@@ -121,15 +120,31 @@ function MemberBox() {
   };
 
   const handleRemoveOffset = () => {
-    setOffset(offset - 1);
+
     if (offset <= 0) {
       setOffset(0);
+    } else {
+      setOffset(offset - 1);
     }
   };
 
   const handleAddOffset = () => {
-    setOffset(offset + 1);
+
+    if (offset >= maxOffset) {
+      setOffset(maxOffset);
+    } else {
+      setOffset(offset + 1);
+    }
   };
+
+  const handleFbButtons = (maxOffset:string) => {
+
+    if (maxOffset === "0") {
+      fbButtons = "false";
+    } else {
+      fbButtons = "true";
+    }
+  }
 
   const sortData = (data: WarData[]) => {
     if (!data) {
@@ -216,28 +231,28 @@ function MemberBox() {
               {data.fame}
             </p>
           </Tooltip>
+          <Tooltip position={{ top: "-45px", left: "-10px" }} text="Decks Used">
+            <p>
+              <img
+                src="./clashIcon/icon-decks-used-to-day.png"
+                alt="Decks Used"
+              />
+              {data.decksUsed}
+            </p>
+          </Tooltip>
+          {data.boatAttacks === 0 ? (
             <Tooltip
               position={{ top: "-45px", left: "-10px" }}
-              text="Decks Used"
+              text="Missed Decks"
             >
               <p>
                 <img
-                  src="./clashIcon/icon-decks-used-to-day.png"
-                  alt="Decks Used"
+                  src="./clashIcon/icon-decks-missed.png"
+                  alt="Missed Decks"
                 />
-                {data.decksUsed}
+                {data.missedDecks}
               </p>
             </Tooltip>
-            {data.boatAttacks === 0 ? (
-          <Tooltip
-            position={{ top: "-45px", left: "-10px" }}
-            text="Missed Decks"
-          >
-            <p>
-              <img src="./clashIcon/icon-decks-missed.png" alt="Missed Decks" />
-              {data.missedDecks}
-            </p>
-          </Tooltip>
           ) : (
             <Tooltip
               position={{ top: "-45px", left: "-10px" }}
@@ -291,15 +306,29 @@ function MemberBox() {
         ) : filterStage === 1 ? (
           <>
             <label>
-              <button className="backwards" onClick={handleAddOffset} offset-data={offset}>◄</button>
+              <button
+                className="backwards"
+                onClick={handleAddOffset}
+                disabled={offset === maxOffset - 1 + 1} // +1 - 1 not working otherwise
+                fb-button={fbButtons}
+              >
+                ◄
+              </button>
             </label>
             <label>
-              <button className="fetch-url-button" onClick={handleFetchClick}>
+              <button className="fetch-url-button" onClick={handleFetchClick} fb-button={fbButtons}>
                 {fetchUrlLabels[fetchUrlIndex]}
               </button>
             </label>
             <label>
-              <button className="forwards" onClick={handleRemoveOffset} offset-data={offset}>►</button>
+              <button
+                className="forwards"
+                onClick={handleRemoveOffset}
+                disabled={offset === 0}
+                fb-button={fbButtons}
+              >
+                ►
+              </button>
             </label>
           </>
         ) : (
