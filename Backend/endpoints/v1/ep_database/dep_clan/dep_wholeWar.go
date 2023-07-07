@@ -99,6 +99,7 @@ func GetClanWholeLog(c *gin.Context) {
 
 	WarLog := tools.WarLog{
 		Items: WarLogItems,
+		Identifier: "whole",
 		MaxOffset: "0",
 	}
 

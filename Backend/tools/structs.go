@@ -31,6 +31,7 @@ type WarLogItems struct {
 
 type WarLog struct {
 	Items []WarLogItems `json:"items"`
+	Identifier string `json:"identifier"`
 	MaxOffset string `json:"maxOffset"`
 }
 

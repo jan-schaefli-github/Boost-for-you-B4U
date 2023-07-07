@@ -87,7 +87,7 @@ function MemberBox() {
             setWarData([]);
           }
         } else {
-          setMessage("");
+          handleIdentifier(WholeData.identifier);
           setWarData(data);
         }
       } else {
@@ -120,7 +120,6 @@ function MemberBox() {
   };
 
   const handleRemoveOffset = () => {
-
     if (offset <= 0) {
       setOffset(0);
     } else {
@@ -129,7 +128,6 @@ function MemberBox() {
   };
 
   const handleAddOffset = () => {
-
     if (offset >= maxOffset) {
       setOffset(maxOffset);
     } else {
@@ -137,14 +135,32 @@ function MemberBox() {
     }
   };
 
-  const handleFbButtons = (maxOffset:string) => {
-
+  const handleFbButtons = (maxOffset: string) => {
     if (maxOffset === "0") {
       fbButtons = "false";
     } else {
       fbButtons = "true";
     }
-  }
+  };
+
+  const handleIdentifier = (identifier: string) => {
+    if (identifier === "whole") {
+      setMessage("Whole Data");
+    } else if (identifier.length === 9) {
+      const season = Number(identifier.substring(0, 3));
+      const week = Number(identifier.substring(3, 6)) + 1;
+      const days = Number(identifier.substring(6)) + 1;
+
+      setMessage(`Season: ${season}, Week: ${week}, Day: ${days}`);
+    } else if (identifier.length === 6) {
+      const season = Number(identifier.substring(0, 3));
+      const week = Number(identifier.substring(3, 6)) + 1;
+
+      setMessage(`Season: ${season}, Week: ${week}`);
+    } else {
+      setMessage("Wrong Date in Database");
+    }
+  };
 
   const sortData = (data: WarData[]) => {
     if (!data) {
@@ -316,7 +332,11 @@ function MemberBox() {
               </button>
             </label>
             <label>
-              <button className="fetch-url-button" onClick={handleFetchClick} fb-button={fbButtons}>
+              <button
+                className="fetch-url-button"
+                onClick={handleFetchClick}
+                fb-button={fbButtons}
+              >
                 {fetchUrlLabels[fetchUrlIndex]}
               </button>
             </label>

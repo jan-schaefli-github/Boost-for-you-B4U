@@ -64,6 +64,8 @@ func GetClanDayLog(c *gin.Context) {
 		offset = maxOffset
 	}
 
+	lastDayIdentifier := GetLastDayIdentifier(fk_clan, offset)
+
 	rows, err := db.Query(query, fk_clan, fk_clan, offset)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ein Fehler ist aufgetreten"})
@@ -111,6 +113,7 @@ func GetClanDayLog(c *gin.Context) {
 
 	WarLog := tools.WarLog{
 		Items: WarLogItems,
+		Identifier: lastDayIdentifier,
 		MaxOffset: maxOffset,
 	}
 
@@ -127,7 +130,7 @@ func GetClanDayLog(c *gin.Context) {
 
 
 // Get the amount of daily reports
-func GetDailyReportAmount(fk_person string) (string) {
+func GetDailyReportAmount(fk_clan string) (string) {
 	// Connect to the database
 	db, err := tools.ConnectToDatabase()
 	if err != nil {
@@ -161,10 +164,10 @@ func GetDailyReportAmount(fk_person string) (string) {
 
 	// Execute the statement and retrieve the last daily report fields
 	var amountNullable sql.NullInt64
-	err = stmt.QueryRow(fk_person).Scan(&amountNullable)
+	err = stmt.QueryRow(fk_clan).Scan(&amountNullable)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			// No daily_report found for fk_person
+			// No daily_report found for fk_clan
 			return "0"
 		}
 		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
@@ -175,5 +178,56 @@ func GetDailyReportAmount(fk_person string) (string) {
 		amountStr := strconv.Itoa(int(amount) - 1)
 
 	return amountStr
+
+}
+
+// Get the last day identifier
+func GetLastDayIdentifier(fk_clan string, offset string) (string) {
+	// Connect to the database
+	db, err := tools.ConnectToDatabase()
+	if err != nil {
+		logger.LogMessage("Database", "Error while connecting to database: "+err.Error())
+		return ""
+	}
+
+	// Close the database connection
+	defer func() {
+		err := db.Close()
+		if err != nil {
+			logger.LogMessage("Database", "Error while closing database: "+err.Error())
+			return
+		}
+	}()
+
+	// Prepare the statement
+	stmt, err := db.Prepare("SELECT dr.dayIdentifier FROM daily_report dr INNER JOIN person p ON p.tag = dr.fk_person WHERE p.fk_clan = ? GROUP BY dr.dayIdentifier ORDER BY dr.dayIdentifier DESC LIMIT ?, 1;")
+	if err != nil {
+		logger.LogMessage("Database", "Error while preparing statement: "+err.Error())
+		return ""
+	}
+
+	defer func() {
+		err := stmt.Close()
+		if err != nil {
+			logger.LogMessage("Database", "Error while closing statement: "+err.Error())
+			return
+		}
+	}()
+
+	// Execute the statement and retrieve the last daily report fields
+	var dayIdentifierNullable sql.NullString
+	err = stmt.QueryRow(fk_clan, offset).Scan(&dayIdentifierNullable)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// No daily_report found for fk_clan
+			return ""
+		}
+		logger.LogMessage("Database", "Error while executing statement: "+err.Error())
+		return ""
+	}
+
+		lastDayIdentifier := dayIdentifierNullable.String
+
+	return lastDayIdentifier
 
 }
